@@ -1,0 +1,11 @@
+---
+output:
+  github_document:
+    html_preview: false
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+# cbcTools
+
+An R package containing tools for designing choice based conjoint survey experiments.
