@@ -8,8 +8,8 @@ pkgdown::build_site()
 devtools::install(force = TRUE)
 
 # Load the package and view the summary
-library(logitr)
-help(package = 'logitr')
+library(conjointTools)
+help(package = 'conjointTools')
 
 # Install from github
-# devtools::install_github('jhelvy/logitr')
+# devtools::install_github('jhelvy/conjointTools')

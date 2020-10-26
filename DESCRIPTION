@@ -1,5 +1,5 @@
-Package: cbcTools
-Title: Tools For Designing Choice Based Conjoint Survey Experiments.
+Package: conjointTools
+Title: Tools For Designing Conjoint Survey Experiments.
 Version: 0.0.0.9000
 Maintainer: John Helveston <john.helveston@gmail.com>
 Date: 2020-10-23
@@ -9,7 +9,7 @@ Authors@R: c(
            role    = c("aut", "cre", "cph"),
            email   = "john.helveston@gmail.com",
            comment = c(ORCID = "0000-0002-2657-9191")))
-Description: An R package containing tools for designing choice based conjoint survey experiments.
+Description: An R package containing tools for designing conjoint survey experiments.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true

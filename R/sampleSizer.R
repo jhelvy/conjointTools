@@ -1,8 +1,4 @@
-# ============================================================================
-# Functions for assessing sample size
-# ============================================================================
-
-#' Preview standard errors from models before you collect choice data
+#' Estimate standard errors from conjoint design
 #'
 #' This function allows you to estimate a model on a design of experiment
 #' that you have not yet used to collect data. This allows you to learn
@@ -47,7 +43,7 @@ sampleSizer = function(data, obsIDName, parNames, nbreaks = 10, plot = TRUE,
     models <- list()
     for (i in 1:nbreaks) {
         tempData <- getTempData(data, obsIDName, nobs[i])
-        model <- logitr(
+        model <- logitr::logitr(
             data       = tempData,
             choiceName = 'choice',
             obsIDName  = obsIDName,
