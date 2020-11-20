@@ -22,20 +22,20 @@
 #' @param randPars A named vector whose names are the random parameters and values the distribution: `'n'` for normal or `'ln'` for log-normal. Defaults to `NULL`.
 #' @param randPrice The random distribution for the price parameter: `'n'` for normal or `'ln'` for log-normal. Only used for WTP space MXL models. Defaults to `NULL`.
 #' @param modelSpace Set to `'wtp'` for WTP space models. Defaults to `"pref"`.
-#' @param plot Creates a plot of the sample size results. Defaults to `TRUE`.
 #' @param options A list of options.
 #' @return Returns a data frame of the standard error values for different sample sizes.
 #' @export
 #' @examples
-#'
-#' test <- sampleSizer(
+#' \dontrun{
+#' sizeTest <- sampleSizer(
 #'     data       = yogurt,
 #'     obsIDName  = 'obsID',
 #'     parNames   = c('price', 'feat', 'dannon', 'hiland', 'yoplait'),
 #'     nbreaks    = 10,
 #'     plot       = TRUE)
-#' head(test)
-sampleSizer = function(data, obsIDName, parNames, nbreaks = 10, plot = TRUE,
+#' head(sizeTest)
+#' }
+sampleSizer = function(data, obsIDName, parNames, nbreaks = 10,
                        priceName = NULL, randPars = NULL, randPrice = NULL,
                        modelSpace = 'pref', options = list()) {
     maxObs <- max(data[obsIDName])
@@ -57,10 +57,6 @@ sampleSizer = function(data, obsIDName, parNames, nbreaks = 10, plot = TRUE,
         models[[i]] <- getSE(model, nobs[i])
     }
     result <- do.call(rbind, models)
-    if (plot) {
-        plot(result$size, result$se, ylab = 'Standard Error',
-             xlab = 'Number of observations')
-    }
     return(result)
 }
 
@@ -88,4 +84,29 @@ getSE <- function(model, size) {
     se$coef = row.names(se)
     row.names(se) <- NULL
     return(se)
+}
+
+#' Creates a plot of the sample size results.
+#'
+#' Creates a plot of the sample size results.
+#'
+#' @param df The data frame of the output from the sampleSizer function.
+#' @return Creates a plot of the standard errors for different sample sizes.
+#' @export
+#' @examples
+#' \dontrun{
+#' # First run the sampleSizer function
+#' sizeTest <- sampleSizer(
+#'     data       = yogurt,
+#'     obsIDName  = 'obsID',
+#'     parNames   = c('price', 'feat', 'dannon', 'hiland', 'yoplait'),
+#'     nbreaks    = 10,
+#'     plot       = TRUE)
+#'
+#' # Plot the results
+#' sampleSizePlot(sizeTest)
+#' }
+sampleSizePlot <- function(df) {
+    plot(df$size, df$se, ylab = 'Standard Error',
+         xlab = 'Number of observations')
 }
