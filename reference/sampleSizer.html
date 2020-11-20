@@ -201,12 +201,28 @@ rather a blank design of experiment with no observed choices.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='co'># Generate a full factorial design about apples</span>
+<span class='va'>ff</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/expand.grid.html'>expand.grid</a></span><span class='op'>(</span>
+    price     <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>4</span>, <span class='fl'>0.5</span><span class='op'>)</span>, <span class='co'># $ per pound</span>
+    type      <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'Fuji'</span>, <span class='st'>'Gala'</span>, <span class='st'>'Honeycrisp'</span>, <span class='st'>'Pink Lady'</span>, <span class='st'>'Red Delicious'</span><span class='op'>)</span>,
+    freshness <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'Excellent'</span>, <span class='st'>'Average'</span>, <span class='st'>'Poor'</span><span class='op'>)</span>
+<span class='op'>)</span>
+
+<span class='co'># Make the doe</span>
+<span class='va'>doe</span> <span class='op'>&lt;-</span> <span class='fu'><a href='makeDoe.html'>makeDoe</a></span><span class='op'>(</span>
+    ff        <span class='op'>=</span> <span class='va'>ff</span>,   <span class='co'># Full factorial design</span>
+    nResp     <span class='op'>=</span> <span class='fl'>3000</span>, <span class='co'># Total number of respondents (upper bound)</span>
+    nAltsPerQ <span class='op'>=</span> <span class='fl'>3</span>,    <span class='co'># Number of alternatives per question</span>
+    nQPerResp <span class='op'>=</span> <span class='fl'>6</span>     <span class='co'># Number of questions per respondent</span>
+<span class='op'>)</span>
+
+<span class='co'># Compute the standard errors for different sample sizes</span>
 <span class='va'>sizeTest</span> <span class='op'>&lt;-</span> <span class='fu'>sampleSizer</span><span class='op'>(</span>
-    data       <span class='op'>=</span> <span class='va'>yogurt</span>,
-    obsIDName  <span class='op'>=</span> <span class='st'>'obsID'</span>,
-    parNames   <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'price'</span>, <span class='st'>'feat'</span>, <span class='st'>'dannon'</span>, <span class='st'>'hiland'</span>, <span class='st'>'yoplait'</span><span class='op'>)</span>,
-    nbreaks    <span class='op'>=</span> <span class='fl'>10</span>,
-    plot       <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+   data       <span class='op'>=</span> <span class='va'>doe</span>,
+   obsIDName  <span class='op'>=</span> <span class='st'>'obsID'</span>,
+   parNames   <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'price'</span>, <span class='st'>'type'</span>, <span class='st'>'freshness'</span><span class='op'>)</span>,
+   nbreaks    <span class='op'>=</span> <span class='fl'>10</span><span class='op'>)</span>
+
 <span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>sizeTest</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
