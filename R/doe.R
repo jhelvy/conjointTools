@@ -34,10 +34,10 @@ makeDoe <- function(ff, nResp, nAltsPerQ, nQPerResp) {
     doe <- doe[sample(nrow(doe)),]
     # Add meta data and remove cases with double alternatives
     doe <- addMetaData(doe, nAltsPerQ, nQPerResp)
-    doe <- removeDoubleAlts(doe, nAltsPerQ, nQPerResp)
-    return(doe %>%
-               select(respID, qID, altID, obsID, everything()) %>%
-               ungroup())
+    doe <- removeDuplicateAlts(doe, nAltsPerQ, nQPerResp)
+    doe <- dplyr::select(doe, -rowID)
+    doe <- dplyr::select(doe, respID, qID, altID, obsID, everything())
+    return(as.data.frame(doe))
 }
 
 repDf <- function(df, n) {
@@ -55,11 +55,11 @@ addMetaData <- function(doe, nAltsPerQ, nQPerResp) {
     return(doe)
 }
 
-removeDoubleAlts <- function(doe, nAltsPerQ, nQPerResp) {
+removeDuplicateAlts <- function(doe, nAltsPerQ, nQPerResp) {
     doe <- addAltCounts(doe)
     doubleRows <- which(doe$nUniqueAlts != nAltsPerQ)
     while (length(doubleRows) != 0) {
-        cat('Number repeated: ', length(doubleRows), '\n')
+        # cat('Number repeated: ', length(doubleRows), '\n')
         newRows <- sample(x = seq(nrow(doe)), size = length(doubleRows),
                           replace = F)
         doe[doubleRows,] <- doe[newRows,]
@@ -67,12 +67,11 @@ removeDoubleAlts <- function(doe, nAltsPerQ, nQPerResp) {
         doe <- addAltCounts(doe)
         doubleRows <- which(doe$nUniqueAlts != nAltsPerQ)
     }
-    return(select(doe, -nUniqueAlts))
+    return(dplyr::select(doe, -nUniqueAlts))
 }
 
 addAltCounts <- function(doe) {
-    temp <- doe %>%
-        group_by(obsID) %>%
-        mutate(nUniqueAlts = length(unique(rowID)))
-    return(temp)
+    temp <- dplyr::group_by(doe, obsID)
+    temp <- dplyr::mutate(temp, nUniqueAlts = length(unique(rowID)))
+    return(dplyr::ungroup(temp))
 }
