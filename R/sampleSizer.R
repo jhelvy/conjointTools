@@ -38,11 +38,14 @@
 sampleSizer = function(data, obsIDName, parNames, nbreaks = 10,
                        priceName = NULL, randPars = NULL, randPrice = NULL,
                        modelSpace = 'pref', options = list()) {
+    # Add random choices to data
+    data$choice <- generateChoices(data, obsIDName)
     maxObs <- max(data[obsIDName])
     nobs <- ceiling(seq(ceiling(maxObs/nbreaks), maxObs, length.out = nbreaks))
     models <- list()
+    # Loop through subsets of different sized data and get standard errors
     for (i in 1:nbreaks) {
-        tempData <- getTempData(data, obsIDName, nobs[i])
+        tempData <- data[which(data[obsIDName] < size),]
         model <- logitr::logitr(
             data       = tempData,
             choiceName = 'choice',
@@ -60,13 +63,7 @@ sampleSizer = function(data, obsIDName, parNames, nbreaks = 10,
     return(result)
 }
 
-getTempData <- function(data, obsIDName, size) {
-    tempData <- data[which(data[obsIDName] < size),]
-    tempData$choice <- generateChoices(tempData, obsIDName, size)
-    return(tempData)
-}
-
-generateChoices <- function(data, obsIDName, size) {
+generateChoices <- function(data, obsIDName) {
     nrows <- table(data[obsIDName])
     choices <- list()
     for (i in 1:length(nrows)) {
