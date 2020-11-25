@@ -25,10 +25,14 @@
 #' @examples
 #' \dontrun{
 #' }
-sampleSizer = function(survey, parNames, parTypes = NULL, nbreaks = 10,
+sampleSizer = function(survey, parNames = NULL, parTypes = NULL, nbreaks = 10,
                        randPars = NULL, options = list(message = FALSE)) {
     # Add random choices to the survey
     survey$choice <- generateChoices(survey)
+    # Set parNames
+    if (!is.null(parNames)) {
+        parNames <- names(survey)[!grepl("ID", names(survey))]
+    }
     # Set continuous or discrete parameter types
     if (!is.null(parTypes)) {
         cpars <- parNames[which(parTypes == "c")]
@@ -77,13 +81,14 @@ getSE <- function(model, size) {
 #' @param df The data frame of the output from the `sampleSizer()` function.
 #' @return Returns a plot of the standard errors for different sample sizes.
 #' @importFrom ggplot2 ggplot aes geom_point scale_y_continuous labs theme_bw
+#' @importFrom rlang .data
 #' @export
 #' @examples
 #' \dontrun{
 #' }
 sampleSizePlot <- function(df) {
     plot <- ggplot(df) +
-        geom_point(aes(x = size, y = se, color = coef),
+        geom_point(aes(x = .data$size, y = .data$se, color = .data$coef),
                    fill = "white", pch = 21) +
         scale_y_continuous(limits = c(0, NA)) +
         labs(x = 'Number of observations',

@@ -6,7 +6,7 @@
 \usage{
 sampleSizer(
   survey,
-  parNames,
+  parNames = NULL,
   parTypes = NULL,
   nbreaks = 10,
   randPars = NULL,

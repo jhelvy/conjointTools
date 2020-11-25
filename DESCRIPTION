@@ -18,6 +18,7 @@ RoxygenNote: 7.1.1
 Imports:
     AlgDesign,
     ggplot2,
+    rlang,
     logitr
 Remotes:
     jhelvy/logitr
