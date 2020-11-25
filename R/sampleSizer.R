@@ -30,8 +30,9 @@ sampleSizer = function(survey, parNames = NULL, parTypes = NULL, nbreaks = 10,
     # Add random choices to the survey
     survey$choice <- generateChoices(survey)
     # Set parNames
-    if (!is.null(parNames)) {
+    if (is.null(parNames)) {
         parNames <- names(survey)[!grepl("ID", names(survey))]
+        parNames <- parNames[-which(parNames == "choice")]
     }
     # Set continuous or discrete parameter types
     if (!is.null(parTypes)) {

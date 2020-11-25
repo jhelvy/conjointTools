@@ -31,3 +31,24 @@ head(sizeTest)
 # Plot results
 sampleSizePlot(sizeTest)
 
+
+
+
+library(conjointTools)
+
+doe <- makeDoe(levels = c(3, 3, 3))
+
+survey <- makeSurvey(
+    doe       = doe,
+    nResp     = 1000,
+    nAltsPerQ = 3,
+    nQPerResp = 6
+)
+
+sizeTest <- sampleSizer(survey)
+
+# Preview results
+head(sizeTest)
+
+# Plot results
+sampleSizePlot(sizeTest)
