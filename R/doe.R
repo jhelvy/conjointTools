@@ -97,8 +97,8 @@ repDf <- function(df, n) {
 }
 
 addMetaData <- function(survey, nAltsPerQ, nQPerResp) {
-    nRowsPerResp   <- nAltsPerQ*nQPerResp
-    nResp          <- nrow(survey) / nRowsPerResp
+    nRowsPerResp      <- nAltsPerQ*nQPerResp
+    nResp             <- nrow(survey) / nRowsPerResp
     survey$respID     <- rep(seq(nResp), each=nRowsPerResp)
     survey$qID        <- rep(rep(seq(nQPerResp), each=nAltsPerQ), nResp)
     survey$altID      <- rep(seq(nAltsPerQ), nResp*nQPerResp)
@@ -109,7 +109,7 @@ addMetaData <- function(survey, nAltsPerQ, nQPerResp) {
 
 removeDuplicateAlts <- function(survey, nAltsPerQ, nQPerResp) {
     duplicateRows <- getDuplicateRows(survey, nAltsPerQ)
-    while (!is.null(duplicateRows)) {
+    while (length(duplicateRows) > 0) {
         # cat('Number repeated: ', length(duplicateRows), '\n')
         newRows <- sample(
             x = seq(nrow(survey)), size = length(duplicateRows), replace = F)
@@ -121,13 +121,9 @@ removeDuplicateAlts <- function(survey, nAltsPerQ, nQPerResp) {
 }
 
 getDuplicateRows <- function(survey, nAltsPerQ) {
-    result <- c()
-    for (i in 1:max(survey$obsID)) {
-        rowIDs <- which(survey$obsID == i)
-        nUnique <- length(unique(survey[rowIDs,]$rowID))
-        if (nUnique != nAltsPerQ) {
-            result <- c(result, rowIDs)
-        }
-    }
-    return(result)
+    counts <- tapply(survey$rowID, survey$obsID,
+                     FUN = function(x) length(unique(x)))
+    duplicateIDs <- which(counts != nAltsPerQ)
+    duplicateRows <- which(survey$obsID %in% duplicateIDs)
+    return(duplicateRows)
 }
