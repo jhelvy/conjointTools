@@ -21,7 +21,7 @@ survey <- makeSurvey(
 sizeTest <- sampleSizer(
     survey   = survey,
     parNames = c('price', 'type', 'freshness'),
-    parTypes = c('c', 'd', 'd'),
+    parTypes = c('c', 'd', 'd'), # Set continuous vs. discrete variables
     nbreaks  = 10
 )
 
@@ -30,3 +30,4 @@ head(sizeTest)
 
 # Plot results
 sampleSizePlot(sizeTest)
+

@@ -10,7 +10,7 @@ sampleSizePlot(df)
 \item{df}{The data frame of the output from the \code{sampleSizer()} function.}
 }
 \value{
-Creates a plot of the standard errors for different sample sizes.
+Returns a plot of the standard errors for different sample sizes.
 }
 \description{
 Creates a plot of the sample size results.
