@@ -14,8 +14,9 @@
 #' rather a blank design of experiment with no observed choices.
 #' @keywords logitr, mnl, mxl, logit, sample size
 #'
-#' @param survey The choice survey exported from the `makeSurvey()` function.
-#' @param parNames The names of the parameters to be estimated in the model. Must be the same as the column names in the `survey` argument.
+#' @param survey The choice survey data frame exported from the `makeSurvey()` function.
+#' @param parNames A vector of the names of the parameters to be estimated in the model. Must be the same as the column names in the `survey` argument.
+#' @param parTypes A vector determining the type of each variable: "c" for continuous, or "d" for discrete. Continuous variables will be linearly coded whereas discrete variables will be dummy coded with one level removed for identification. Defaults to `NULL`, in which case all parameters are coded as discrete.
 #' @param nbreaks The number of different sample size groups.
 #' @param randPars A named vector whose names are the random parameters and values the distribution: `'n'` for normal or `'ln'` for log-normal. Defaults to `NULL`.
 #' @param options A list of options to control the model estimation.
@@ -24,10 +25,15 @@
 #' @examples
 #' \dontrun{
 #' }
-sampleSizer = function(survey, parNames, nbreaks = 10, randPars = NULL,
+sampleSizer = function(survey, parNames, parTypes = NULL, nbreaks = 10, randPars = NULL,
                        options = list(message = FALSE)) {
     # Add random choices to the survey
     survey$choice <- generateChoices(survey)
+    # Set continuous or discrete parameter types
+    if (!is.null(parTypes)) {
+        cpars <- parNames[which(parTypes == "c")]
+        survey[,cpars] <- as.numeric(survey[,cpars])
+    }
     # Loop through subsets of different sample sizes
     # In each iteration, estimate a model and record the standard errors
     maxObs <- max(survey['obsID'])

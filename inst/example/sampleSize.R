@@ -21,6 +21,7 @@ survey <- makeSurvey(
 sizeTest <- sampleSizer(
     survey   = survey,
     parNames = c('price', 'type', 'freshness'),
+    parTypes = c('c', 'd', 'd'),
     nbreaks  = 10
 )
 

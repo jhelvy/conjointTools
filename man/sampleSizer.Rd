@@ -7,15 +7,18 @@
 sampleSizer(
   survey,
   parNames,
+  parTypes = NULL,
   nbreaks = 10,
   randPars = NULL,
   options = list(message = FALSE)
 )
 }
 \arguments{
-\item{survey}{The choice survey exported from the \code{makeSurvey()} function.}
+\item{survey}{The choice survey data frame exported from the \code{makeSurvey()} function.}
 
-\item{parNames}{The names of the parameters to be estimated in the model. Must be the same as the column names in the \code{survey} argument.}
+\item{parNames}{A vector of the names of the parameters to be estimated in the model. Must be the same as the column names in the \code{survey} argument.}
+
+\item{parTypes}{A vector determining the type of each variable: "c" for continuous, or "d" for discrete. Continuous variables will be linearly coded whereas discrete variables will be dummy coded with one level removed for identification. Defaults to \code{NULL}, in which case all parameters are coded as discrete.}
 
 \item{nbreaks}{The number of different sample size groups.}
 
