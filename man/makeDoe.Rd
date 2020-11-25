@@ -4,38 +4,41 @@
 \alias{makeDoe}
 \title{Make a design of experiment}
 \usage{
-makeDoe(ff, nResp, nAltsPerQ, nQPerResp)
+makeDoe(levels, varNames = NULL, type = "full", nTrials = NA)
 }
 \arguments{
-\item{ff}{The full factorial design of experiment}
+\item{levels}{A vector of levels for each attribute.}
 
-\item{nResp}{Total number of respondents (upper bound)}
+\item{varNames}{A vector of the names of each attribute in \code{levels} (defaults to \code{NULL}).}
 
-\item{nAltsPerQ}{Number of alternatives per question}
+\item{type}{The type of design. The default value of \code{"full"} returns a full factorial design. All other options return fractional factorial designs based on different criteria. The options \code{"D"}, \code{"A"}, and \code{"I"} return fractional factorial designs based on \code{"D"}, \code{"A"}, and \code{"I"} optimality metrics.}
 
-\item{nQPerResp}{Number of questions per respondent}
+\item{nTrials}{The number of trials to be used in a fractional factorial design. Defaults to \code{NA}, but must be a number less than the number of alternatives in the full factorial design if the \code{type} argument is anything other than \code{"full"}.}
 }
 \value{
-Creates a design of experiment
+Returns a full factorial or fraction factorial design of experiment based on the number of levels for each attribute.
 }
 \description{
 Make a design of experiment
 }
 \examples{
 \dontrun{
-# Generate a full factorial design about apples
-ff <- expand.grid(
-    price     = seq(1, 4, 0.5), # $ per pound
-    type      = c('Fuji', 'Gala', 'Honeycrisp', 'Pink Lady', 'Red Delicious'),
-    freshness = c('Excellent', 'Average', 'Poor')
+# Generate a full factorial design of experiment
+doe <- makeDoe(levels = c(3, 3, 3))
+
+# Generate a full factorial design of experiment about apples
+doe <- makeDoe(
+    levels = c(3, 3, 3),
+    varNames = c("price", "type", "freshness"),
+    type = "full"
 )
 
-# Make the doe
+# Generate a "D-optimal" fractional factorial design of experiment about apples
 doe <- makeDoe(
-    ff        = ff,   # Full factorial design
-    nResp     = 3000, # Total number of respondents (upper bound)
-    nAltsPerQ = 3,    # Number of alternatives per question
-    nQPerResp = 6     # Number of questions per respondent
+    levels = c(3, 3, 3),
+    varNames = c("price", "type", "freshness"),
+    type = "D",
+    nTrials = 15
 )
 }
 }

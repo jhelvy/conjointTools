@@ -5,3 +5,6 @@
 ^docs$
 ^pkgdown$
 ^\.github$
+^build.R
+^conjointTools\.Rproj$
+lit

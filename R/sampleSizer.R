@@ -27,38 +27,44 @@
 #' @export
 #' @examples
 #' \dontrun{
-#' # Generate a full factorial design about apples
-#' ff <- expand.grid(
-#'     price     = seq(1, 4, 0.5), # $ per pound
-#'     type      = c('Fuji', 'Gala', 'Honeycrisp', 'Pink Lady', 'Red Delicious'),
-#'     freshness = c('Excellent', 'Average', 'Poor')
+#' # Generate a full factorial design of experiment about apples
+#' doe <- makeDoe(
+#'     levels = c(3, 3, 3),
+#'     varNames = c("price", "type", "freshness"),
+#'     type = "full"
 #' )
 #'
-#' # Make the doe
-#' doe <- makeDoe(
-#'     ff        = ff,   # Full factorial design
-#'     nResp     = 3000, # Total number of respondents (upper bound)
+#' # Make the coded conjoint survey
+#' survey <- makeSurvey(
+#'     doe       = doe,  # Design of experiment
+#'     nResp     = 1000, # Total number of respondents (upper bound)
 #'     nAltsPerQ = 3,    # Number of alternatives per question
 #'     nQPerResp = 6     # Number of questions per respondent
 #' )
 #'
 #' # Compute the standard errors for different sample sizes
 #' sizeTest <- sampleSizer(
-#'    data       = doe,
-#'    obsIDName  = 'obsID',
-#'    parNames   = c('price', 'type', 'freshness'),
-#'    nbreaks    = 10)
+#'     data       = survey,
+#'     obsIDName  = 'obsID',
+#'     parNames   = c('price', 'type', 'freshness'),
+#'     nbreaks    = 10
+#' )
 #'
+#' # Preview results
 #' head(sizeTest)
+#'
+#' # Plot results
+#' sampleSizePlot(sizeTest)
 #' }
 sampleSizer = function(data, obsIDName, parNames, nbreaks = 10,
                        priceName = NULL, randPars = NULL, randPrice = NULL,
-                       modelSpace = 'pref', options = list()) {
+                       modelSpace = 'pref', options = list(message = FALSE)) {
     # Add random choices to data
     data$choice <- generateChoices(data, obsIDName)
     # Loop through subsets of different sized data and get standard errors
     maxObs <- max(data[obsIDName])
     nobs <- ceiling(seq(ceiling(maxObs/nbreaks), maxObs, length.out = nbreaks))
+    sizes <- round(nobs / max(data$qID))
     standardErrors <- list()
     for (i in 1:nbreaks) {
         tempData <- data[which(data[obsIDName] < nobs[i]),]
@@ -73,7 +79,7 @@ sampleSizer = function(data, obsIDName, parNames, nbreaks = 10,
             modelSpace = modelSpace,
             weights    = NULL,
             options    = options)
-        standardErrors[[i]] <- getSE(model, nobs[i])
+        standardErrors[[i]] <- getSE(model, sizes[i])
     }
     return(do.call(rbind, standardErrors))
 }
@@ -107,15 +113,33 @@ getSE <- function(model, size) {
 #' @export
 #' @examples
 #' \dontrun{
-#' # First run the sampleSizer function
-#' sizeTest <- sampleSizer(
-#'     data       = yogurt,
-#'     obsIDName  = 'obsID',
-#'     parNames   = c('price', 'feat', 'dannon', 'hiland', 'yoplait'),
-#'     nbreaks    = 10,
-#'     plot       = TRUE)
+#' # Generate a full factorial design of experiment about apples
+#' doe <- makeDoe(
+#'     levels = c(3, 3, 3),
+#'     varNames = c("price", "type", "freshness"),
+#'     type = "full"
+#' )
 #'
-#' # Plot the results
+#' # Make the coded conjoint survey
+#' survey <- makeSurvey(
+#'     doe       = doe,  # Design of experiment
+#'     nResp     = 1000, # Total number of respondents (upper bound)
+#'     nAltsPerQ = 3,    # Number of alternatives per question
+#'     nQPerResp = 6     # Number of questions per respondent
+#' )
+#'
+#' # Compute the standard errors for different sample sizes
+#' sizeTest <- sampleSizer(
+#'     data       = survey,
+#'     obsIDName  = 'obsID',
+#'     parNames   = c('price', 'type', 'freshness'),
+#'     nbreaks    = 10
+#' )
+#'
+#' # Preview results
+#' head(sizeTest)
+#'
+#' # Plot results
 #' sampleSizePlot(sizeTest)
 #' }
 sampleSizePlot <- function(df) {
