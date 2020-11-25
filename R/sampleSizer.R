@@ -14,78 +14,40 @@
 #' rather a blank design of experiment with no observed choices.
 #' @keywords logitr, mnl, mxl, logit, sample size
 #'
-#' @param data The choice data, formatted as a `data.frame` object.
-#' @param obsIDName The name of the column that identifies the `obsID` variable.
-#' @param parNames The names of the parameters to be estimated in the model. Must be the same as the column names in the `data` argument. For WTP space models, do not include price in `parNames`.
+#' @param survey The choice survey exported from the `makeSurvey()` function.
+#' @param parNames The names of the parameters to be estimated in the model. Must be the same as the column names in the `survey` argument.
 #' @param nbreaks The number of different sample size groups.
-#' @param priceName The name of the column that identifies the `price` variable. Only required for WTP space models. Defaults to `NULL`.
 #' @param randPars A named vector whose names are the random parameters and values the distribution: `'n'` for normal or `'ln'` for log-normal. Defaults to `NULL`.
-#' @param randPrice The random distribution for the price parameter: `'n'` for normal or `'ln'` for log-normal. Only used for WTP space MXL models. Defaults to `NULL`.
-#' @param modelSpace Set to `'wtp'` for WTP space models. Defaults to `"pref"`.
-#' @param options A list of options.
+#' @param options A list of options to control the model estimation.
 #' @return Returns a data frame of the standard error values for different sample sizes.
 #' @export
 #' @examples
 #' \dontrun{
-#' # Generate a full factorial design of experiment about apples
-#' doe <- makeDoe(
-#'     levels = c(3, 3, 3),
-#'     varNames = c("price", "type", "freshness"),
-#'     type = "full"
-#' )
-#'
-#' # Make the coded conjoint survey
-#' survey <- makeSurvey(
-#'     doe       = doe,  # Design of experiment
-#'     nResp     = 1000, # Total number of respondents (upper bound)
-#'     nAltsPerQ = 3,    # Number of alternatives per question
-#'     nQPerResp = 6     # Number of questions per respondent
-#' )
-#'
-#' # Compute the standard errors for different sample sizes
-#' sizeTest <- sampleSizer(
-#'     data       = survey,
-#'     obsIDName  = 'obsID',
-#'     parNames   = c('price', 'type', 'freshness'),
-#'     nbreaks    = 10
-#' )
-#'
-#' # Preview results
-#' head(sizeTest)
-#'
-#' # Plot results
-#' sampleSizePlot(sizeTest)
 #' }
-sampleSizer = function(data, obsIDName, parNames, nbreaks = 10,
-                       priceName = NULL, randPars = NULL, randPrice = NULL,
-                       modelSpace = 'pref', options = list(message = FALSE)) {
-    # Add random choices to data
-    data$choice <- generateChoices(data, obsIDName)
-    # Loop through subsets of different sized data and get standard errors
-    maxObs <- max(data[obsIDName])
+sampleSizer = function(survey, parNames, nbreaks = 10, randPars = NULL,
+                       options = list(message = FALSE)) {
+    # Add random choices to the survey
+    survey$choice <- generateChoices(survey)
+    # Loop through subsets of different sample sizes
+    # In each iteration, estimate a model and record the standard errors
+    maxObs <- max(survey['obsID'])
     nobs <- ceiling(seq(ceiling(maxObs/nbreaks), maxObs, length.out = nbreaks))
-    sizes <- round(nobs / max(data$qID))
+    sizes <- round(nobs / max(survey$qID))
     standardErrors <- list()
     for (i in 1:nbreaks) {
-        tempData <- data[which(data[obsIDName] < nobs[i]),]
+        tempSurvey <- survey[which(survey['obsID'] < nobs[i]),]
         model <- logitr::logitr(
-            data       = tempData,
-            choiceName = 'choice',
-            obsIDName  = obsIDName,
-            parNames   = parNames,
-            priceName  = priceName,
-            randPars   = randPars,
-            randPrice  = randPrice,
-            modelSpace = modelSpace,
-            weights    = NULL,
-            options    = options)
+            data = tempSurvey, parNames = parNames, randPars = randPars,
+            choiceName = 'choice', obsIDName = 'obsID', priceName = NULL,
+            randPrice = NULL, modelSpace = 'pref', weights = NULL,
+            options = options)
         standardErrors[[i]] <- getSE(model, sizes[i])
     }
     return(do.call(rbind, standardErrors))
 }
 
-generateChoices <- function(data, obsIDName) {
-    nrows <- table(data[obsIDName])
+generateChoices <- function(survey) {
+    nrows <- table(survey['obsID'])
     choices <- list()
     for (i in 1:length(nrows)) {
         choice <- rep(0, nrows[i])
@@ -108,39 +70,11 @@ getSE <- function(model, size) {
 #'
 #' Creates a plot of the sample size results.
 #'
-#' @param df The data frame of the output from the sampleSizer function.
+#' @param df The data frame of the output from the `sampleSizer()` function.
 #' @return Creates a plot of the standard errors for different sample sizes.
 #' @export
 #' @examples
 #' \dontrun{
-#' # Generate a full factorial design of experiment about apples
-#' doe <- makeDoe(
-#'     levels = c(3, 3, 3),
-#'     varNames = c("price", "type", "freshness"),
-#'     type = "full"
-#' )
-#'
-#' # Make the coded conjoint survey
-#' survey <- makeSurvey(
-#'     doe       = doe,  # Design of experiment
-#'     nResp     = 1000, # Total number of respondents (upper bound)
-#'     nAltsPerQ = 3,    # Number of alternatives per question
-#'     nQPerResp = 6     # Number of questions per respondent
-#' )
-#'
-#' # Compute the standard errors for different sample sizes
-#' sizeTest <- sampleSizer(
-#'     data       = survey,
-#'     obsIDName  = 'obsID',
-#'     parNames   = c('price', 'type', 'freshness'),
-#'     nbreaks    = 10
-#' )
-#'
-#' # Preview results
-#' head(sizeTest)
-#'
-#' # Plot results
-#' sampleSizePlot(sizeTest)
 #' }
 sampleSizePlot <- function(df) {
     plot(df$size, df$se, ylab = 'Standard Error',

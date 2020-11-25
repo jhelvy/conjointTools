@@ -108,23 +108,26 @@ addMetaData <- function(survey, nAltsPerQ, nQPerResp) {
 }
 
 removeDuplicateAlts <- function(survey, nAltsPerQ, nQPerResp) {
-    survey <- addAltCounts(survey)
-    doubleRows <- which(survey$nUniqueAlts != nAltsPerQ)
-    while (length(doubleRows) != 0) {
-        # cat('Number repeated: ', length(doubleRows), '\n')
-        newRows <- sample(x = seq(nrow(survey)), size = length(doubleRows),
-                          replace = F)
-        survey[doubleRows,] <- survey[newRows,]
+    duplicateRows <- getDuplicateRows(survey, nAltsPerQ)
+    while (!is.null(duplicateRows)) {
+        # cat('Number repeated: ', length(duplicateRows), '\n')
+        newRows <- sample(
+            x = seq(nrow(survey)), size = length(duplicateRows), replace = F)
+        survey[duplicateRows,] <- survey[newRows,]
         survey <- addMetaData(survey, nAltsPerQ, nQPerResp)
-        survey <- addAltCounts(survey)
-        doubleRows <- which(survey$nUniqueAlts != nAltsPerQ)
+        duplicateRows <- getDuplicateRows(survey, nAltsPerQ)
     }
-    survey$nUniqueAlts <- NULL
     return(survey)
 }
 
-addAltCounts <- function(survey) {
-    temp <- dplyr::group_by(survey, "obsID")
-    temp <- dplyr::mutate(temp, nUniqueAlts = length(unique("rowID")))
-    return(dplyr::ungroup(temp))
+getDuplicateRows <- function(survey, nAltsPerQ) {
+    result <- c()
+    for (i in 1:max(survey$obsID)) {
+        rowIDs <- which(survey$obsID == i)
+        nUnique <- length(unique(survey[rowIDs,]$rowID))
+        if (nUnique != nAltsPerQ) {
+            result <- c(result, rowIDs)
+        }
+    }
+    return(result)
 }

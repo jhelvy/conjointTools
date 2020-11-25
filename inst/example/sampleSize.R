@@ -19,10 +19,9 @@ survey <- makeSurvey(
 
 # Compute the standard errors for different sample sizes
 sizeTest <- sampleSizer(
-    data       = survey,
-    obsIDName  = 'obsID',
-    parNames   = c('price', 'type', 'freshness'),
-    nbreaks    = 10
+    survey   = survey,
+    parNames = c('price', 'type', 'freshness'),
+    nbreaks  = 10
 )
 
 # Preview results

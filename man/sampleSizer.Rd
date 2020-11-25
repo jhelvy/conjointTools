@@ -5,35 +5,23 @@
 \title{Estimate standard errors from conjoint design}
 \usage{
 sampleSizer(
-  data,
-  obsIDName,
+  survey,
   parNames,
   nbreaks = 10,
-  priceName = NULL,
   randPars = NULL,
-  randPrice = NULL,
-  modelSpace = "pref",
   options = list(message = FALSE)
 )
 }
 \arguments{
-\item{data}{The choice data, formatted as a \code{data.frame} object.}
+\item{survey}{The choice survey exported from the \code{makeSurvey()} function.}
 
-\item{obsIDName}{The name of the column that identifies the \code{obsID} variable.}
-
-\item{parNames}{The names of the parameters to be estimated in the model. Must be the same as the column names in the \code{data} argument. For WTP space models, do not include price in \code{parNames}.}
+\item{parNames}{The names of the parameters to be estimated in the model. Must be the same as the column names in the \code{survey} argument.}
 
 \item{nbreaks}{The number of different sample size groups.}
 
-\item{priceName}{The name of the column that identifies the \code{price} variable. Only required for WTP space models. Defaults to \code{NULL}.}
-
 \item{randPars}{A named vector whose names are the random parameters and values the distribution: \code{'n'} for normal or \code{'ln'} for log-normal. Defaults to \code{NULL}.}
 
-\item{randPrice}{The random distribution for the price parameter: \code{'n'} for normal or \code{'ln'} for log-normal. Only used for WTP space MXL models. Defaults to \code{NULL}.}
-
-\item{modelSpace}{Set to \code{'wtp'} for WTP space models. Defaults to \code{"pref"}.}
-
-\item{options}{A list of options.}
+\item{options}{A list of options to control the model estimation.}
 }
 \value{
 Returns a data frame of the standard error values for different sample sizes.
@@ -54,34 +42,6 @@ rather a blank design of experiment with no observed choices.
 }
 \examples{
 \dontrun{
-# Generate a full factorial design of experiment about apples
-doe <- makeDoe(
-    levels = c(3, 3, 3),
-    varNames = c("price", "type", "freshness"),
-    type = "full"
-)
-
-# Make the coded conjoint survey
-survey <- makeSurvey(
-    doe       = doe,  # Design of experiment
-    nResp     = 1000, # Total number of respondents (upper bound)
-    nAltsPerQ = 3,    # Number of alternatives per question
-    nQPerResp = 6     # Number of questions per respondent
-)
-
-# Compute the standard errors for different sample sizes
-sizeTest <- sampleSizer(
-    data       = survey,
-    obsIDName  = 'obsID',
-    parNames   = c('price', 'type', 'freshness'),
-    nbreaks    = 10
-)
-
-# Preview results
-head(sizeTest)
-
-# Plot results
-sampleSizePlot(sizeTest)
 }
 }
 \keyword{logit,}
