@@ -23,8 +23,13 @@ navbar:
      href: https://github.com/jhelvy/conjointTools
 
 reference:
-- title: "Estimating standard errors from conjoint design"
-  desc: "Functions for estimating and viewing standard errors based on a given conjoint design of experiment."
+- title: "Tools for designing surveys"
+  desc: "Functions for creating different experiment designs and coded surveys."
+  contents:
+  - makeDoe
+  - makeSurvey
+- title: "Examining required sample sizes"
+  desc: "Functions for estimating standard errors based on different sample sizes for a given conjoint design."
   contents:
   - sampleSizer
   - sampleSizePlot

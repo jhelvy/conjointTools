@@ -1,6 +1,6 @@
 Package: conjointTools
 Title: Tools For Designing Conjoint Survey Experiments
-Version: 0.0.0.9000
+Version: 0.0.1
 Maintainer: John Helveston <john.helveston@gmail.com>
 Date: 2020-11-25
 Authors@R: c(
