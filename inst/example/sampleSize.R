@@ -2,14 +2,14 @@ library(conjointTools)
 
 # Compute and compare standard errors for different sample sizes
 
-# Generate a full factorial design of experiment about apples
-doe <- makeDoe(
-    levels = c(3, 3, 3),
-    varNames = c("price", "type", "freshness"),
-    type = "full"
-)
+# Example 1 -------------------------------------------------------------------
 
-# Make the coded conjoint survey
+# A simple conjoint design with no specified attribute names
+
+# Make the design of experiment
+doe <- makeDoe(levels = c(3, 3, 3))
+
+# Make the survey
 survey <- makeSurvey(
     doe       = doe,  # Design of experiment
     nResp     = 1000, # Total number of respondents (upper bound)
@@ -17,8 +17,39 @@ survey <- makeSurvey(
     nQPerResp = 6     # Number of questions per respondent
 )
 
-# Compute the standard errors for different sample sizes
-sizeTest <- sampleSizer(
+# Compute sample sizes
+results <- sampleSizer(survey)
+
+# Preview results
+head(results)
+
+# Plot results
+sampleSizePlot(results)
+
+
+
+# Example 2 -------------------------------------------------------------------
+
+# A simple conjoint experiment about apples, with one attribute (price)
+# modeled as continuous
+
+# Make the design of experiment
+doe <- makeDoe(
+    levels = c(3, 3, 3),
+    varNames = c("price", "type", "freshness"),
+    type = "full"
+)
+
+# Make the survey
+survey <- makeSurvey(
+    doe       = doe,  # Design of experiment
+    nResp     = 1000, # Total number of respondents (upper bound)
+    nAltsPerQ = 3,    # Number of alternatives per question
+    nQPerResp = 6     # Number of questions per respondent
+)
+
+# Compute sample sizes
+results <- sampleSizer(
     survey   = survey,
     parNames = c('price', 'type', 'freshness'),
     parTypes = c('c', 'd', 'd'), # Set continuous vs. discrete variables
@@ -26,29 +57,7 @@ sizeTest <- sampleSizer(
 )
 
 # Preview results
-head(sizeTest)
+head(results)
 
 # Plot results
-sampleSizePlot(sizeTest)
-
-
-
-
-library(conjointTools)
-
-doe <- makeDoe(levels = c(3, 3, 3))
-
-survey <- makeSurvey(
-    doe       = doe,
-    nResp     = 1000,
-    nAltsPerQ = 3,
-    nQPerResp = 6
-)
-
-sizeTest <- sampleSizer(survey)
-
-# Preview results
-head(sizeTest)
-
-# Plot results
-sampleSizePlot(sizeTest)
+sampleSizePlot(results)
