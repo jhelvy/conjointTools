@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">conjointTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.0.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.1</span>
       </span>
     </div>
 
@@ -137,15 +137,33 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='co'># First run the sampleSizer function</span>
-<span class='va'>sizeTest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sampleSizer.html'>sampleSizer</a></span><span class='op'>(</span>
-    data       <span class='op'>=</span> <span class='va'>yogurt</span>,
-    obsIDName  <span class='op'>=</span> <span class='st'>'obsID'</span>,
-    parNames   <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'price'</span>, <span class='st'>'feat'</span>, <span class='st'>'dannon'</span>, <span class='st'>'hiland'</span>, <span class='st'>'yoplait'</span><span class='op'>)</span>,
-    nbreaks    <span class='op'>=</span> <span class='fl'>10</span>,
-    plot       <span class='op'>=</span> <span class='cn'>TRUE</span><span class='op'>)</span>
+<span class='co'># Generate a full factorial design of experiment about apples</span>
+<span class='va'>doe</span> <span class='op'>&lt;-</span> <span class='fu'><a href='makeDoe.html'>makeDoe</a></span><span class='op'>(</span>
+    levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span><span class='op'>)</span>,
+    varNames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"price"</span>, <span class='st'>"type"</span>, <span class='st'>"freshness"</span><span class='op'>)</span>,
+    type <span class='op'>=</span> <span class='st'>"full"</span>
+<span class='op'>)</span>
 
-<span class='co'># Plot the results</span>
+<span class='co'># Make the coded conjoint survey</span>
+<span class='va'>survey</span> <span class='op'>&lt;-</span> <span class='fu'><a href='makeSurvey.html'>makeSurvey</a></span><span class='op'>(</span>
+    doe       <span class='op'>=</span> <span class='va'>doe</span>,  <span class='co'># Design of experiment</span>
+    nResp     <span class='op'>=</span> <span class='fl'>1000</span>, <span class='co'># Total number of respondents (upper bound)</span>
+    nAltsPerQ <span class='op'>=</span> <span class='fl'>3</span>,    <span class='co'># Number of alternatives per question</span>
+    nQPerResp <span class='op'>=</span> <span class='fl'>6</span>     <span class='co'># Number of questions per respondent</span>
+<span class='op'>)</span>
+
+<span class='co'># Compute the standard errors for different sample sizes</span>
+<span class='va'>sizeTest</span> <span class='op'>&lt;-</span> <span class='fu'><a href='sampleSizer.html'>sampleSizer</a></span><span class='op'>(</span>
+    data       <span class='op'>=</span> <span class='va'>survey</span>,
+    obsIDName  <span class='op'>=</span> <span class='st'>'obsID'</span>,
+    parNames   <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'price'</span>, <span class='st'>'type'</span>, <span class='st'>'freshness'</span><span class='op'>)</span>,
+    nbreaks    <span class='op'>=</span> <span class='fl'>10</span>
+<span class='op'>)</span>
+
+<span class='co'># Preview results</span>
+<span class='fu'><a href='https://rdrr.io/r/utils/head.html'>head</a></span><span class='op'>(</span><span class='va'>sizeTest</span><span class='op'>)</span>
+
+<span class='co'># Plot results</span>
 <span class='fu'>sampleSizePlot</span><span class='op'>(</span><span class='va'>sizeTest</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>

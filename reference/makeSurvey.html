@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Changelog • conjointTools</title>
+<title>Make a conjoint survey from a design of experiment — makeSurvey • conjointTools</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,8 @@
 
 
 
-<meta property="og:title" content="Changelog" />
+<meta property="og:title" content="Make a conjoint survey from a design of experiment — makeSurvey" />
+<meta property="og:description" content="Make a conjoint survey from a design of experiment" />
 
 
 
@@ -58,7 +59,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-news">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -110,39 +111,68 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-      <h1 data-toc-skip>Changelog <small></small></h1>
-      
+    <h1>Make a conjoint survey from a design of experiment</h1>
+    
+    <div class="hidden name"><code>makeSurvey.Rd</code></div>
     </div>
 
-    <div id="conjointtools-001" class="section level1">
-<h1 class="page-header" data-toc-text="0.0.1">
-<a href="#conjointtools-001" class="anchor"></a>conjointTools 0.0.1</h1>
-<ul>
-<li>Created new functions for creating different experiment designs:
-<ul>
-<li>Full factorial</li>
-<li>“D”, “A”, and “I” optimal designs</li>
-</ul>
-</li>
-<li>Modified previous functions for creating a coded survey from a given experiment design</li>
-<li>Changed the output of the sampleSizer function to show the sample size (rather than the number of observations, which can be different since respondents may answer more than one choice question).</li>
-</ul>
-</div>
-    <div id="conjointtools-0009000" class="section level1">
-<h1 class="page-header" data-toc-text="0.0.0.9000">
-<a href="#conjointtools-0009000" class="anchor"></a>conjointTools 0.0.0.9000</h1>
-<ul>
-<li>Added a <code>NEWS.md</code> file to track changes to the package.</li>
-</ul>
-</div>
-  </div>
+    <div class="ref-description">
+    <p>Make a conjoint survey from a design of experiment</p>
+    </div>
 
+    <pre class="usage"><span class='fu'>makeSurvey</span><span class='op'>(</span><span class='va'>doe</span>, <span class='va'>nResp</span>, <span class='va'>nAltsPerQ</span>, <span class='va'>nQPerResp</span><span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>doe</th>
+      <td><p>The design of experiment returned from the <code><a href='makeDoe.html'>makeDoe()</a></code> function</p></td>
+    </tr>
+    <tr>
+      <th>nResp</th>
+      <td><p>Maximum number of survey respondents</p></td>
+    </tr>
+    <tr>
+      <th>nAltsPerQ</th>
+      <td><p>Number of alternatives per question</p></td>
+    </tr>
+    <tr>
+      <th>nQPerResp</th>
+      <td><p>Number of questions per respondent</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>Returns a coded conjoint survey by sampling from a design of
+experiment returned from the <code><a href='makeDoe.html'>makeDoe()</a></code> function. The design eliminates the
+possibility of duplicate alternatives appearing in the same choice question.</p>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
+<span class='co'># Generate a full factorial design of experiment about apples</span>
+<span class='va'>doe</span> <span class='op'>&lt;-</span> <span class='fu'><a href='makeDoe.html'>makeDoe</a></span><span class='op'>(</span>
+    levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span><span class='op'>)</span>,
+    varNames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"price"</span>, <span class='st'>"type"</span>, <span class='st'>"freshness"</span><span class='op'>)</span>,
+    type <span class='op'>=</span> <span class='st'>"full"</span>
+<span class='op'>)</span>
+
+<span class='co'># Make the coded conjoint survey</span>
+<span class='va'>survey</span> <span class='op'>&lt;-</span> <span class='fu'>makeSurvey</span><span class='op'>(</span>
+    doe       <span class='op'>=</span> <span class='va'>doe</span>,  <span class='co'># Design of experiment</span>
+    nResp     <span class='op'>=</span> <span class='fl'>1000</span>, <span class='co'># Total number of respondents (upper bound)</span>
+    nAltsPerQ <span class='op'>=</span> <span class='fl'>3</span>,    <span class='co'># Number of alternatives per question</span>
+    nQPerResp <span class='op'>=</span> <span class='fl'>6</span>     <span class='co'># Number of questions per respondent</span>
+<span class='op'>)</span>
+<span class='op'>}</span>
+</div></pre>
+  </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
-
 </div>
 
 
