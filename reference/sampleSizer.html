@@ -145,6 +145,7 @@ rather a blank design of experiment with no observed choices.</p>
     <pre class="usage"><span class='fu'>sampleSizer</span><span class='op'>(</span>
   <span class='va'>survey</span>,
   <span class='va'>parNames</span>,
+  parTypes <span class='op'>=</span> <span class='cn'>NULL</span>,
   nbreaks <span class='op'>=</span> <span class='fl'>10</span>,
   randPars <span class='op'>=</span> <span class='cn'>NULL</span>,
   options <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>message <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
@@ -155,11 +156,15 @@ rather a blank design of experiment with no observed choices.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>survey</th>
-      <td><p>The choice survey exported from the <code><a href='makeSurvey.html'>makeSurvey()</a></code> function.</p></td>
+      <td><p>The choice survey data frame exported from the <code><a href='makeSurvey.html'>makeSurvey()</a></code> function.</p></td>
     </tr>
     <tr>
       <th>parNames</th>
-      <td><p>The names of the parameters to be estimated in the model. Must be the same as the column names in the <code>survey</code> argument.</p></td>
+      <td><p>A vector of the names of the parameters to be estimated in the model. Must be the same as the column names in the <code>survey</code> argument.</p></td>
+    </tr>
+    <tr>
+      <th>parTypes</th>
+      <td><p>A vector determining the type of each variable: "c" for continuous, or "d" for discrete. Continuous variables will be linearly coded whereas discrete variables will be dummy coded with one level removed for identification. Defaults to <code>NULL</code>, in which case all parameters are coded as discrete.</p></td>
     </tr>
     <tr>
       <th>nbreaks</th>
