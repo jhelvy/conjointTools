@@ -10,5 +10,5 @@ vignettes
 ^conjointTools\.Rproj$
 ^doc$
 ^Meta$
-^next_release.md$
+^next_release\.md$
 ^build\.R$

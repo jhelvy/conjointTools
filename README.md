@@ -172,7 +172,7 @@ ggplot(results) +
   - Date First Written: *October 23, 2020*
   - Most Recent Update: December 06 2020
   - License:
-    [MIT](https://github.com/jhelvy/logitr/blob/master/LICENSE.md)
+    [MIT](https://github.com/jhelvy/conjointTools/blob/master/LICENSE.md)
   - [Latest
     Release](https://github.com/jhelvy/conjointTools/releases/latest):
     0.0.1

@@ -132,7 +132,7 @@ ggplot(results) +
 
 - Date First Written: *October 23, 2020*
 - Most Recent Update: `r format(Sys.Date(), format="%B %d %Y")`
-- License: [MIT](https://github.com/jhelvy/logitr/blob/master/LICENSE.md)
+- License: [MIT](https://github.com/jhelvy/conjointTools/blob/master/LICENSE.md)
 - [Latest Release](https://github.com/jhelvy/conjointTools/releases/latest): 0.0.1
 
 ## Citation Information
