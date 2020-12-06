@@ -76,25 +76,3 @@ getSE <- function(model, size) {
     row.names(se) <- NULL
     return(se)
 }
-
-#' Creates a plot of the sample size results.
-#'
-#' @param df The data frame of the output from the `sampleSizer()` function.
-#' @return Returns a plot of the standard errors for different sample sizes.
-#' @importFrom ggplot2 ggplot aes geom_point scale_y_continuous labs theme_bw
-#' @importFrom rlang .data
-#' @export
-#' @examples
-#' \dontrun{
-#' }
-sampleSizePlot <- function(df) {
-    plot <- ggplot(df) +
-        geom_point(aes(x = .data$size, y = .data$se, color = .data$coef),
-                   fill = "white", pch = 21) +
-        scale_y_continuous(limits = c(0, NA)) +
-        labs(x = 'Number of observations',
-             y = 'Standard Error',
-             color = "Variable") +
-        theme_bw()
-    return(plot)
-}

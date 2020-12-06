@@ -6,19 +6,27 @@ Date: 2020-11-25
 Authors@R: c(
     person(given   = "John",
            family  = "Helveston",
-           role    = c("aut", "cre", "cph"),
+           role    = c("cre", "aut", "cph"),
            email   = "john.helveston@gmail.com",
-           comment = c(ORCID = "0000-0002-2657-9191")))
+           comment = c(ORCID = "0000-0002-2657-9191")),
+    person(given   = "Martin",
+           family  = "Lukac",
+           role    = c("aut"),
+           email   = "m.b.lukac@gmail.com",
+           comment = c(ORCID = "0000-0002-1747-3168")),
+    person(given   = "Alberto",
+           family  = "Stefanelli",
+           role    = c("aut"),
+           email   = "alberto.stefanelli.main@gmail.com"))
 Description: An R package containing tools for designing conjoint survey experiments.
-License: GPL-3
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports:
     AlgDesign,
-    ggplot2,
     rlang,
-    logitr
+    logitr (>= 0.0.4)
 Remotes:
     jhelvy/logitr

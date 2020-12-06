@@ -32,4 +32,3 @@ reference:
   desc: "Functions for estimating standard errors based on different sample sizes for a given conjoint design."
   contents:
   - sampleSizer
-  - sampleSizePlot
