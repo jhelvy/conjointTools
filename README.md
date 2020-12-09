@@ -137,18 +137,19 @@ results <- sampleSizer(
     survey   = survey,
     parNames = c('price', 'type', 'freshness'),
     parTypes = c('c', 'd', 'd'), # Set continuous vs. discrete variables
+    interactions = TRUE, # Add interactions between each attribute
     nbreaks  = 10
 )
 
 # Preview results
 head(results)
-#>   size         se        coef
-#> 1  100 0.09239510       price
-#> 2  100 0.09404767      type_2
-#> 3  100 0.09376153 freshness_2
-#> 4  200 0.06612120       price
-#> 5  200 0.06657439      type_2
-#> 6  200 0.06603612 freshness_2
+#>   size        se               coef
+#> 1  100 0.1611530              price
+#> 2  100 0.3110412             type_2
+#> 3  100 0.3118941        freshness_2
+#> 4  100 0.1897302       price*type_2
+#> 5  100 0.1887158  price*freshness_2
+#> 6  100 0.1891048 type_2*freshness_2
 ```
 
 View a plot of the results
@@ -170,12 +171,12 @@ ggplot(results) +
 ## Version and License Information
 
   - Date First Written: *October 23, 2020*
-  - Most Recent Update: December 06 2020
+  - Most Recent Update: December 09 2020
   - License:
     [MIT](https://github.com/jhelvy/conjointTools/blob/master/LICENSE.md)
   - [Latest
     Release](https://github.com/jhelvy/conjointTools/releases/latest):
-    0.0.1
+    0.0.2
 
 ## Citation Information
 
@@ -188,16 +189,16 @@ citation("conjointTools")
 #> 
 #> To cite conjointTools in publications use:
 #> 
-#>   John Paul Helveston. conjointTools: Tools for designing conjoint
-#>   survey experiments. (2020)
+#>   John Paul Helveston, Martin Lukac, Alberto Stefanelli (2020).
+#>   conjointTools: Tools For Designing Conjoint Survey Experiments.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
-#>     title = {conjointTools: Tools for designing conjoint survey experiments.},
-#>     author = {John Paul Helveston},
+#>     title = {conjointTools: Tools For Designing Conjoint Survey Experiments},
+#>     author = {John Paul Helveston and Martin Lukac and Alberto Stefanelli},
 #>     year = {2020},
-#>     note = {R package version 0.0.1},
+#>     note = {R package version 0.0.2},
 #>     url = {https://jhelvy.github.io/conjointTools/},
 #>   }
 ```

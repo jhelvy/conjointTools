@@ -5,7 +5,7 @@ citEntry(
   title    = "conjointTools: Tools For Designing Conjoint Survey Experiments",
   author   = c("John Paul Helveston", "Martin Lukac", "Alberto Stefanelli"),
   year     = "2020",
-  note     = "R package version 0.0.1",
+  note     = "R package version 0.0.2",
   url      = "https://jhelvy.github.io/conjointTools/",
   textVersion = "John Paul Helveston, Martin Lukac, Alberto Stefanelli (2020). conjointTools: Tools For Designing Conjoint Survey Experiments."
 )

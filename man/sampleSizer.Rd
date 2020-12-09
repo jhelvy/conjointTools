@@ -8,6 +8,7 @@ sampleSizer(
   survey,
   parNames = NULL,
   parTypes = NULL,
+  interactions = FALSE,
   nbreaks = 10,
   randPars = NULL,
   options = list(message = FALSE)
@@ -18,7 +19,9 @@ sampleSizer(
 
 \item{parNames}{A vector of the names of the parameters to be estimated in the model. Must be the same as the column names in the \code{survey} argument.}
 
-\item{parTypes}{A vector determining the type of each variable: "c" for continuous, or "d" for discrete. Continuous variables will be linearly coded whereas discrete variables will be dummy coded with one level removed for identification. Defaults to \code{NULL}, in which case all parameters are coded as discrete.}
+\item{parTypes}{A vector determining the type of each variable: "c" for continuous, or "d" for discrete. Continuous variables will be linearly coded whereas discrete variables will be dummy coded with one level removed for identification. Defaults to \code{NULL}, in which case all parameters are coded as "d" for discrete.}
+
+\item{interactions}{A logical value for adding interactions between all parameters in \code{parNames}. Defaults to \code{FALSE}.}
 
 \item{nbreaks}{The number of different sample size groups.}
 
@@ -45,6 +48,48 @@ rather a blank design of experiment with no observed choices.
 }
 \examples{
 \dontrun{
+library(conjointTools)
+
+# A simple conjoint experiment about apples, with one attribute (price)
+# modeled as continuous
+
+# Make the design of experiment
+doe <- makeDoe(
+    levels = c(3, 3, 3),
+    varNames = c("price", "type", "freshness"),
+    type = "full"
+)
+
+# Make the survey
+survey <- makeSurvey(
+    doe       = doe,  # Design of experiment
+    nResp     = 1000, # Total number of respondents (upper bound)
+    nAltsPerQ = 3,    # Number of alternatives per question
+    nQPerResp = 6     # Number of questions per respondent
+)
+
+# Compute sample sizes
+results <- sampleSizer(
+    survey   = survey,
+    parNames = c('price', 'type', 'freshness'),
+    parTypes = c('c', 'd', 'd'), # Set continuous vs. discrete variables
+    nbreaks  = 10
+)
+
+# Preview results
+head(results)
+
+# Plot results
+library(ggplot2)
+
+ggplot(results) +
+    geom_point(aes(x = size, y = se, color = coef),
+               fill = "white", pch = 21) +
+    scale_y_continuous(limits = c(0, NA)) +
+    labs(x = 'Number of observations',
+         y = 'Standard Error',
+         color = "Variable") +
+    theme_bw()
 }
 }
 \keyword{logit,}

@@ -30,6 +30,7 @@ This package contains tools for designing choice based conjoint survey experimen
 
 The current version is not yet on CRAN, but you can install it from
 Github using the **devtools** library:
+
 ```{r, eval=FALSE}
 devtools::install_github("jhelvy/conjointTools")
 ```
@@ -44,12 +45,14 @@ library(conjointTools)
 Use the `makeDoe()` function to create a design of experiment
 
 Generate a full factorial design of experiment with three attributes, each with 2 levels:
+
 ```{r}
 doe <- makeDoe(levels = c(2, 2, 2))
 doe
 ```
 
 You can also give your variables names based on the attributes. Here is an example of a full factorial design of experiment about apples:
+
 ```{r}
 doe <- makeDoe(
     levels = c(2, 2, 2),
@@ -59,6 +62,7 @@ doe
 ```
 
 The `makeDoe()` function can also generate "D", "A", and "I" optimal fractional factorial designs:
+
 ```{r}
 doe <- makeDoe(
     levels = c(2, 2, 2),
@@ -79,6 +83,7 @@ doe <- makeDoe(
     varNames = c("price", "type", "freshness")
 )
 ```
+
 ```{r}
 survey <- makeSurvey(
     doe       = doe,  # Design of experiment
@@ -107,6 +112,7 @@ results <- sampleSizer(
     survey   = survey,
     parNames = c('price', 'type', 'freshness'),
     parTypes = c('c', 'd', 'd'), # Set continuous vs. discrete variables
+    interactions = TRUE, # Add interactions between each attribute
     nbreaks  = 10
 )
 
@@ -133,7 +139,7 @@ ggplot(results) +
 - Date First Written: *October 23, 2020*
 - Most Recent Update: `r format(Sys.Date(), format="%B %d %Y")`
 - License: [MIT](https://github.com/jhelvy/conjointTools/blob/master/LICENSE.md)
-- [Latest Release](https://github.com/jhelvy/conjointTools/releases/latest): 0.0.1
+- [Latest Release](https://github.com/jhelvy/conjointTools/releases/latest): 0.0.2
 
 ## Citation Information
 

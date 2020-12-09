@@ -5,41 +5,10 @@ library(ggplot2)
 
 # Example 1 -------------------------------------------------------------------
 
-# A simple conjoint design with no specified attribute names
-
-# Make the design of experiment
-doe <- makeDoe(levels = c(3, 3, 3))
-
-# Make the survey
-survey <- makeSurvey(
-    doe       = doe,  # Design of experiment
-    nResp     = 1000, # Total number of respondents (upper bound)
-    nAltsPerQ = 3,    # Number of alternatives per question
-    nQPerResp = 6     # Number of questions per respondent
-)
-
-# Compute sample sizes
-results <- sampleSizer(survey)
-
-# Preview results
-head(results)
-
-# Plot results
-ggplot(results) +
-    geom_point(aes(x = size, y = se, color = coef),
-               fill = "white", pch = 21) +
-    scale_y_continuous(limits = c(0, NA)) +
-    labs(x = 'Number of observations',
-         y = 'Standard Error',
-         color = "Variable") +
-    theme_bw()
-
-
-
-# Example 2 -------------------------------------------------------------------
-
-# A simple conjoint experiment about apples, with one attribute (price)
-# modeled as continuous
+# A simple conjoint experiment about apples
+# The price attribute is continuous.
+# ALL interactions between each attribute are estimated
+# Full factorial design
 
 # Make the design of experiment
 doe <- makeDoe(
@@ -60,7 +29,8 @@ survey <- makeSurvey(
 results <- sampleSizer(
     survey   = survey,
     parNames = c('price', 'type', 'freshness'),
-    parTypes = c('c', 'd', 'd'), # Set continuous vs. discrete variables
+    parTypes = c('c', 'd', 'd'),
+    interactions = TRUE, # Add interactions between each attribute
     nbreaks  = 10
 )
 
@@ -68,9 +38,60 @@ results <- sampleSizer(
 head(results)
 
 # Plot results
+library(ggplot2)
+results$int <- ifelse(grepl("\\*", results$coef), TRUE, FALSE)
 ggplot(results) +
     geom_point(aes(x = size, y = se, color = coef),
                fill = "white", pch = 21) +
+    facet_wrap(vars(int)) +
+    scale_y_continuous(limits = c(0, NA)) +
+    labs(x = 'Number of observations',
+         y = 'Standard Error',
+         color = "Variable") +
+    theme_bw()
+
+# Example 2 -------------------------------------------------------------------
+
+# A simple conjoint experiment about apples
+# The price attribute is continuous.
+# ALL interactions between each attribute are estimated
+# D-efficient partial factorial design
+
+# Make the design of experiment
+doe <- makeDoe(
+    levels = c(3, 3, 3),
+    varNames = c("price", "type", "freshness"),
+    type = "D",
+    nTrials = 15
+)
+
+# Make the survey
+survey <- makeSurvey(
+    doe       = doe,  # Design of experiment
+    nResp     = 1000, # Total number of respondents (upper bound)
+    nAltsPerQ = 3,    # Number of alternatives per question
+    nQPerResp = 6     # Number of questions per respondent
+)
+
+# Compute sample sizes
+results <- sampleSizer(
+    survey   = survey,
+    parNames = c('price', 'type', 'freshness'),
+    parTypes = c('c', 'd', 'd'),
+    interactions = TRUE, # Add interactions between each attribute
+    nbreaks  = 10
+)
+
+# Preview results
+head(results)
+
+# Plot results
+library(ggplot2)
+results$int <- ifelse(grepl("\\*", results$coef), TRUE, FALSE)
+ggplot(results) +
+    geom_point(aes(x = size, y = se, color = coef),
+               fill = "white", pch = 21) +
+    facet_wrap(vars(int)) +
     scale_y_continuous(limits = c(0, NA)) +
     labs(x = 'Number of observations',
          y = 'Standard Error',
