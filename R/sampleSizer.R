@@ -96,7 +96,6 @@ setupInputs <- function(survey, parNames, parTypes, interactions) {
     # Set parNames
     if (is.null(parNames)) {
         parNames <- names(survey)[!grepl("ID", names(survey))]
-        parNames <- parNames[-which(parNames == "choice")]
     }
     # Recode survey variables as continuous or discrete
     if (!is.null(parTypes)) {
