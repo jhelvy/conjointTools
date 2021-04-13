@@ -1,8 +1,7 @@
 Package: conjointTools
 Title: Tools For Designing Conjoint Survey Experiments
-Version: 0.0.2
+Version: 0.0.3
 Maintainer: John Helveston <john.helveston@gmail.com>
-Date: 2020-12-09
 Authors@R: c(
     person(given   = "John",
            family  = "Helveston",
@@ -28,6 +27,6 @@ Imports:
     AlgDesign,
     rlang,
     utils,
-    logitr (>= 0.0.5)
+    logitr
 Remotes:
     jhelvy/logitr
