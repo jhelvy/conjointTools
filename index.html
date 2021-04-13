@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">conjointTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.2</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.3</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="index.html">
-    <span class="fa fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -53,7 +53,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/jhelvy/conjointTools">
-    <span class="fa fa-github"></span>
+    <span class="fas fa-github"></span>
      
   </a>
 </li>
@@ -170,9 +170,9 @@
 <div id="assess-required-sample-sizes" class="section level2">
 <h2 class="hasAnchor">
 <a href="#assess-required-sample-sizes" class="anchor"></a>Assess required sample sizes</h2>
-<p>To evaluate the necessary sample size to achieve a certain amount of precision about estimated model parameters, use the <code><a href="reference/sampleSizer.html">sampleSizer()</a></code> function with the survey data frame returned from the <code><a href="reference/makeSurvey.html">makeSurvey()</a></code> function. The function estimates a logit model on multiple subsets of the <code>survey</code> data frame with increasing sample sizes determined by the <code>nbreaks</code> argument:</p>
+<p>To evaluate the necessary sample size to achieve a certain amount of precision about estimated model parameters, use the <code>sampleSizer()</code> function with the survey data frame returned from the <code><a href="reference/makeSurvey.html">makeSurvey()</a></code> function. The function estimates a logit model on multiple subsets of the <code>survey</code> data frame with increasing sample sizes determined by the <code>nbreaks</code> argument:</p>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/sampleSizer.html">sampleSizer</a></span><span class="op">(</span>
+<code class="sourceCode R"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu">sampleSizer</span><span class="op">(</span>
     survey   <span class="op">=</span> <span class="va">survey</span>,
     parNames <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'price'</span>, <span class="st">'type'</span>, <span class="st">'freshness'</span><span class="op">)</span>,
     parTypes <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">'c'</span>, <span class="st">'d'</span>, <span class="st">'d'</span><span class="op">)</span>, <span class="co"># Set continuous vs. discrete variables</span>
