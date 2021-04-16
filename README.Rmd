@@ -108,11 +108,11 @@ The resulting data frame includes the following additional columns:
 To evaluate the necessary sample size to achieve a certain amount of precision about estimated model parameters, use the `sampleSizer()` function with the survey data frame returned from the `makeSurvey()` function. The function estimates a logit model on multiple subsets of the `survey` data frame with increasing sample sizes determined by the `nbreaks` argument:
 
 ```{r}
-results <- sampleSizer(
+results <- getPower(
     survey   = survey,
     parNames = c('price', 'type', 'freshness'),
     parTypes = c('c', 'd', 'd'), # Set continuous vs. discrete variables
-    interactions = TRUE, # Add interactions between each attribute
+    interactions = FALSE, # Add interactions between each attribute
     nbreaks  = 10
 )
 
