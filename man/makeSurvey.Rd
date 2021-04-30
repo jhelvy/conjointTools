@@ -4,20 +4,25 @@
 \alias{makeSurvey}
 \title{Make a conjoint survey from a design of experiment}
 \usage{
-makeSurvey(doe, nResp, nAltsPerQ, nQPerResp)
+makeSurvey(doe, nResp, nAltsPerQ, nQPerResp, group = NULL)
 }
 \arguments{
-\item{doe}{The design of experiment returned from the \code{makeDoe()} function}
+\item{doe}{A design of experiment data frame. Each row is an alternative,
+each column is an attribute.}
 
 \item{nResp}{Maximum number of survey respondents}
 
 \item{nAltsPerQ}{Number of alternatives per question}
 
 \item{nQPerResp}{Number of questions per respondent}
+
+\item{group}{The name of the group column if your doe is designed with
+groups (e.g. a labeled experiment where each set of alternatives has the
+same type). Defaults to \code{NULL}.}
 }
 \value{
-Returns a coded conjoint survey by sampling from a design of
-experiment returned from the \code{makeDoe()} function. The design eliminates the
+Returns a conjoint survey by randomly sampling from a design of
+experiment data frame. The sampling is done iteratively to remove the
 possibility of duplicate alternatives appearing in the same choice question.
 }
 \description{
