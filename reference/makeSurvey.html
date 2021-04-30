@@ -120,14 +120,15 @@
     <p>Make a conjoint survey from a design of experiment</p>
     </div>
 
-    <pre class="usage"><span class='fu'>makeSurvey</span><span class='op'>(</span><span class='va'>doe</span>, <span class='va'>nResp</span>, <span class='va'>nAltsPerQ</span>, <span class='va'>nQPerResp</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>makeSurvey</span><span class='op'>(</span><span class='va'>doe</span>, <span class='va'>nResp</span>, <span class='va'>nAltsPerQ</span>, <span class='va'>nQPerResp</span>, group <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>doe</th>
-      <td><p>The design of experiment returned from the <code><a href='makeDoe.html'>makeDoe()</a></code> function</p></td>
+      <td><p>A design of experiment data frame. Each row is an alternative,
+each column is an attribute.</p></td>
     </tr>
     <tr>
       <th>nResp</th>
@@ -141,12 +142,18 @@
       <th>nQPerResp</th>
       <td><p>Number of questions per respondent</p></td>
     </tr>
+    <tr>
+      <th>group</th>
+      <td><p>The name of the group column if your doe is designed with
+groups (e.g. a labeled experiment where each set of alternatives has the
+same type). Defaults to <code>NULL</code>.</p></td>
+    </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a coded conjoint survey by sampling from a design of
-experiment returned from the <code><a href='makeDoe.html'>makeDoe()</a></code> function. The design eliminates the
+    <p>Returns a conjoint survey by randomly sampling from a design of
+experiment data frame. The sampling is done iteratively to remove the
 possibility of duplicate alternatives appearing in the same choice question.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
