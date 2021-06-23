@@ -97,7 +97,7 @@ recodeDesign <- function(doe, levels) {
     col <- which(names(doe) == names(levels)[i])
     levels(doe[,col]) <- levels[[i]]
     if (types[i] == "numeric") {
-        doe[,col] <- as.numeric(doe[,col])
+        doe[,col] <- as.numeric(as.character(doe[,col]))
     } else if (types[i] == "character") {
         doe[,col] <- as.character(doe[,col])
     }
