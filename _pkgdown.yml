@@ -27,8 +27,5 @@ reference:
   desc: "Functions for creating different experiment designs and coded surveys."
   contents:
   - makeDoe
+  - recodeDesign
   - makeSurvey
-- title: "Examining required sample sizes"
-  desc: "Functions for estimating standard errors based on different sample sizes for a given conjoint design."
-  contents:
-  - sampleSizer
