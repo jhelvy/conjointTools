@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Make a randomized conjoint survey from a design of experiment — makeSurvey • conjointTools</title>
+<title>Re-code the levels in a design of experiment — recodeDesign • conjointTools</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="Make a randomized conjoint survey from a design of experiment — makeSurvey" />
-<meta property="og:description" content="Make a randomized conjoint survey from a design of experiment" />
+<meta property="og:title" content="Re-code the levels in a design of experiment — recodeDesign" />
+<meta property="og:description" content="Re-code the levels in a design of experiment" />
 
 
 
@@ -111,16 +111,16 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Make a randomized conjoint survey from a design of experiment</h1>
+    <h1>Re-code the levels in a design of experiment</h1>
     
-    <div class="hidden name"><code>makeSurvey.Rd</code></div>
+    <div class="hidden name"><code>recodeDesign.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Make a randomized conjoint survey from a design of experiment</p>
+    <p>Re-code the levels in a design of experiment</p>
     </div>
 
-    <pre class="usage"><span class='fu'>makeSurvey</span><span class='op'>(</span><span class='va'>doe</span>, <span class='va'>nResp</span>, <span class='va'>nAltsPerQ</span>, <span class='va'>nQPerResp</span>, group <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>recodeDesign</span><span class='op'>(</span><span class='va'>doe</span>, <span class='va'>levels</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -131,30 +131,18 @@
 each column is an attribute.</p></td>
     </tr>
     <tr>
-      <th>nResp</th>
-      <td><p>Maximum number of survey respondents</p></td>
-    </tr>
-    <tr>
-      <th>nAltsPerQ</th>
-      <td><p>Number of alternatives per question</p></td>
-    </tr>
-    <tr>
-      <th>nQPerResp</th>
-      <td><p>Number of questions per respondent</p></td>
-    </tr>
-    <tr>
-      <th>group</th>
-      <td><p>The name of the group attribute if your doe is designed with a
-group (i.e. a labeled experiment design where each set of alternatives
-contains one of each of the levels in the <code>group</code> attribute.</p></td>
+      <th>levels</th>
+      <td><p>A named list of vectors defining each attribute (the names)
+and each level for each attribute (the vectors). For example, a design
+with two attributes, "price" and "type", that each had three levels should
+be defined as <code>levels = list(price = c(1, 2, 3), type = c(1, 2, 3))</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a conjoint survey by randomly sampling from a design of
-experiment data frame. The sampling is done iteratively to remove the
-possibility of duplicate alternatives appearing in the same choice question.</p>
+    <p>Returns a re-coded design of experiment using the labels in the
+<code>levels</code> argument.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
@@ -169,15 +157,7 @@ possibility of duplicate alternatives appearing in the same choice question.</p>
 <span class='va'>doe</span> <span class='op'>&lt;-</span> <span class='fu'><a href='makeDoe.html'>makeDoe</a></span><span class='op'>(</span><span class='va'>levels</span><span class='op'>)</span>
 
 <span class='co'># Re-code levels</span>
-<span class='va'>doe</span> <span class='op'>&lt;-</span> <span class='fu'><a href='recodeDesign.html'>recodeDesign</a></span><span class='op'>(</span><span class='va'>doe</span>, <span class='va'>levels</span><span class='op'>)</span>
-
-<span class='co'># Make the conjoint survey by randomly sampling from the doe</span>
-<span class='va'>survey</span> <span class='op'>&lt;-</span> <span class='fu'>makeSurvey</span><span class='op'>(</span>
-  doe       <span class='op'>=</span> <span class='va'>doe</span>,  <span class='co'># Design of experiment</span>
-  nResp     <span class='op'>=</span> <span class='fl'>1000</span>, <span class='co'># Total number of respondents (upper bound)</span>
-  nAltsPerQ <span class='op'>=</span> <span class='fl'>3</span>,    <span class='co'># Number of alternatives per question</span>
-  nQPerResp <span class='op'>=</span> <span class='fl'>6</span>     <span class='co'># Number of questions per respondent</span>
-<span class='op'>)</span>
+<span class='va'>doe</span> <span class='op'>&lt;-</span> <span class='fu'>recodeDesign</span><span class='op'>(</span><span class='va'>doe</span>, <span class='va'>levels</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

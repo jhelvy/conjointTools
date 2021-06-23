@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Make a randomized conjoint survey from a design of experiment — makeSurvey • conjointTools</title>
+<title>Define "true" model parameters as normally-distributed. — randLN • conjointTools</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,9 @@
 
 
 
-<meta property="og:title" content="Make a randomized conjoint survey from a design of experiment — makeSurvey" />
-<meta property="og:description" content="Make a randomized conjoint survey from a design of experiment" />
+<meta property="og:title" content="Define "true" model parameters as normally-distributed. — randLN" />
+<meta property="og:description" content="Define &quot;true&quot; model parameters as normally-distributed. Used in the
+simulateChoices() function." />
 
 
 
@@ -111,73 +112,40 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Make a randomized conjoint survey from a design of experiment</h1>
+    <h1>Define "true" model parameters as normally-distributed.</h1>
     
-    <div class="hidden name"><code>makeSurvey.Rd</code></div>
+    <div class="hidden name"><code>randLN.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>Make a randomized conjoint survey from a design of experiment</p>
+    <p>Define "true" model parameters as normally-distributed. Used in the
+<code><a href='simulateChoices.html'>simulateChoices()</a></code> function.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>makeSurvey</span><span class='op'>(</span><span class='va'>doe</span>, <span class='va'>nResp</span>, <span class='va'>nAltsPerQ</span>, <span class='va'>nQPerResp</span>, group <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>randLN</span><span class='op'>(</span>mu <span class='op'>=</span> <span class='fl'>0</span>, sigma <span class='op'>=</span> <span class='fl'>1</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>doe</th>
-      <td><p>A design of experiment data frame. Each row is an alternative,
-each column is an attribute.</p></td>
+      <th>mu</th>
+      <td><p>Mean of the distribution on the log scale, defaults to <code>0</code>.</p></td>
     </tr>
     <tr>
-      <th>nResp</th>
-      <td><p>Maximum number of survey respondents</p></td>
-    </tr>
-    <tr>
-      <th>nAltsPerQ</th>
-      <td><p>Number of alternatives per question</p></td>
-    </tr>
-    <tr>
-      <th>nQPerResp</th>
-      <td><p>Number of questions per respondent</p></td>
-    </tr>
-    <tr>
-      <th>group</th>
-      <td><p>The name of the group attribute if your doe is designed with a
-group (i.e. a labeled experiment design where each set of alternatives
-contains one of each of the levels in the <code>group</code> attribute.</p></td>
+      <th>sigma</th>
+      <td><p>Standard deviation of the distribution on the log scale,
+defaults to <code>1</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a conjoint survey by randomly sampling from a design of
-experiment data frame. The sampling is done iteratively to remove the
-possibility of duplicate alternatives appearing in the same choice question.</p>
+    <p>A list defining log-normally-distributed parameters of the "true"
+utility model used to simulate choices in the <code><a href='simulateChoices.html'>simulateChoices()</a></code> function.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='co'># Define the attributes and levels</span>
-<span class='va'>levels</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
-  price     <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>4</span>, <span class='fl'>0.5</span><span class='op'>)</span>, <span class='co'># $ per pound</span>
-  type      <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'Fuji'</span>, <span class='st'>'Gala'</span>, <span class='st'>'Honeycrisp'</span>, <span class='st'>'Pink Lady'</span>, <span class='st'>'Red Delicious'</span><span class='op'>)</span>,
-  freshness <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'Excellent'</span>, <span class='st'>'Average'</span>, <span class='st'>'Poor'</span><span class='op'>)</span>
-<span class='op'>)</span>
-
-<span class='co'># Make a full-factorial design of experiment</span>
-<span class='va'>doe</span> <span class='op'>&lt;-</span> <span class='fu'><a href='makeDoe.html'>makeDoe</a></span><span class='op'>(</span><span class='va'>levels</span><span class='op'>)</span>
-
-<span class='co'># Re-code levels</span>
-<span class='va'>doe</span> <span class='op'>&lt;-</span> <span class='fu'><a href='recodeDesign.html'>recodeDesign</a></span><span class='op'>(</span><span class='va'>doe</span>, <span class='va'>levels</span><span class='op'>)</span>
-
-<span class='co'># Make the conjoint survey by randomly sampling from the doe</span>
-<span class='va'>survey</span> <span class='op'>&lt;-</span> <span class='fu'>makeSurvey</span><span class='op'>(</span>
-  doe       <span class='op'>=</span> <span class='va'>doe</span>,  <span class='co'># Design of experiment</span>
-  nResp     <span class='op'>=</span> <span class='fl'>1000</span>, <span class='co'># Total number of respondents (upper bound)</span>
-  nAltsPerQ <span class='op'>=</span> <span class='fl'>3</span>,    <span class='co'># Number of alternatives per question</span>
-  nQPerResp <span class='op'>=</span> <span class='fl'>6</span>     <span class='co'># Number of questions per respondent</span>
-<span class='op'>)</span>
+<span class='kw'><a href='https://rdrr.io/r/base/library.html'>library</a></span><span class='op'>(</span><span class='va'>conjointTools</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>

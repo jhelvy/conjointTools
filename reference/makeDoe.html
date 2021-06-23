@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa-home fa-lg"></span>
+    <span class="fa fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -94,7 +94,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/jhelvy/conjointTools">
-    <span class="fas fa-github"></span>
+    <span class="fa fa-github"></span>
      
   </a>
 </li>
@@ -120,52 +120,51 @@
     <p>Make a design of experiment</p>
     </div>
 
-    <pre class="usage"><span class='fu'>makeDoe</span><span class='op'>(</span><span class='va'>levels</span>, varNames <span class='op'>=</span> <span class='cn'>NULL</span>, type <span class='op'>=</span> <span class='st'>"full"</span>, nTrials <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>makeDoe</span><span class='op'>(</span><span class='va'>levels</span>, type <span class='op'>=</span> <span class='cn'>NULL</span>, nTrials <span class='op'>=</span> <span class='cn'>NA</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>levels</th>
-      <td><p>A vector of levels for each attribute.</p></td>
-    </tr>
-    <tr>
-      <th>varNames</th>
-      <td><p>A vector of the names of each attribute in <code>levels</code> (defaults to <code>NULL</code>).</p></td>
+      <td><p>A named list of vectors defining each attribute (the names)
+and each level for each attribute (the vectors). For example, a design
+with two attributes, "price" and "type", that each had three levels should
+be defined as <code>levels = list(price = c(1, 2, 3), type = c(1, 2, 3))</code>.</p></td>
     </tr>
     <tr>
       <th>type</th>
-      <td><p>The type of design. The default value of <code>"full"</code> returns a full factorial design. All other options return fractional factorial designs based on different criteria. The options <code>"D"</code>, <code>"A"</code>, and <code>"I"</code> return fractional factorial designs based on <code>"D"</code>, <code>"A"</code>, and <code>"I"</code> optimality metrics.</p></td>
+      <td><p>The type of design. Defaults to <code>NULL</code>, which returns a full
+factorial design. Set to <code>"D"</code>, <code>"A"</code>, and <code>"I"</code> to obtain a fractional
+factorial design with either D, A, or I optimality criteria.</p></td>
     </tr>
     <tr>
       <th>nTrials</th>
-      <td><p>The number of trials to be used in a fractional factorial design. Defaults to <code>NA</code>, but must be a number less than the number of alternatives in the full factorial design if the <code>type</code> argument is anything other than <code>"full"</code>.</p></td>
+      <td><p>The number of trials to be used in a fractional factorial
+design. Defaults to <code>NA</code>, but must be a number less than the number of
+alternatives in the full factorial design if the <code>type</code> argument is anything
+other than <code>NULL</code>.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>Returns a full factorial or fraction factorial design of experiment based on the number of levels for each attribute.</p>
+    <p>Returns a full factorial or fraction factorial design of experiment.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='kw'>if</span> <span class='op'>(</span><span class='cn'>FALSE</span><span class='op'>)</span> <span class='op'>{</span>
-<span class='co'># Generate a full factorial design of experiment</span>
-<span class='va'>doe</span> <span class='op'>&lt;-</span> <span class='fu'>makeDoe</span><span class='op'>(</span>levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span><span class='op'>)</span><span class='op'>)</span>
-
-<span class='co'># Generate a full factorial design of experiment about apples</span>
-<span class='va'>doe</span> <span class='op'>&lt;-</span> <span class='fu'>makeDoe</span><span class='op'>(</span>
-    levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span><span class='op'>)</span>,
-    varNames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"price"</span>, <span class='st'>"type"</span>, <span class='st'>"freshness"</span><span class='op'>)</span>,
-    type <span class='op'>=</span> <span class='st'>"full"</span>
+<span class='co'># Define the attributes and levels</span>
+<span class='va'>levels</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
+  price     <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/seq.html'>seq</a></span><span class='op'>(</span><span class='fl'>1</span>, <span class='fl'>4</span>, <span class='fl'>0.5</span><span class='op'>)</span>, <span class='co'># $ per pound</span>
+  type      <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'Fuji'</span>, <span class='st'>'Gala'</span>, <span class='st'>'Honeycrisp'</span>, <span class='st'>'Pink Lady'</span>, <span class='st'>'Red Delicious'</span><span class='op'>)</span>,
+  freshness <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>'Excellent'</span>, <span class='st'>'Average'</span>, <span class='st'>'Poor'</span><span class='op'>)</span>
 <span class='op'>)</span>
 
-<span class='co'># Generate a "D-optimal" fractional factorial design of experiment about apples</span>
-<span class='va'>doe</span> <span class='op'>&lt;-</span> <span class='fu'>makeDoe</span><span class='op'>(</span>
-    levels <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>3</span>, <span class='fl'>3</span>, <span class='fl'>3</span><span class='op'>)</span>,
-    varNames <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"price"</span>, <span class='st'>"type"</span>, <span class='st'>"freshness"</span><span class='op'>)</span>,
-    type <span class='op'>=</span> <span class='st'>"D"</span>,
-    nTrials <span class='op'>=</span> <span class='fl'>15</span>
-<span class='op'>)</span>
+<span class='co'># Make a full-factorial design of experiment</span>
+<span class='va'>doe</span> <span class='op'>&lt;-</span> <span class='fu'>makeDoe</span><span class='op'>(</span><span class='va'>levels</span><span class='op'>)</span>
+
+<span class='co'># Make a fraction-factorial design of experiment based on D-efficiency</span>
+<span class='va'>doe</span> <span class='op'>&lt;-</span> <span class='fu'>makeDoe</span><span class='op'>(</span><span class='va'>levels</span>, type <span class='op'>=</span> <span class='st'>"D"</span>, nTrials <span class='op'>=</span> <span class='fl'>100</span><span class='op'>)</span>
 <span class='op'>}</span>
 </div></pre>
   </div>
