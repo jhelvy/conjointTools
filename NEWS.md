@@ -1,4 +1,10 @@
 
+# conjointTools 0.0.3
+
+- Major breaking changes made to the user interface.
+- Overhaul of the `makeDoe()` and `makeSurvey()` functions to enable grouped designs.
+- Added the `recodeDesign()` function.
+
 # conjointTools 0.0.2
 
 Interactions!
@@ -11,8 +17,6 @@ Interactions!
 ## Summary of smaller updates:
 
 - Added a few new examples on how to use the interactions argument.
-
-
 
 # conjointTools 0.0.1
 

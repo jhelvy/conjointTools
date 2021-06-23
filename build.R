@@ -7,7 +7,7 @@ rm(list = ls())
 .rs.restartR()
 
 # Build the pkgdown site
-# pkgdown::build_site()
+pkgdown::build_site()
 
 # Check package
 devtools::check()
