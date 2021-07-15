@@ -1,16 +1,18 @@
-#' Simulate choices for a `survey` data frame
+#' Simulate choices for a given survey
 #'
-#' Simulate choices for the `survey` data frame, either randomly or according
-#' to a utility model defined by user-provided parameters. If providing
-#' parameters, only the parameters provided will be used to simulate choices.
+#' Simulate choices for a given `survey` data frame, either randomly or
+#' according to a utility model defined by user-provided parameters.
 #'
-#' @param survey The choice survey data frame exported from the `makeSurvey()`
+#' @param survey A survey data frame exported from the `makeSurvey()`
 #' function.
+#' @param altIDName The name of the column that identifies each alternative
+#' in each set of alternatives.
 #' @param obsIDName The name of the column that identifies each choice
 #' observation. Defaults to `"obsID"`.
-#' @param ... One or more parameters separated by commas that define
+#' @param pars A list of one or more parameters separated by commas that define
 #' the "true" utility model used to simulate choices for the `survey` data
 #' frame. If no parameters are included, choices will be randomly assigned.
+#' Defaults to `NULL`.
 #' @return Returns the `survey` data frame with an additional `choice` column
 #' identifying the simulated choices.
 #' @export
@@ -18,51 +20,74 @@
 #' \dontrun{
 #' library(conjointTools)
 #'
-#' # Make a design of experiment
-#' doe <- makeDoe(
-#'     levels = c(3, 3, 3),
-#'     varNames = c("price", "type", "freshness"),
+#' # Define the attributes and levels
+#' levels <- list(
+#'   price     = seq(1, 4, 0.5), # $ per pound
+#'   type      = c('Fuji', 'Gala', 'Honeycrisp', 'Pink Lady', 'Red Delicious'),
+#'   freshness = c('Excellent', 'Average', 'Poor')
 #' )
 #'
-#' # Make a survey
+#' # Make a full-factorial design of experiment
+#' doe <- makeDoe(levels)
+#'
+#' # Re-code levels
+#' doe <- recodeDesign(doe, levels)
+#'
+#' # Make the conjoint survey by randomly sampling from the doe
 #' survey <- makeSurvey(
-#'     doe       = doe,  # Design of experiment
-#'     nResp     = 1000, # Total number of respondents (upper bound)
-#'     nAltsPerQ = 3,    # Number of alternatives per question
-#'     nQPerResp = 6     # Number of questions per respondent
+#'   doe       = doe,  # Design of experiment
+#'   nResp     = 2000, # Total number of respondents (upper bound)
+#'   nAltsPerQ = 3,    # Number of alternatives per question
+#'   nQPerResp = 6     # Number of questions per respondent
 #' )
 #'
 #' # Simulate random choices for the survey
-#' data <- simulateChoices()
-#'
-#' # Simulate choices based on a utility model with a single "price" parameter
-#' # and two discrete parameters for both "freshness" and "type"
-#' data <- simulateChoices(
-#'     survey = survey,
-#'     obsIDName = "obsID",
-#'     price        = 0.1,
-#'     freshness    = c(0.05, 0.1),
-#'     type         = c(0, 0.5)
+#' data_random <- simulateChoices(
+#'     survey    = survey,
+#'     altIDName = "altID",
+#'     obsIDName = "obsID"
 #' )
 #'
-#' # Simulate choices based on a utility model with a single "price" parameter,
-#' # two discrete, fixed parameters for "freshness", two random normal
-#' # parameters for "type", and interaction parameters for "price" with "type"
-#' data <- simulateChoices(
-#'     survey = survey,
+#' # Simulate choices based on a utility model with the following parameters:
+#' #   - 1 continuous "price" parameter
+#' #   - 4 discrete parameters for "type"
+#' #   - 2 discrete parameters for "freshness"
+#' data_mnl <- simulateChoices(
+#'     survey    = survey,
+#'     altIDName = "altID",
 #'     obsIDName = "obsID",
-#'     price        = 0.1,
-#'     freshness    = c(0.05, 0.1),
-#'     type         = randN(mu = c(0, 0.5), sigma = c(1, 2)),
-#'     `price*type` = c(1, 2)
+#'     pars = list(
+#'         price     = 0.1,
+#'         type      = c(0.1, 0.2, 0.3, 0.4),
+#'         freshness = c(0.1, -0.1))
+#' )
+#'
+#' # Simulate choices based on a utility model with the following parameters:
+#' #   - 1 continuous "price" parameter
+#' #   - 4 discrete parameters for "type"
+#' #   - 2 random normal discrete parameters for "freshness"
+#' #   - 2 interaction parameters between "price" and "freshness"
+#' data_mxl <- simulateChoices(
+#'     survey    = survey,
+#'     altIDName = "altID",
+#'     obsIDName = "obsID",
+#'     pars = list(
+#'         price     = 0.1,
+#'         type      = c(0.1, 0.2, 0.3, 0.4),
+#'         freshness = randN(mu = c(0.1, -0.1), sigma = c(1, 2)),
+#'         `price*freshness` = c(1, 2))
 #' )
 #' }
-simulateChoices = function(survey, obsIDName = "obsID", ...) {
-    pars <- list(...)
-    if (length(pars) == 0) {
+simulateChoices = function(
+  survey,
+  altIDName = "altID",
+  obsIDName = "obsID",
+  pars = NULL
+) {
+    if (is.null(pars)) {
         return(simulateRandomChoices(survey, obsIDName))
     }
-    return(simulateUtilityChoices(survey, obsIDName, pars))
+    return(simulateUtilityChoices(survey, altIDName, obsIDName, pars))
 }
 
 simulateRandomChoices <- function(survey, obsIDName) {
@@ -78,9 +103,13 @@ simulateRandomChoices <- function(survey, obsIDName) {
     return(survey)
 }
 
-simulateUtilityChoices <- function(survey, obsIDName, pars) {
+simulateUtilityChoices <- function(survey, altIDName, obsIDName, pars) {
     model <- defineTrueModel(survey, pars)
-    result <- logitr::predictChoices(model, model$survey, obsIDName)
+    result <- logitr::predictChoices(
+      model     = model,
+      alts      = model$survey,
+      altIDName = altIDName,
+      obsIDName = obsIDName)
     result$choice <- result$choice_predict # Rename choice column
     result$choice_predict <- NULL
     return(result)

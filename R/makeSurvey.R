@@ -30,7 +30,7 @@
 #' # Make the conjoint survey by randomly sampling from the doe
 #' survey <- makeSurvey(
 #'   doe       = doe,  # Design of experiment
-#'   nResp     = 1000, # Total number of respondents (upper bound)
+#'   nResp     = 2000, # Total number of respondents (upper bound)
 #'   nAltsPerQ = 3,    # Number of alternatives per question
 #'   nQPerResp = 6     # Number of questions per respondent
 #' )

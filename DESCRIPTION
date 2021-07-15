@@ -1,7 +1,8 @@
 Package: conjointTools
 Title: Tools For Designing Conjoint Survey Experiments
-Version: 0.0.3
+Version: 0.0.4
 Maintainer: John Helveston <john.helveston@gmail.com>
+Date: 2020-12-09
 Authors@R: c(
     person(given   = "John",
            family  = "Helveston",
@@ -25,9 +26,10 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.1
 Imports:
     AlgDesign,
+    data.table,
     randtoolbox,
     rlang,
     utils,
-    logitr
+    logitr (>= 0.2.1)
 Remotes:
     jhelvy/logitr

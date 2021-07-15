@@ -2,71 +2,93 @@
 % Please edit documentation in R/simulateChoices.R
 \name{simulateChoices}
 \alias{simulateChoices}
-\title{Simulate choices for a \code{survey} data frame}
+\title{Simulate choices for a given survey}
 \usage{
-simulateChoices(survey, obsIDName = "obsID", ...)
+simulateChoices(survey, altIDName = "altID", obsIDName = "obsID", pars = NULL)
 }
 \arguments{
-\item{survey}{The choice survey data frame exported from the \code{makeSurvey()}
+\item{survey}{A survey data frame exported from the \code{makeSurvey()}
 function.}
+
+\item{altIDName}{The name of the column that identifies each alternative
+in each set of alternatives.}
 
 \item{obsIDName}{The name of the column that identifies each choice
 observation. Defaults to \code{"obsID"}.}
 
-\item{...}{One or more parameters separated by commas that define
+\item{pars}{A list of one or more parameters separated by commas that define
 the "true" utility model used to simulate choices for the \code{survey} data
-frame. If no parameters are included, choices will be randomly assigned.}
+frame. If no parameters are included, choices will be randomly assigned.
+Defaults to \code{NULL}.}
 }
 \value{
 Returns the \code{survey} data frame with an additional \code{choice} column
 identifying the simulated choices.
 }
 \description{
-Simulate choices for the \code{survey} data frame, either randomly or according
-to a utility model defined by user-provided parameters. If providing
-parameters, only the parameters provided will be used to simulate choices.
+Simulate choices for a given \code{survey} data frame, either randomly or
+according to a utility model defined by user-provided parameters.
 }
 \examples{
 \dontrun{
 library(conjointTools)
 
-# Make a design of experiment
-doe <- makeDoe(
-    levels = c(3, 3, 3),
-    varNames = c("price", "type", "freshness"),
+# Define the attributes and levels
+levels <- list(
+  price     = seq(1, 4, 0.5), # $ per pound
+  type      = c('Fuji', 'Gala', 'Honeycrisp', 'Pink Lady', 'Red Delicious'),
+  freshness = c('Excellent', 'Average', 'Poor')
 )
 
-# Make a survey
+# Make a full-factorial design of experiment
+doe <- makeDoe(levels)
+
+# Re-code levels
+doe <- recodeDesign(doe, levels)
+
+# Make the conjoint survey by randomly sampling from the doe
 survey <- makeSurvey(
-    doe       = doe,  # Design of experiment
-    nResp     = 1000, # Total number of respondents (upper bound)
-    nAltsPerQ = 3,    # Number of alternatives per question
-    nQPerResp = 6     # Number of questions per respondent
+  doe       = doe,  # Design of experiment
+  nResp     = 2000, # Total number of respondents (upper bound)
+  nAltsPerQ = 3,    # Number of alternatives per question
+  nQPerResp = 6     # Number of questions per respondent
 )
 
 # Simulate random choices for the survey
-data <- simulateChoices()
-
-# Simulate choices based on a utility model with a single "price" parameter
-# and two discrete parameters for both "freshness" and "type"
-data <- simulateChoices(
-    survey = survey,
-    obsIDName = "obsID",
-    price        = 0.1,
-    freshness    = c(0.05, 0.1),
-    type         = c(0, 0.5)
+data_random <- simulateChoices(
+    survey    = survey,
+    altIDName = "altID",
+    obsIDName = "obsID"
 )
 
-# Simulate choices based on a utility model with a single "price" parameter,
-# two discrete, fixed parameters for "freshness", two random normal
-# parameters for "type", and interaction parameters for "price" with "type"
-data <- simulateChoices(
-    survey = survey,
+# Simulate choices based on a utility model with the following parameters:
+#   - 1 continuous "price" parameter
+#   - 4 discrete parameters for "type"
+#   - 2 discrete parameters for "freshness"
+data_mnl <- simulateChoices(
+    survey    = survey,
+    altIDName = "altID",
     obsIDName = "obsID",
-    price        = 0.1,
-    freshness    = c(0.05, 0.1),
-    type         = randN(mu = c(0, 0.5), sigma = c(1, 2)),
-    `price*type` = c(1, 2)
+    pars = list(
+        price     = 0.1,
+        type      = c(0.1, 0.2, 0.3, 0.4),
+        freshness = c(0.1, -0.1))
+)
+
+# Simulate choices based on a utility model with the following parameters:
+#   - 1 continuous "price" parameter
+#   - 4 discrete parameters for "type"
+#   - 2 random normal discrete parameters for "freshness"
+#   - 2 interaction parameters between "price" and "freshness"
+data_mxl <- simulateChoices(
+    survey    = survey,
+    altIDName = "altID",
+    obsIDName = "obsID",
+    pars = list(
+        price     = 0.1,
+        type      = c(0.1, 0.2, 0.3, 0.4),
+        freshness = randN(mu = c(0.1, -0.1), sigma = c(1, 2)),
+        `price*freshness` = c(1, 2))
 )
 }
 }
