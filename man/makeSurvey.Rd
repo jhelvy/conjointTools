@@ -4,21 +4,27 @@
 \alias{makeSurvey}
 \title{Make a randomized conjoint survey from a design of experiment}
 \usage{
-makeSurvey(doe, nResp, nAltsPerQ, nQPerResp, group = NULL)
+makeSurvey(doe, nResp, nAltsPerQ, nQPerResp, outsideGood = FALSE, group = NULL)
 }
 \arguments{
 \item{doe}{A design of experiment data frame. Each row is an alternative,
 each column is an attribute.}
 
-\item{nResp}{Maximum number of survey respondents}
+\item{nResp}{Maximum number of survey respondents.}
 
-\item{nAltsPerQ}{Number of alternatives per question}
+\item{nAltsPerQ}{Number of alternatives per question.}
 
-\item{nQPerResp}{Number of questions per respondent}
+\item{nQPerResp}{Number of questions per respondent.}
 
-\item{group}{The name of the group attribute if your doe is designed with a
-group (i.e. a labeled experiment design where each set of alternatives
-contains one of each of the levels in the \code{group} attribute.}
+\item{outsideGood}{Include an outside good in the choice sets? Defaults to
+\code{FALSE}. If included, the total number of alternatives per question will be
+one more than the provided \code{nAltsPerQ} argument.}
+
+\item{group}{The name of the variable to use in a "labeled" design
+such that each set of alternatives contains one of each of the levels in
+the \code{group} attribute. If included, the \code{nAltsPerQ} argument will be
+ignored as its value is determined by the unique number of levels in the
+\code{group} variable. Defaults to \code{NULL}.}
 }
 \value{
 Returns a conjoint survey by randomly sampling from a design of

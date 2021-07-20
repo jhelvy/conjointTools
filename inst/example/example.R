@@ -15,12 +15,30 @@ doe <- makeDoe(levels)
 # Re-code levels
 doe <- recodeDesign(doe, levels)
 
-# Make the survey
+# Make a survey
 survey <- makeSurvey(
     doe       = doe,  # Design of experiment
     nResp     = 2000, # Total number of respondents (upper bound)
     nAltsPerQ = 3,    # Number of alternatives per question
     nQPerResp = 6     # Number of questions per respondent
+)
+
+# Make a survey with an outside good
+survey_og <- makeSurvey(
+    doe       = doe,  # Design of experiment
+    nResp     = 2000, # Total number of respondents (upper bound)
+    nAltsPerQ = 3,    # Number of alternatives per question
+    nQPerResp = 6,    # Number of questions per respondent
+    outsideGood = TRUE
+)
+
+# Make a labeled survey with each "type" appearing in each choice question
+survey_labeled <- makeSurvey(
+    doe       = doe,  # Design of experiment
+    nResp     = 2000, # Total number of respondents (upper bound)
+    nAltsPerQ = 3,    # Number of alternatives per question
+    nQPerResp = 6,    # Number of questions per respondent
+    group     = "type"
 )
 
 # # Simulate random choices for the survey

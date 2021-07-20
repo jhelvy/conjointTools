@@ -3,6 +3,7 @@
 
 - Added `estimateModels()` and `getModelResults()` functions for conducting a power analysis.
 - Made small changes to improve the `simulateChoices()` function.
+- Added support for adding an outside good in the `makeSurvey()` function.
 
 # conjointTools 0.0.3
 

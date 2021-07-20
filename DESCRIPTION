@@ -1,6 +1,6 @@
 Package: conjointTools
 Title: Tools For Designing Conjoint Survey Experiments
-Version: 0.0.4
+Version: 0.0.4.9001
 Maintainer: John Helveston <john.helveston@gmail.com>
 Date: 2020-12-09
 Authors@R: c(
@@ -18,7 +18,7 @@ Authors@R: c(
            family  = "Stefanelli",
            role    = c("aut"),
            email   = "alberto.stefanelli.main@gmail.com"))
-Description: An R package containing tools for designing conjoint survey experiments.
+Description: An R package containing tools for designing conjoint survey experiments and conducting power analyses.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -27,6 +27,7 @@ RoxygenNote: 7.1.1
 Imports:
     AlgDesign,
     data.table,
+    fastDummies,
     randtoolbox,
     rlang,
     utils,
