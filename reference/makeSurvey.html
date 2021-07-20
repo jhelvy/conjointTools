@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">conjointTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4.9001</span>
       </span>
     </div>
 
@@ -120,7 +120,7 @@
     <p>Make a randomized conjoint survey from a design of experiment</p>
     </div>
 
-    <pre class="usage"><span class='fu'>makeSurvey</span><span class='op'>(</span><span class='va'>doe</span>, <span class='va'>nResp</span>, <span class='va'>nAltsPerQ</span>, <span class='va'>nQPerResp</span>, group <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>makeSurvey</span><span class='op'>(</span><span class='va'>doe</span>, <span class='va'>nResp</span>, <span class='va'>nAltsPerQ</span>, <span class='va'>nQPerResp</span>, outsideGood <span class='op'>=</span> <span class='cn'>FALSE</span>, group <span class='op'>=</span> <span class='cn'>NULL</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -132,21 +132,29 @@ each column is an attribute.</p></td>
     </tr>
     <tr>
       <th>nResp</th>
-      <td><p>Maximum number of survey respondents</p></td>
+      <td><p>Maximum number of survey respondents.</p></td>
     </tr>
     <tr>
       <th>nAltsPerQ</th>
-      <td><p>Number of alternatives per question</p></td>
+      <td><p>Number of alternatives per question.</p></td>
     </tr>
     <tr>
       <th>nQPerResp</th>
-      <td><p>Number of questions per respondent</p></td>
+      <td><p>Number of questions per respondent.</p></td>
+    </tr>
+    <tr>
+      <th>outsideGood</th>
+      <td><p>Include an outside good in the choice sets? Defaults to
+<code>FALSE</code>. If included, the total number of alternatives per question will be
+one more than the provided <code>nAltsPerQ</code> argument.</p></td>
     </tr>
     <tr>
       <th>group</th>
-      <td><p>The name of the group attribute if your doe is designed with a
-group (i.e. a labeled experiment design where each set of alternatives
-contains one of each of the levels in the <code>group</code> attribute.</p></td>
+      <td><p>The name of the variable to use in a "labeled" design
+such that each set of alternatives contains one of each of the levels in
+the <code>group</code> attribute. If included, the <code>nAltsPerQ</code> argument will be
+ignored as its value is determined by the unique number of levels in the
+<code>group</code> variable. Defaults to <code>NULL</code>.</p></td>
     </tr>
     </table>
 
