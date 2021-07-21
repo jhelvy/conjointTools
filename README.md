@@ -17,10 +17,11 @@ experiments.
 ## Installation
 
 The current version is not yet on CRAN, but you can install it from
-Github using the **devtools** library:
+Github using the {remotes} library:
 
 ``` r
-devtools::install_github("jhelvy/conjointTools")
+# install.packages("remotes")
+remotes::install_github("jhelvy/conjointTools")
 ```
 
 Load the library with:
@@ -266,7 +267,7 @@ ggplot(results) +
 ## Version and License Information
 
 -   Date First Written: *October 23, 2020*
--   Most Recent Update: July 15 2021
+-   Most Recent Update: July 21 2021
 -   License:
     [MIT](https://github.com/jhelvy/conjointTools/blob/master/LICENSE.md)
 -   [Latest
