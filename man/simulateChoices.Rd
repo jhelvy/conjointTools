@@ -4,16 +4,16 @@
 \alias{simulateChoices}
 \title{Simulate choices for a given survey}
 \usage{
-simulateChoices(survey, altIDName = "altID", obsIDName = "obsID", pars = NULL)
+simulateChoices(survey, altID = "altID", obsID = "obsID", pars = NULL)
 }
 \arguments{
 \item{survey}{A survey data frame exported from the \code{makeSurvey()}
 function.}
 
-\item{altIDName}{The name of the column that identifies each alternative
+\item{altID}{The name of the column that identifies each alternative
 in each set of alternatives.}
 
-\item{obsIDName}{The name of the column that identifies each choice
+\item{obsID}{The name of the column that identifies each choice
 observation. Defaults to \code{"obsID"}.}
 
 \item{pars}{A list of one or more parameters separated by commas that define
@@ -56,9 +56,9 @@ survey <- makeSurvey(
 
 # Simulate random choices for the survey
 data_random <- simulateChoices(
-    survey    = survey,
-    altIDName = "altID",
-    obsIDName = "obsID"
+    survey = survey,
+    altID  = "altID",
+    obsID  = "obsID"
 )
 
 # Simulate choices based on a utility model with the following parameters:
@@ -66,9 +66,9 @@ data_random <- simulateChoices(
 #   - 4 discrete parameters for "type"
 #   - 2 discrete parameters for "freshness"
 data_mnl <- simulateChoices(
-    survey    = survey,
-    altIDName = "altID",
-    obsIDName = "obsID",
+    survey = survey,
+    altID  = "altID",
+    obsID  = "obsID",
     pars = list(
         price     = 0.1,
         type      = c(0.1, 0.2, 0.3, 0.4),
@@ -81,9 +81,9 @@ data_mnl <- simulateChoices(
 #   - 2 random normal discrete parameters for "freshness"
 #   - 2 interaction parameters between "price" and "freshness"
 data_mxl <- simulateChoices(
-    survey    = survey,
-    altIDName = "altID",
-    obsIDName = "obsID",
+    survey = survey,
+    altID  = "altID",
+    obsID  = "obsID",
     pars = list(
         price     = 0.1,
         type      = c(0.1, 0.2, 0.3, 0.4),

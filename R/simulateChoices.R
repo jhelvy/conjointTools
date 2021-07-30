@@ -5,9 +5,9 @@
 #'
 #' @param survey A survey data frame exported from the `makeSurvey()`
 #' function.
-#' @param altIDName The name of the column that identifies each alternative
+#' @param altID The name of the column that identifies each alternative
 #' in each set of alternatives.
-#' @param obsIDName The name of the column that identifies each choice
+#' @param obsID The name of the column that identifies each choice
 #' observation. Defaults to `"obsID"`.
 #' @param pars A list of one or more parameters separated by commas that define
 #' the "true" utility model used to simulate choices for the `survey` data
@@ -43,9 +43,9 @@
 #'
 #' # Simulate random choices for the survey
 #' data_random <- simulateChoices(
-#'     survey    = survey,
-#'     altIDName = "altID",
-#'     obsIDName = "obsID"
+#'     survey = survey,
+#'     altID  = "altID",
+#'     obsID  = "obsID"
 #' )
 #'
 #' # Simulate choices based on a utility model with the following parameters:
@@ -53,9 +53,9 @@
 #' #   - 4 discrete parameters for "type"
 #' #   - 2 discrete parameters for "freshness"
 #' data_mnl <- simulateChoices(
-#'     survey    = survey,
-#'     altIDName = "altID",
-#'     obsIDName = "obsID",
+#'     survey = survey,
+#'     altID  = "altID",
+#'     obsID  = "obsID",
 #'     pars = list(
 #'         price     = 0.1,
 #'         type      = c(0.1, 0.2, 0.3, 0.4),
@@ -68,9 +68,9 @@
 #' #   - 2 random normal discrete parameters for "freshness"
 #' #   - 2 interaction parameters between "price" and "freshness"
 #' data_mxl <- simulateChoices(
-#'     survey    = survey,
-#'     altIDName = "altID",
-#'     obsIDName = "obsID",
+#'     survey = survey,
+#'     altID  = "altID",
+#'     obsID  = "obsID",
 #'     pars = list(
 #'         price     = 0.1,
 #'         type      = c(0.1, 0.2, 0.3, 0.4),
@@ -80,18 +80,18 @@
 #' }
 simulateChoices = function(
   survey,
-  altIDName = "altID",
-  obsIDName = "obsID",
-  pars = NULL
+  altID = "altID",
+  obsID = "obsID",
+  pars  = NULL
 ) {
     if (is.null(pars)) {
-        return(simulateRandomChoices(survey, obsIDName))
+        return(simulateRandomChoices(survey, obsID))
     }
-    return(simulateUtilityChoices(survey, altIDName, obsIDName, pars))
+    return(simulateUtilityChoices(survey, altID, obsID, pars))
 }
 
-simulateRandomChoices <- function(survey, obsIDName) {
-    nrows <- table(survey[obsIDName])
+simulateRandomChoices <- function(survey, obsID) {
+    nrows <- table(survey[obsID])
     choices <- list()
     for (i in seq_len(length(nrows))) {
         n <- nrows[i]
@@ -103,13 +103,13 @@ simulateRandomChoices <- function(survey, obsIDName) {
     return(survey)
 }
 
-simulateUtilityChoices <- function(survey, altIDName, obsIDName, pars) {
+simulateUtilityChoices <- function(survey, altID, obsID, pars) {
     model <- defineTrueModel(survey, pars)
     result <- logitr::predictChoices(
-      model     = model,
-      alts      = model$survey,
-      altIDName = altIDName,
-      obsIDName = obsIDName)
+      model = model,
+      alts  = model$survey,
+      altID = altID,
+      obsID = obsID)
     result$choice <- result$choice_predict # Rename choice column
     result$choice_predict <- NULL
     return(result)
@@ -138,12 +138,12 @@ defineTrueModel <- function(survey, pars) {
       coef       = coefs,
       modelType  = ifelse(length(parNamesRand) > 0, "mxl", "mnl"),
       modelSpace = "pref",
-      priceName  = NULL,
-      parNames   = parNamesFull,
+      price      = NULL,
+      pars       = parNamesFull,
       randPars   = randPars,
       parSetup   = parSetup,
       survey     = survey,
-      options    = list(numDraws = numDraws),
+      inputs     = list(numDraws = numDraws),
       standardDraws = createStandardDraws(parSetup, numDraws)
     ),
     class = "logitr"
