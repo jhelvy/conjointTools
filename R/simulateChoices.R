@@ -7,8 +7,8 @@
 #' function.
 #' @param altID The name of the column that identifies each alternative
 #' in each set of alternatives.
-#' @param obsID The name of the column that identifies each choice
-#' observation. Defaults to `"obsID"`.
+#' @param obsID The name of the column that identifies each choice observation.
+#' Defaults to `"obsID"`.
 #' @param pars A list of one or more parameters separated by commas that define
 #' the "true" utility model used to simulate choices for the `survey` data
 #' frame. If no parameters are included, choices will be randomly assigned.
@@ -53,9 +53,9 @@
 #' #   - 4 discrete parameters for "type"
 #' #   - 2 discrete parameters for "freshness"
 #' data_mnl <- simulateChoices(
-#'     survey = survey,
-#'     altID  = "altID",
-#'     obsID  = "obsID",
+#'     survey    = survey,
+#'     altID = "altID",
+#'     obsID = "obsID",
 #'     pars = list(
 #'         price     = 0.1,
 #'         type      = c(0.1, 0.2, 0.3, 0.4),
@@ -84,9 +84,7 @@ simulateChoices = function(
   obsID = "obsID",
   pars  = NULL
 ) {
-    if (is.null(pars)) {
-        return(simulateRandomChoices(survey, obsID))
-    }
+    if (is.null(pars)) { return(simulateRandomChoices(survey, obsID)) }
     return(simulateUtilityChoices(survey, altID, obsID, pars))
 }
 
@@ -107,7 +105,7 @@ simulateUtilityChoices <- function(survey, altID, obsID, pars) {
     model <- defineTrueModel(survey, pars)
     result <- logitr::predictChoices(
       model = model,
-      alts  = model$survey,
+      alts  = survey,
       altID = altID,
       obsID = obsID)
     result$choice <- result$choice_predict # Rename choice column
@@ -129,25 +127,24 @@ defineTrueModel <- function(survey, pars) {
     # Define all other model objects
     randPars <- unlist(lapply(pars[parNamesRand], function(x) x$type))
     codedData <- logitr::recodeData(survey, parNamesFull, randPars)
-    parNamesCoded <- codedData$parNames
+    parNamesCoded <- codedData$pars
     randParsCoded <- codedData$randPars
     parSetup <- getParSetup(parNamesCoded, randParsCoded)
+    parIDs <- getParIDs(parSetup)
     coefs <- getCoefficients(pars, parNamesCoded, randPars, randParsCoded)
-    numDraws <- 10^4
     return(structure(list(
-      coef       = coefs,
-      modelType  = ifelse(length(parNamesRand) > 0, "mxl", "mnl"),
-      modelSpace = "pref",
-      price      = NULL,
-      pars       = parNamesFull,
-      randPars   = randPars,
-      parSetup   = parSetup,
-      survey     = survey,
-      inputs     = list(numDraws = numDraws),
-      standardDraws = createStandardDraws(parSetup, numDraws)
-    ),
-    class = "logitr"
-    ))
+      coef      = coefs,
+      modelType = ifelse(length(parNamesRand) > 0, "mxl", "mnl"),
+      parSetup  = parSetup,
+      parIDs    = parIDs,
+      inputs = list(
+        pars     = parNamesFull,
+        price    = NULL,
+        randPars = randPars,
+        numDraws = 50,
+        modelSpace = "pref"
+      )), class = "logitr")
+    )
 }
 
 dropInteractions <- function(parNames) {
@@ -166,6 +163,7 @@ getContinuousParNames <- function(pars, parNamesFixed, parNamesRand) {
     return(names(nlevels[nlevels == 1]))
 }
 
+# Modified from {logitr}
 getParSetup <- function(parNames, randPars) {
   parSetup <- rep("f", length(parNames))
   for (i in seq_len(length(parNames))) {
@@ -176,6 +174,16 @@ getParSetup <- function(parNames, randPars) {
   }
   names(parSetup) <- parNames
   return(parSetup)
+}
+
+# Modified from {logitr}
+getParIDs <- function(parSetup) {
+  return(list(
+    fixed     = which(parSetup == "f"),
+    random    = which(parSetup != "f"),
+    normal    = which(parSetup == "n"),
+    logNormal = which(parSetup == "ln")
+  ))
 }
 
 getCoefficients <- function(pars, parNamesCoded, randPars, randParsCoded) {
@@ -241,15 +249,4 @@ randN <- function(mu = 0, sigma = 1) {
 #' }
 randLN <- function(mu = 0, sigma = 1) {
     return(list(pars = list(mu = mu, sigma = sigma), type = "ln"))
-}
-
-# Functions modified from logitr because they aren't exported
-# These are needed for defining the "true" model
-
-# Modified from logitr::getStandardDraws()
-createStandardDraws <- function(parSetup, numDraws) {
-  draws <- as.matrix(
-    randtoolbox::halton(numDraws, length(parSetup), normal = TRUE))
-  draws[, which(parSetup == "f")] <- rep(0, numDraws)
-  return(draws)
 }
