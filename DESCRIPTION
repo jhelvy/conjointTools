@@ -10,12 +10,12 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-2657-9191")),
     person(given   = "Martin",
            family  = "Lukac",
-           role    = c("aut"),
+           role    = c("ctb"),
            email   = "m.b.lukac@gmail.com",
            comment = c(ORCID = "0000-0002-1747-3168")),
     person(given   = "Alberto",
            family  = "Stefanelli",
-           role    = c("aut"),
+           role    = c("ctb"),
            email   = "alberto.stefanelli.main@gmail.com"))
 Description: An R package containing tools for designing conjoint survey experiments and conducting power analyses.
 License: MIT + file LICENSE
