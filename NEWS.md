@@ -1,3 +1,6 @@
+# conjointTools 0.0.5
+
+Updated functions to be consistent with some breaking changes introduced when {logitr} was updated from 0.2.0 to 0.3.0, which is necessary since {logitr} is the underlying package used to estimate models in the power analyses.
 
 # conjointTools 0.0.4
 
