@@ -64,7 +64,6 @@
 #' @importFrom data.table "data.table" ":="
 #' @export
 #' @examples
-#' \dontrun{
 #' library(conjointTools)
 #'
 #' # Define the attributes and levels
@@ -101,7 +100,6 @@
 #'     choice  = "choice",
 #'     obsID   = "obsID"
 #' )
-#' }
 estimateModels <- function(
   nbreaks = 10,
   data,

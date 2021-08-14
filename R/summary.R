@@ -9,7 +9,6 @@
 #' each parameter in each model.
 #' @export
 #' @examples
-#' \dontrun{
 #' library(conjointTools)
 #'
 #' # Define the attributes and levels
@@ -49,7 +48,6 @@
 #'
 #' # Extract coefficients and standard errors from models
 #' results <- getModelResults(models)
-#' }
 getModelResults <- function(models) {
     # Initiate objects created in data.table so R CMD check won't complain
     sampleSize <- model <- coef <- est <- se <- NULL
