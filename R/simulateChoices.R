@@ -5,19 +5,20 @@
 #'
 #' @param survey A survey data frame exported from the `makeSurvey()`
 #' function.
-#' @param altIDName The name of the column that identifies each alternative
+#' @param altID The name of the column that identifies each alternative
 #' in each set of alternatives.
-#' @param obsIDName The name of the column that identifies each choice
-#' observation. Defaults to `"obsID"`.
+#' @param obsID The name of the column that identifies each choice observation.
+#' Defaults to `"obsID"`.
 #' @param pars A list of one or more parameters separated by commas that define
 #' the "true" utility model used to simulate choices for the `survey` data
 #' frame. If no parameters are included, choices will be randomly assigned.
 #' Defaults to `NULL`.
+#' @param numDraws The number of Halton draws to use for simulated choices
+#' based on mixed logit models. Defaults to `100`.
 #' @return Returns the `survey` data frame with an additional `choice` column
 #' identifying the simulated choices.
 #' @export
 #' @examples
-#' \dontrun{
 #' library(conjointTools)
 #'
 #' # Define the attributes and levels
@@ -43,9 +44,9 @@
 #'
 #' # Simulate random choices for the survey
 #' data_random <- simulateChoices(
-#'     survey    = survey,
-#'     altIDName = "altID",
-#'     obsIDName = "obsID"
+#'     survey = survey,
+#'     altID  = "altID",
+#'     obsID  = "obsID"
 #' )
 #'
 #' # Simulate choices based on a utility model with the following parameters:
@@ -53,9 +54,9 @@
 #' #   - 4 discrete parameters for "type"
 #' #   - 2 discrete parameters for "freshness"
 #' data_mnl <- simulateChoices(
-#'     survey    = survey,
-#'     altIDName = "altID",
-#'     obsIDName = "obsID",
+#'     survey = survey,
+#'     altID  = "altID",
+#'     obsID  = "obsID",
 #'     pars = list(
 #'         price     = 0.1,
 #'         type      = c(0.1, 0.2, 0.3, 0.4),
@@ -68,30 +69,28 @@
 #' #   - 2 random normal discrete parameters for "freshness"
 #' #   - 2 interaction parameters between "price" and "freshness"
 #' data_mxl <- simulateChoices(
-#'     survey    = survey,
-#'     altIDName = "altID",
-#'     obsIDName = "obsID",
+#'     survey = survey,
+#'     altID  = "altID",
+#'     obsID  = "obsID",
 #'     pars = list(
 #'         price     = 0.1,
 #'         type      = c(0.1, 0.2, 0.3, 0.4),
 #'         freshness = randN(mu = c(0.1, -0.1), sigma = c(1, 2)),
 #'         `price*freshness` = c(1, 2))
 #' )
-#' }
 simulateChoices = function(
   survey,
-  altIDName = "altID",
-  obsIDName = "obsID",
-  pars = NULL
+  altID = "altID",
+  obsID = "obsID",
+  pars = NULL,
+  numDraws = 100
 ) {
-    if (is.null(pars)) {
-        return(simulateRandomChoices(survey, obsIDName))
-    }
-    return(simulateUtilityChoices(survey, altIDName, obsIDName, pars))
+    if (is.null(pars)) { return(simulateRandomChoices(survey, obsID)) }
+    return(simulateUtilityChoices(survey, altID, obsID, pars, numDraws))
 }
 
-simulateRandomChoices <- function(survey, obsIDName) {
-    nrows <- table(survey[obsIDName])
+simulateRandomChoices <- function(survey, obsID) {
+    nrows <- table(survey[obsID])
     choices <- list()
     for (i in seq_len(length(nrows))) {
         n <- nrows[i]
@@ -103,19 +102,19 @@ simulateRandomChoices <- function(survey, obsIDName) {
     return(survey)
 }
 
-simulateUtilityChoices <- function(survey, altIDName, obsIDName, pars) {
-    model <- defineTrueModel(survey, pars)
+simulateUtilityChoices <- function(survey, altID, obsID, pars, numDraws) {
+    model <- defineTrueModel(survey, pars, numDraws)
     result <- logitr::predictChoices(
-      model     = model,
-      alts      = model$survey,
-      altIDName = altIDName,
-      obsIDName = obsIDName)
+      model = model,
+      alts  = survey,
+      altID = altID,
+      obsID = obsID)
     result$choice <- result$choice_predict # Rename choice column
     result$choice_predict <- NULL
     return(result)
 }
 
-defineTrueModel <- function(survey, pars) {
+defineTrueModel <- function(survey, pars, numDraws) {
     parNamesFull <- names(pars)
     parNames <- dropInteractions(names(pars))
     # Separate out random and fixed parameters
@@ -129,25 +128,24 @@ defineTrueModel <- function(survey, pars) {
     # Define all other model objects
     randPars <- unlist(lapply(pars[parNamesRand], function(x) x$type))
     codedData <- logitr::recodeData(survey, parNamesFull, randPars)
-    parNamesCoded <- codedData$parNames
+    parNamesCoded <- codedData$pars
     randParsCoded <- codedData$randPars
     parSetup <- getParSetup(parNamesCoded, randParsCoded)
+    parIDs <- getParIDs(parSetup)
     coefs <- getCoefficients(pars, parNamesCoded, randPars, randParsCoded)
-    numDraws <- 10^4
     return(structure(list(
-      coef       = coefs,
-      modelType  = ifelse(length(parNamesRand) > 0, "mxl", "mnl"),
-      modelSpace = "pref",
-      priceName  = NULL,
-      parNames   = parNamesFull,
-      randPars   = randPars,
-      parSetup   = parSetup,
-      survey     = survey,
-      options    = list(numDraws = numDraws),
-      standardDraws = createStandardDraws(parSetup, numDraws)
-    ),
-    class = "logitr"
-    ))
+      coef      = coefs,
+      modelType = ifelse(length(parNamesRand) > 0, "mxl", "mnl"),
+      parSetup  = parSetup,
+      parIDs    = parIDs,
+      inputs = list(
+        pars     = parNamesFull,
+        price    = NULL,
+        randPars = randPars,
+        numDraws = numDraws,
+        modelSpace = "pref"
+      )), class = "logitr")
+    )
 }
 
 dropInteractions <- function(parNames) {
@@ -166,6 +164,7 @@ getContinuousParNames <- function(pars, parNamesFixed, parNamesRand) {
     return(names(nlevels[nlevels == 1]))
 }
 
+# Modified from {logitr}
 getParSetup <- function(parNames, randPars) {
   parSetup <- rep("f", length(parNames))
   for (i in seq_len(length(parNames))) {
@@ -176,6 +175,16 @@ getParSetup <- function(parNames, randPars) {
   }
   names(parSetup) <- parNames
   return(parSetup)
+}
+
+# Modified from {logitr}
+getParIDs <- function(parSetup) {
+  return(list(
+    fixed     = which(parSetup == "f"),
+    random    = which(parSetup != "f"),
+    normal    = which(parSetup == "n"),
+    logNormal = which(parSetup == "ln")
+  ))
 }
 
 getCoefficients <- function(pars, parNamesCoded, randPars, randParsCoded) {
@@ -217,9 +226,42 @@ getCoefficients <- function(pars, parNamesCoded, randPars, randParsCoded) {
 #' utility model used to simulate choices in the `simulateChoices()` function.
 #' @export
 #' @examples
-#' \dontrun{
 #' library(conjointTools)
-#' }
+#'
+#' # Define the attributes and levels
+#' levels <- list(
+#'   price     = seq(1, 4, 0.5), # $ per pound
+#'   type      = c('Fuji', 'Gala', 'Honeycrisp', 'Pink Lady', 'Red Delicious'),
+#'   freshness = c('Excellent', 'Average', 'Poor')
+#' )
+#'
+#' # Make a full-factorial design of experiment
+#' doe <- makeDoe(levels)
+#'
+#' # Re-code levels
+#' doe <- recodeDesign(doe, levels)
+#'
+#' # Make the conjoint survey by randomly sampling from the doe
+#' survey <- makeSurvey(
+#'   doe       = doe,  # Design of experiment
+#'   nResp     = 2000, # Total number of respondents (upper bound)
+#'   nAltsPerQ = 3,    # Number of alternatives per question
+#'   nQPerResp = 6     # Number of questions per respondent
+#' )
+#'
+#' # Simulate choices based on a utility model with the following parameters:
+#' #   - 1 continuous "price" parameter
+#' #   - 4 discrete parameters for "type"
+#' #   - 2 random normal discrete parameters for "freshness"
+#' data_mxl <- simulateChoices(
+#'     survey = survey,
+#'     altID  = "altID",
+#'     obsID  = "obsID",
+#'     pars = list(
+#'         price     = 0.1,
+#'         type      = c(0.1, 0.2, 0.3, 0.4),
+#'         freshness = randN(mu = c(0.1, -0.1), sigma = c(1, 2)))
+#' )
 randN <- function(mu = 0, sigma = 1) {
     return(list(pars = list(mu = mu, sigma = sigma), type = "n"))
 }
@@ -236,20 +278,42 @@ randN <- function(mu = 0, sigma = 1) {
 #' utility model used to simulate choices in the `simulateChoices()` function.
 #' @export
 #' @examples
-#' \dontrun{
 #' library(conjointTools)
-#' }
+#'
+#' # Define the attributes and levels
+#' levels <- list(
+#'   price     = seq(1, 4, 0.5), # $ per pound
+#'   type      = c('Fuji', 'Gala', 'Honeycrisp', 'Pink Lady', 'Red Delicious'),
+#'   freshness = c('Excellent', 'Average', 'Poor')
+#' )
+#'
+#' # Make a full-factorial design of experiment
+#' doe <- makeDoe(levels)
+#'
+#' # Re-code levels
+#' doe <- recodeDesign(doe, levels)
+#'
+#' # Make the conjoint survey by randomly sampling from the doe
+#' survey <- makeSurvey(
+#'   doe       = doe,  # Design of experiment
+#'   nResp     = 2000, # Total number of respondents (upper bound)
+#'   nAltsPerQ = 3,    # Number of alternatives per question
+#'   nQPerResp = 6     # Number of questions per respondent
+#' )
+#'
+#' # Simulate choices based on a utility model with the following parameters:
+#' #   - 1 continuous "price" parameter
+#' #   - 4 discrete parameters for "type"
+#' #   - 2 random log-normal discrete parameters for "freshness"
+#' data_mxl <- simulateChoices(
+#'     survey = survey,
+#'     altID  = "altID",
+#'     obsID  = "obsID",
+#'     pars = list(
+#'         price     = 0.1,
+#'         type      = c(0.1, 0.2, 0.3, 0.4),
+#'         freshness = randLN(mu = c(0.1, 0.2), sigma = c(0.1, 0.2)))
+#' )
 randLN <- function(mu = 0, sigma = 1) {
     return(list(pars = list(mu = mu, sigma = sigma), type = "ln"))
-}
-
-# Functions modified from logitr because they aren't exported
-# These are needed for defining the "true" model
-
-# Modified from logitr::getStandardDraws()
-createStandardDraws <- function(parSetup, numDraws) {
-  draws <- as.matrix(
-    randtoolbox::halton(numDraws, length(parSetup), normal = TRUE))
-  draws[, which(parSetup == "f")] <- rep(0, numDraws)
-  return(draws)
 }

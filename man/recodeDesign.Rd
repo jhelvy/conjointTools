@@ -23,7 +23,6 @@ Returns a re-coded design of experiment using the labels in the
 Re-code the levels in a design of experiment
 }
 \examples{
-\dontrun{
 # Define the attributes and levels
 levels <- list(
   price     = seq(1, 4, 0.5), # $ per pound
@@ -36,5 +35,4 @@ doe <- makeDoe(levels)
 
 # Re-code levels
 doe <- recodeDesign(doe, levels)
-}
 }

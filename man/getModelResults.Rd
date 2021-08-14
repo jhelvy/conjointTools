@@ -8,7 +8,7 @@ getModelResults(models)
 }
 \arguments{
 \item{models}{A data frame containing estimated models for a series of
-different sample sizes.}
+different sample sizes, obtained using the \code{estimateModels()} function.}
 }
 \value{
 A data frame of the estimated coefficients and standard errors for
@@ -19,7 +19,6 @@ Returns a data frame of the estimated coefficients and standard errors for
 each parameter in each model in a data frame of estimated models.
 }
 \examples{
-\dontrun{
 library(conjointTools)
 
 # Define the attributes and levels
@@ -59,7 +58,6 @@ models <- estimateModels(
 
 # Extract coefficients and standard errors from models
 results <- getModelResults(models)
-}
 }
 \keyword{coefficient,}
 \keyword{conjointTools,}

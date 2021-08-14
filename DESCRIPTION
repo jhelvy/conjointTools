@@ -1,8 +1,7 @@
 Package: conjointTools
 Title: Tools For Designing Conjoint Survey Experiments
-Version: 0.0.4.9001
+Version: 0.0.5.9001
 Maintainer: John Helveston <john.helveston@gmail.com>
-Date: 2020-12-09
 Authors@R: c(
     person(given   = "John",
            family  = "Helveston",
@@ -11,14 +10,14 @@ Authors@R: c(
            comment = c(ORCID = "0000-0002-2657-9191")),
     person(given   = "Martin",
            family  = "Lukac",
-           role    = c("aut"),
+           role    = c("ctb"),
            email   = "m.b.lukac@gmail.com",
            comment = c(ORCID = "0000-0002-1747-3168")),
     person(given   = "Alberto",
            family  = "Stefanelli",
-           role    = c("aut"),
+           role    = c("ctb"),
            email   = "alberto.stefanelli.main@gmail.com"))
-Description: An R package containing tools for designing conjoint survey experiments and conducting power analyses.
+Description: Tools for designing surveys and conducting power analyses for choice based conjoint survey experiments in R. Users can generate a design of experiment and use it to create a survey data frame. Choice data for the survey can be simulated either randomly or according to a multinomial or mixed logit utility model defined by user-provided parameters. Power analyses can be conducted on the survey design by estimating the same model multiple times using different subsets of the data to simulate different sample sizes.
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -31,6 +30,4 @@ Imports:
     randtoolbox,
     rlang,
     utils,
-    logitr (>= 0.2.1)
-Remotes:
-    jhelvy/logitr
+    logitr (>= 0.3.0)

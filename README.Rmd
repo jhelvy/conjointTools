@@ -18,13 +18,11 @@ knitr::opts_chunk$set(
 # conjointTools
 
 <!-- badges: start -->
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/conjointTools)](https://CRAN.R-project.org/package=conjointTools)
 <!-- badges: end -->
 
-This package contains tools for designing choice based conjoint survey experiments.
+This package contains tools for designing surveys and conducting power analyses for choice based conjoint survey experiments in R.
 
 ## Installation
 
@@ -108,9 +106,9 @@ You can simulate choices for a given `survey` using the `simulateChoices()` func
 
 ```{r}
 data <- simulateChoices(
-    survey    = survey,
-    altIDName = "altID",
-    obsIDName = "obsID"
+    survey = survey,
+    altID  = "altID",
+    obsID  = "obsID"
 )
 head(data)
 ```
@@ -123,9 +121,9 @@ You can also pass a list of parameters to define a utility model that will be us
 
 ```{r}
 data <- simulateChoices(
-    survey    = survey,
-    altIDName = "altID",
-    obsIDName = "obsID",
+    survey = survey,
+    altID  = "altID",
+    obsID  = "obsID",
     pars = list(
         price     = 0.1,
         type      = c(0.1, 0.2, 0.3, 0.4),
@@ -134,7 +132,7 @@ data <- simulateChoices(
 head(data)
 ```
 
-You can also simulate data with more complex models, such as models where parameters follow a normal or log-normal distribution across the population, or interaction between parameters. In the example below, the choices are simulated using a utility model with the following parameters:
+You can also simulate data with more complex models, such as mixed logit models where parameters follow a normal or log-normal distribution across the population, or interaction between parameters. In the example below, the choices are simulated using a utility model with the following parameters:
 
 - 1 continuous "price" parameter
 - 4 discrete parameters for "type"
@@ -145,9 +143,9 @@ The `randN()` function is use to make the 2 `freshness` parameters follow a norm
 
 ```{r, eval=FALSE}
 data <- simulateChoices(
-    survey    = survey,
-    altIDName = "altID",
-    obsIDName = "obsID",
+    survey = survey,
+    altID  = "altID",
+    obsID  = "obsID",
     pars = list(
         price     = 0.1,
         type      = c(0.1, 0.2, 0.3, 0.4),
@@ -162,11 +160,11 @@ The simulated choice data can be used to conduct a power analysis by estimating 
 
 ```{r}
 models <- estimateModels(
-    nbreaks     = 10,
-    data        = data,
-    parNames    = c("price", "type", "freshness"),
-    choiceName  = "choice",
-    obsIDName   = "obsID"
+    nbreaks = 10,
+    data    = data,
+    pars    = c("price", "type", "freshness"),
+    choice  = "choice",
+    obsID   = "obsID"
 )
 ```
 
@@ -198,16 +196,15 @@ ggplot(results) +
   theme_bw()
 ```
 
-## Version and License Information
+## Author, Version, and License Information
 
+- Author: *John Paul Helveston* https://www.jhelvy.com/
 - Date First Written: *October 23, 2020*
-- Most Recent Update: `r format(Sys.Date(), format="%B %d %Y")`
 - License: [MIT](https://github.com/jhelvy/conjointTools/blob/master/LICENSE.md)
-- [Latest Release](https://github.com/jhelvy/conjointTools/releases/latest): 0.0.2
 
 ## Citation Information
 
-If you use this package for in a publication, we would greatly appreciate it if you cited it - you can get a bibtex citation entry with `citation("conjointTools")`:
+If you use this package for in a publication, I would greatly appreciate it if you cited it - you can get the citation by typing `citation("conjointTools")` into R:
 
 ```{r}
 citation("conjointTools")

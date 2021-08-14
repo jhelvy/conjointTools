@@ -14,7 +14,6 @@
 #' @return Returns a full factorial or fraction factorial design of experiment.
 #' @export
 #' @examples
-#' \dontrun{
 #' # Define the attributes and levels
 #' levels <- list(
 #'   price     = seq(1, 4, 0.5), # $ per pound
@@ -27,7 +26,6 @@
 #'
 #' # Make a fraction-factorial design of experiment based on D-efficiency
 #' doe <- makeDoe(levels, type = "D", nTrials = 100)
-#' }
 makeDoe <- function(levels, type = NULL, nTrials = NA) {
     vars <- unlist(lapply(levels, length))
     ff <- AlgDesign::gen.factorial(
@@ -77,7 +75,6 @@ makeDoe <- function(levels, type = NULL, nTrials = NA) {
 #' `levels` argument.
 #' @export
 #' @examples
-#' \dontrun{
 #' # Define the attributes and levels
 #' levels <- list(
 #'   price     = seq(1, 4, 0.5), # $ per pound
@@ -90,7 +87,6 @@ makeDoe <- function(levels, type = NULL, nTrials = NA) {
 #'
 #' # Re-code levels
 #' doe <- recodeDesign(doe, levels)
-#' }
 recodeDesign <- function(doe, levels) {
   types <- unlist(lapply(levels, class))
   for (i in seq_len(length(levels))) {

@@ -4,12 +4,11 @@
 #' each parameter in each model in a data frame of estimated models.
 #' @keywords conjointTools, coefficient, standard error
 #' @param models A data frame containing estimated models for a series of
-#' different sample sizes.
+#' different sample sizes, obtained using the `estimateModels()` function.
 #' @return A data frame of the estimated coefficients and standard errors for
 #' each parameter in each model.
 #' @export
 #' @examples
-#' \dontrun{
 #' library(conjointTools)
 #'
 #' # Define the attributes and levels
@@ -49,13 +48,12 @@
 #'
 #' # Extract coefficients and standard errors from models
 #' results <- getModelResults(models)
-#' }
 getModelResults <- function(models) {
     # Initiate objects created in data.table so R CMD check won't complain
     sampleSize <- model <- coef <- est <- se <- NULL
-    models[, coef := lapply(model, function(x) names(x$standErrs))]
-    models[, est := lapply(model, function(x) x$coef)]
-    models[, se := lapply(model, function(x) x$standErrs)]
+    models[, coef := lapply(model, function(x) names(coef(x)))]
+    models[, est := lapply(model, function(x) coef(x))]
+    models[, se := lapply(model, function(x) coef(summary(x))$`Std. Error`)]
     results <- models[, list(coef[[1]], est[[1]], se[[1]]), by = sampleSize]
     data.table::setnames(results, c("V1", "V2", "V3"), c("coef", "est", "se"))
     return(results)

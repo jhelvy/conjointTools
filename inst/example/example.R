@@ -43,9 +43,9 @@ survey_labeled <- makeSurvey(
 
 # # Simulate random choices for the survey
 # data <- simulateChoices(
-#     survey    = survey,
-#     altIDName = "altID",
-#     obsIDName = "obsID"
+#     survey = survey,
+#     altID  = "altID",
+#     obsID  = "obsID"
 # )
 
 # Simulate choices based on a utility model with the following parameters:
@@ -53,9 +53,9 @@ survey_labeled <- makeSurvey(
 #   - 4 discrete parameters for "type"
 #   - 2 discrete parameters for "freshness"
 data <- simulateChoices(
-    survey    = survey,
-    altIDName = "altID",
-    obsIDName = "obsID",
+    survey = survey,
+    altID  = "altID",
+    obsID  = "obsID",
     pars = list(
         price     = 0.1,
         type      = c(0.1, 0.2, 0.3, 0.4),
@@ -68,9 +68,9 @@ data <- simulateChoices(
 # #   - 2 random normal discrete parameters for "freshness"
 # #   - 2 interaction parameters between "price" and "freshness"
 # data <- simulateChoices(
-#     survey    = survey,
-#     altIDName = "altID",
-#     obsIDName = "obsID",
+#     survey = survey,
+#     altID  = "altID",
+#     obsID  = "obsID",
 #     pars = list(
 #         price     = 0.1,
 #         type      = c(0.1, 0.2, 0.3, 0.4),
@@ -80,11 +80,11 @@ data <- simulateChoices(
 
 # Estimate models with different sample sizes
 models <- estimateModels(
-    nbreaks     = 10,
-    data        = data,
-    parNames    = c("price", "type", "freshness"),
-    choiceName  = "choice",
-    obsIDName   = "obsID"
+    nbreaks = 10,
+    data    = data,
+    pars    = c("price", "type", "freshness"),
+    choice  = "choice",
+    obsID   = "obsID"
 )
 
 # Extract coefficients and standard errors from models
