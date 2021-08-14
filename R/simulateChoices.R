@@ -53,9 +53,9 @@
 #' #   - 4 discrete parameters for "type"
 #' #   - 2 discrete parameters for "freshness"
 #' data_mnl <- simulateChoices(
-#'     survey    = survey,
-#'     altID = "altID",
-#'     obsID = "obsID",
+#'     survey = survey,
+#'     altID  = "altID",
+#'     obsID  = "obsID",
 #'     pars = list(
 #'         price     = 0.1,
 #'         type      = c(0.1, 0.2, 0.3, 0.4),
