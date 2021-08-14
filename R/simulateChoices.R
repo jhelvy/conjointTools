@@ -13,6 +13,8 @@
 #' the "true" utility model used to simulate choices for the `survey` data
 #' frame. If no parameters are included, choices will be randomly assigned.
 #' Defaults to `NULL`.
+#' @param numDraws The number of Halton draws to use for simulated choices
+#' based on mixed logit models. Defaults to `100`.
 #' @return Returns the `survey` data frame with an additional `choice` column
 #' identifying the simulated choices.
 #' @export
@@ -82,10 +84,11 @@ simulateChoices = function(
   survey,
   altID = "altID",
   obsID = "obsID",
-  pars  = NULL
+  pars = NULL,
+  numDraws = 100
 ) {
     if (is.null(pars)) { return(simulateRandomChoices(survey, obsID)) }
-    return(simulateUtilityChoices(survey, altID, obsID, pars))
+    return(simulateUtilityChoices(survey, altID, obsID, pars, numDraws))
 }
 
 simulateRandomChoices <- function(survey, obsID) {
@@ -101,8 +104,8 @@ simulateRandomChoices <- function(survey, obsID) {
     return(survey)
 }
 
-simulateUtilityChoices <- function(survey, altID, obsID, pars) {
-    model <- defineTrueModel(survey, pars)
+simulateUtilityChoices <- function(survey, altID, obsID, pars, numDraws) {
+    model <- defineTrueModel(survey, pars, numDraws)
     result <- logitr::predictChoices(
       model = model,
       alts  = survey,
@@ -113,7 +116,7 @@ simulateUtilityChoices <- function(survey, altID, obsID, pars) {
     return(result)
 }
 
-defineTrueModel <- function(survey, pars) {
+defineTrueModel <- function(survey, pars, numDraws) {
     parNamesFull <- names(pars)
     parNames <- dropInteractions(names(pars))
     # Separate out random and fixed parameters
@@ -141,7 +144,7 @@ defineTrueModel <- function(survey, pars) {
         pars     = parNamesFull,
         price    = NULL,
         randPars = randPars,
-        numDraws = 50,
+        numDraws = numDraws,
         modelSpace = "pref"
       )), class = "logitr")
     )
