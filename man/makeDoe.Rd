@@ -28,7 +28,6 @@ Returns a full factorial or fraction factorial design of experiment.
 Make a design of experiment
 }
 \examples{
-\dontrun{
 # Define the attributes and levels
 levels <- list(
   price     = seq(1, 4, 0.5), # $ per pound
@@ -41,5 +40,4 @@ doe <- makeDoe(levels)
 
 # Make a fraction-factorial design of experiment based on D-efficiency
 doe <- makeDoe(levels, type = "D", nTrials = 100)
-}
 }

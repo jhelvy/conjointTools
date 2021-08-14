@@ -15,7 +15,8 @@ estimateModels(
   randPrice = NULL,
   modelSpace = "pref",
   weights = NULL,
-  cluster = NULL,
+  panelID = NULL,
+  clusterID = NULL,
   robust = FALSE,
   numMultiStarts = 1,
   useAnalyticGrad = TRUE,
@@ -25,7 +26,7 @@ estimateModels(
   numDraws = 50,
   startVals = NULL,
   options = list(print_level = 0, xtol_rel = 1e-06, xtol_abs = 1e-06, ftol_rel = 1e-06,
-    ftol_abs = 1e-06, maxeval = 2000, algorithm = "NLOPT_LD_LBFGS")
+    ftol_abs = 1e-06, maxeval = 1000, algorithm = "NLOPT_LD_LBFGS")
 )
 }
 \arguments{
@@ -58,11 +59,15 @@ Defaults to \code{NULL}.}
 \item{weights}{The name of the column that identifies the weights to be
 used in model estimation. Defaults to \code{NULL}.}
 
-\item{cluster}{The name of the column that identifies the cluster
-groups to be used in model estimation. Optional. Defaults to \code{NULL}.}
+\item{panelID}{The name of the column that identifies the individual (for
+panel data where multiple observations are recorded for each individual).
+Defaults to \code{NULL}.}
+
+\item{clusterID}{The name of the column that identifies the cluster
+groups to be used in model estimation. Defaults to \code{NULL}.}
 
 \item{robust}{Determines whether or not a robust covariance matrix is
-estimated. Defaults to \code{FALSE}. Specification of a \code{cluster} or
+estimated. Defaults to \code{FALSE}. Specification of a \code{clusterID} or
 \code{weights} will override the user setting and set this to `TRUE' (a
 warning will be displayed in this case). Replicates the functionality of
 Stata's cmcmmixlogit.}
@@ -113,7 +118,6 @@ subsets of a set of choice data. The number of models to run is set by the
 sample sizes. All models are estimated models using the {logitr} package.
 }
 \examples{
-\dontrun{
 library(conjointTools)
 
 # Define the attributes and levels
@@ -150,7 +154,6 @@ models <- estimateModels(
     choice  = "choice",
     obsID   = "obsID"
 )
-}
 }
 \keyword{logit,}
 \keyword{logitr,}

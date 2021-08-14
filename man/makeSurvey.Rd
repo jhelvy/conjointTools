@@ -35,7 +35,6 @@ possibility of duplicate alternatives appearing in the same choice question.
 Make a randomized conjoint survey from a design of experiment
 }
 \examples{
-\dontrun{
 # Define the attributes and levels
 levels <- list(
   price     = seq(1, 4, 0.5), # $ per pound
@@ -56,5 +55,4 @@ survey <- makeSurvey(
   nAltsPerQ = 3,    # Number of alternatives per question
   nQPerResp = 6     # Number of questions per respondent
 )
-}
 }

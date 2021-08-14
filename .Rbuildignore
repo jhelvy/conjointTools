@@ -12,3 +12,4 @@ vignettes
 ^Meta$
 ^next_release\.md$
 ^build\.R$
+^foo\.R$

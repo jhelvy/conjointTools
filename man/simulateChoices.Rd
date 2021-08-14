@@ -4,7 +4,13 @@
 \alias{simulateChoices}
 \title{Simulate choices for a given survey}
 \usage{
-simulateChoices(survey, altID = "altID", obsID = "obsID", pars = NULL)
+simulateChoices(
+  survey,
+  altID = "altID",
+  obsID = "obsID",
+  pars = NULL,
+  numDraws = 100
+)
 }
 \arguments{
 \item{survey}{A survey data frame exported from the \code{makeSurvey()}
@@ -13,13 +19,16 @@ function.}
 \item{altID}{The name of the column that identifies each alternative
 in each set of alternatives.}
 
-\item{obsID}{The name of the column that identifies each choice
-observation. Defaults to \code{"obsID"}.}
+\item{obsID}{The name of the column that identifies each choice observation.
+Defaults to \code{"obsID"}.}
 
 \item{pars}{A list of one or more parameters separated by commas that define
 the "true" utility model used to simulate choices for the \code{survey} data
 frame. If no parameters are included, choices will be randomly assigned.
 Defaults to \code{NULL}.}
+
+\item{numDraws}{The number of Halton draws to use for simulated choices
+based on mixed logit models. Defaults to \code{100}.}
 }
 \value{
 Returns the \code{survey} data frame with an additional \code{choice} column
@@ -30,7 +39,6 @@ Simulate choices for a given \code{survey} data frame, either randomly or
 according to a utility model defined by user-provided parameters.
 }
 \examples{
-\dontrun{
 library(conjointTools)
 
 # Define the attributes and levels
@@ -90,5 +98,4 @@ data_mxl <- simulateChoices(
         freshness = randN(mu = c(0.1, -0.1), sigma = c(1, 2)),
         `price*freshness` = c(1, 2))
 )
-}
 }
