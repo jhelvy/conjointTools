@@ -5,14 +5,12 @@
 
 <!-- badges: start -->
 
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/conjointTools)](https://CRAN.R-project.org/package=conjointTools)
 <!-- badges: end -->
 
-This package contains tools for designing choice based conjoint survey
-experiments.
+This package contains tools for designing surveys and conducting power
+analyses for choice based conjoint survey experiments in R.
 
 ## Installation
 
@@ -119,10 +117,10 @@ head(survey)
 
 The resulting data frame includes the following additional columns:
 
--   `respID`: Identifies each survey respondent.
--   `qID`: Identifies the choice question answered by the respondent.
--   `altID`:Identifies the alternative in any one choice observation.
--   `obsID`: Identifies each unique choice observation across all
+  - `respID`: Identifies each survey respondent.
+  - `qID`: Identifies the choice question answered by the respondent.
+  - `altID`:Identifies the alternative in any one choice observation.
+  - `obsID`: Identifies each unique choice observation across all
     respondents.
 
 ## Simulating choices
@@ -132,9 +130,9 @@ You can simulate choices for a given `survey` using the
 
 ``` r
 data <- simulateChoices(
-    survey    = survey,
-    altIDName = "altID",
-    obsIDName = "obsID"
+    survey = survey,
+    altID  = "altID",
+    obsID  = "obsID"
 )
 head(data)
 #>   respID qID altID obsID price       type freshness choice
@@ -150,15 +148,17 @@ You can also pass a list of parameters to define a utility model that
 will be used to simulate choices. In the example below, the choices are
 simulated using a utility model with the following parameters:
 
--   1 continuous `price` parameter
--   4 discrete parameters for `type`
--   2 discrete parameters for `freshness`
+  - 1 continuous `price` parameter
+  - 4 discrete parameters for `type`
+  - 2 discrete parameters for `freshness`
+
+<!-- end list -->
 
 ``` r
 data <- simulateChoices(
-    survey    = survey,
-    altIDName = "altID",
-    obsIDName = "obsID",
+    survey = survey,
+    altID  = "altID",
+    obsID  = "obsID",
     pars = list(
         price     = 0.1,
         type      = c(0.1, 0.2, 0.3, 0.4),
@@ -174,16 +174,16 @@ head(data)
 #> 2.6      1   2     3     2   1.0 Honeycrisp      Poor      0
 ```
 
-You can also simulate data with more complex models, such as models
-where parameters follow a normal or log-normal distribution across the
-population, or interaction between parameters. In the example below, the
-choices are simulated using a utility model with the following
-parameters:
+You can also simulate data with more complex models, such as mixed logit
+models where parameters follow a normal or log-normal distribution
+across the population, or interaction between parameters. In the example
+below, the choices are simulated using a utility model with the
+following parameters:
 
--   1 continuous “price” parameter
--   4 discrete parameters for “type”
--   2 random normal discrete parameters for “freshness”
--   2 interaction parameters between “price” and “freshness”
+  - 1 continuous “price” parameter
+  - 4 discrete parameters for “type”
+  - 2 random normal discrete parameters for “freshness”
+  - 2 interaction parameters between “price” and “freshness”
 
 The `randN()` function is use to make the 2 `freshness` parameters
 follow a normal distribution with a specified mean (`mu`) and standard
@@ -191,9 +191,9 @@ deviation (`sigma`).
 
 ``` r
 data <- simulateChoices(
-    survey    = survey,
-    altIDName = "altID",
-    obsIDName = "obsID",
+    survey = survey,
+    altID  = "altID",
+    obsID  = "obsID",
     pars = list(
         price     = 0.1,
         type      = c(0.1, 0.2, 0.3, 0.4),
@@ -213,20 +213,20 @@ example below, 10 different sample sizes are used to estimate 10 models.
 
 ``` r
 models <- estimateModels(
-    nbreaks     = 10,
-    data        = data,
-    parNames    = c("price", "type", "freshness"),
-    choiceName  = "choice",
-    obsIDName   = "obsID"
+    nbreaks = 10,
+    data    = data,
+    pars    = c("price", "type", "freshness"),
+    choice  = "choice",
+    obsID   = "obsID"
 )
 ```
 
 The resulting `models` object is a data.table where each row represents
 a separate simulation. The columns are:
 
--   `sampleSize`: The same size used in the simulation.
--   `data`: The subset of data used in the estimated model.
--   `model`: The estimated model object.
+  - `sampleSize`: The same size used in the simulation.
+  - `data`: The subset of data used in the estimated model.
+  - `model`: The estimated model object.
 
 All models are estimated using the
 [{logitr}](https://jhelvy.github.io/logitr) package.
@@ -264,37 +264,34 @@ ggplot(results) +
 
 <img src="man/figures/README-unnamed-chunk-14-1.png" width="672" />
 
-## Version and License Information
+## Author, Version, and License Information
 
--   Date First Written: *October 23, 2020*
--   Most Recent Update: July 21 2021
--   License:
+  - Author: *John Paul Helveston* <https://www.jhelvy.com/>
+  - Date First Written: *October 23, 2020*
+  - License:
     [MIT](https://github.com/jhelvy/conjointTools/blob/master/LICENSE.md)
--   [Latest
-    Release](https://github.com/jhelvy/conjointTools/releases/latest):
-    0.0.2
 
 ## Citation Information
 
-If you use this package for in a publication, we would greatly
-appreciate it if you cited it - you can get a bibtex citation entry with
-`citation("conjointTools")`:
+If you use this package for in a publication, I would greatly appreciate
+it if you cited it - you can get the citation by typing
+`citation("conjointTools")` into R:
 
 ``` r
 citation("conjointTools")
 #> 
 #> To cite conjointTools in publications use:
 #> 
-#>   John Paul Helveston, Martin Lukac, Alberto Stefanelli (2021).
-#>   conjointTools: Tools For Designing Conjoint Survey Experiments.
+#>   John Paul Helveston (2021). conjointTools: Tools For Designing
+#>   Conjoint Survey Experiments.
 #> 
 #> A BibTeX entry for LaTeX users is
 #> 
 #>   @Manual{,
 #>     title = {conjointTools: Tools For Designing Conjoint Survey Experiments},
-#>     author = {John Paul Helveston and Martin Lukac and Alberto Stefanelli},
+#>     author = {John Paul Helveston},
 #>     year = {2021},
-#>     note = {R package version 0.0.4},
+#>     note = {R package version 0.0.5},
 #>     url = {https://jhelvy.github.io/conjointTools/},
 #>   }
 ```
