@@ -25,10 +25,13 @@
 #' @param modelSpace Set to `'wtp'` for WTP space models. Defaults to `"pref"`.
 #' @param weights The name of the column that identifies the weights to be
 #' used in model estimation. Defaults to `NULL`.
-#' @param cluster The name of the column that identifies the cluster
-#' groups to be used in model estimation. Optional. Defaults to `NULL`.
+#' @param panelID The name of the column that identifies the individual (for
+#' panel data where multiple observations are recorded for each individual).
+#' Defaults to `NULL`.
+#' @param clusterID The name of the column that identifies the cluster
+#' groups to be used in model estimation. Defaults to `NULL`.
 #' @param robust Determines whether or not a robust covariance matrix is
-#' estimated. Defaults to `FALSE`. Specification of a `cluster` or
+#' estimated. Defaults to `FALSE`. Specification of a `clusterID` or
 #' `weights` will override the user setting and set this to `TRUE' (a
 #' warning will be displayed in this case). Replicates the functionality of
 #' Stata's cmcmmixlogit.
@@ -111,7 +114,8 @@ estimateModels <- function(
   randPrice       = NULL,
   modelSpace      = "pref",
   weights         = NULL,
-  cluster         = NULL,
+  panelID         = NULL,
+  clusterID       = NULL,
   robust          = FALSE,
   numMultiStarts  = 1,
   useAnalyticGrad = TRUE,
@@ -126,35 +130,32 @@ estimateModels <- function(
     xtol_abs    = 1.0e-6,
     ftol_rel    = 1.0e-6,
     ftol_abs    = 1.0e-6,
-    maxeval     = 2000,
+    maxeval     = 1000,
     algorithm   = "NLOPT_LD_LBFGS"
   )
 ) {
     # Initiate objects created in data.table so R CMD check won't complain
     model <- NULL
     d <- data.table::data.table(data)
-    maxObs <- max(d[, get(obsID)])
+    obsIDName <- obsID
+    maxObs <- max(d[, get(obsIDName)])
     nObs <- ceiling(seq(ceiling(maxObs/nbreaks), maxObs, length.out = nbreaks))
     sampleSize <- round(nObs / max(d$qID))
     subsets <- list()
-    for (i in 1:nbreaks) {
-        subsets[[i]] <- d[get(obsID) < nObs[i],]
-    }
-    d <- data.table::data.table(
-      sampleSize = sampleSize,
-      data = subsets
-    )
+    for (i in 1:nbreaks) { subsets[[i]] <- d[get(obsIDName) < nObs[i],] }
+    d <- data.table::data.table(sampleSize = sampleSize, data = subsets)
     d[, model := lapply(data, function(x) suppressMessages(logitr::logitr(
         data            = x,
         choice          = choice,
-        obsID           = obsID,
+        obsID           = obsIDName,
         pars            = pars,
         price           = price,
         randPars        = randPars,
         randPrice       = randPrice,
         modelSpace      = modelSpace,
         weights         = weights,
-        cluster         = cluster,
+        panelID         = panelID,
+        clusterID       = clusterID,
         robust          = robust,
         numMultiStarts  = numMultiStarts,
         useAnalyticGrad = useAnalyticGrad,
