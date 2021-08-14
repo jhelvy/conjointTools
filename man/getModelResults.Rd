@@ -42,18 +42,18 @@ survey <- makeSurvey(
 
 # Simulate random choices for the survey
 data <- simulateChoices(
-    survey    = survey,
-    altIDName = "altID",
-    obsIDName = "obsID"
+    survey = survey,
+    altID  = "altID",
+    obsID  = "obsID"
 )
 
 # Estimate models with different sample sizes
 models <- estimateModels(
-    nbreaks     = 10,
-    data        = data,
-    parNames    = c("price", "type", "freshness"),
-    choiceName  = "choice",
-    obsIDName   = "obsID"
+    nbreaks = 10,
+    data    = data,
+    pars    = c("price", "type", "freshness"),
+    choice  = "choice",
+    obsID   = "obsID"
 )
 
 # Extract coefficients and standard errors from models
