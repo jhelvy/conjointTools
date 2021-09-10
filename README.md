@@ -123,7 +123,7 @@ The resulting data frame includes the following additional columns:
   - `obsID`: Identifies each unique choice observation across all
     respondents.
 
-## Simulating choices
+## Simulate choices
 
 You can simulate choices for a given `survey` using the
 `simulateChoices()` function. By default, random choices are simulated:
@@ -164,14 +164,6 @@ data <- simulateChoices(
         type      = c(0.1, 0.2, 0.3, 0.4),
         freshness = c(0.1, -0.1))
 )
-head(data)
-#>     respID qID altID obsID price       type freshness choice
-#> 1.1      1   1     1     1   2.0       Fuji   Average      0
-#> 1.2      1   1     2     1   1.5       Gala Excellent      1
-#> 1.3      1   1     3     1   3.0  Pink Lady Excellent      0
-#> 2.4      1   2     1     2   1.5       Fuji   Average      0
-#> 2.5      1   2     2     2   2.0 Honeycrisp      Poor      1
-#> 2.6      1   2     3     2   1.0 Honeycrisp      Poor      0
 ```
 
 You can also simulate data with more complex models, such as mixed logit
@@ -202,7 +194,7 @@ data <- simulateChoices(
 )
 ```
 
-## Conducting a power analysis
+## Conduct a power analysis
 
 The simulated choice data can be used to conduct a power analysis by
 estimating multiple models with different sample sizes. The
@@ -241,13 +233,13 @@ standard errors from each model can be extracted using the
 results <- getModelResults(models)
 
 head(results)
-#>    sampleSize               coef        est         se
-#> 1:        200              price 0.13068256 0.03555511
-#> 2:        200           typeGala 0.20925394 0.11658812
-#> 3:        200     typeHoneycrisp 0.23425031 0.11528625
-#> 4:        200      typePink Lady 0.35565067 0.11429815
-#> 5:        200  typeRed Delicious 0.62267060 0.11423156
-#> 6:        200 freshnessExcellent 0.07040354 0.09091642
+#>    sampleSize               coef         est        se
+#> 1:        200              price -0.07093766 0.0616323
+#> 2:        200           typeGala  0.01852680 0.1909831
+#> 3:        200     typeHoneycrisp -0.18315704 0.2019748
+#> 4:        200      typePink Lady  0.03520526 0.1888064
+#> 5:        200  typeRed Delicious -0.09550322 0.2008047
+#> 6:        200 freshnessExcellent  0.01345243 0.1576876
 ```
 
 Here is a summary of the standard errors for each sample size:
@@ -291,7 +283,7 @@ citation("conjointTools")
 #>     title = {conjointTools: Tools For Designing Conjoint Survey Experiments},
 #>     author = {John Paul Helveston},
 #>     year = {2021},
-#>     note = {R package version 0.0.5},
+#>     note = {R package version 0.0.6},
 #>     url = {https://jhelvy.github.io/conjointTools/},
 #>   }
 ```

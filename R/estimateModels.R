@@ -134,37 +134,62 @@ estimateModels <- function(
     algorithm   = "NLOPT_LD_LBFGS"
   )
 ) {
-    # Initiate objects created in data.table so R CMD check won't complain
-    model <- NULL
+    # Create local vars so that data.table won't think they're column names
+    # This is probably only necessary for a few arguments, like price, or
+    # choice, but I create local vars for all arguments just for good measure
+    var_obsID <- obsID
+    var_pars <- pars
+    var_choice <- choice
+    var_price <- price
+    var_randPars <- randPars
+    var_randPrice <- randPrice
+    var_modelSpace <- modelSpace
+    var_weights <- weights
+    var_panelID <- panelID
+    var_clusterID <- clusterID
+    var_robust <- robust
+    var_numMultiStarts <- numMultiStarts
+    var_useAnalyticGrad <- useAnalyticGrad
+    var_scaleInputs <- scaleInputs
+    var_startParBounds <- startParBounds
+    var_standardDraws <- standardDraws
+    var_numDraws <- numDraws
+    var_startVals <- startVals
+    var_options <- options
+    d <- makeSimData(data, obsID, nbreaks)
+    result <- d[, .(model = list(suppressMessages(logitr::logitr(
+        data            = .SD,
+        choice          = var_choice,
+        obsID           = var_obsID,
+        pars            = var_pars,
+        price           = var_price,
+        randPars        = var_randPars,
+        randPrice       = var_randPrice,
+        modelSpace      = var_modelSpace,
+        weights         = var_weights,
+        panelID         = var_panelID,
+        clusterID       = var_clusterID,
+        robust          = var_robust,
+        numMultiStarts  = var_numMultiStarts,
+        useAnalyticGrad = var_useAnalyticGrad,
+        scaleInputs     = var_scaleInputs,
+        startParBounds  = var_startParBounds,
+        standardDraws   = var_standardDraws,
+        numDraws        = var_numDraws,
+        startVals       = var_startVals,
+        options         = var_options)))),
+      by = sampleSize
+    ]
+    return(result)
+}
+
+makeSimData <- function(data, obsID, nbreaks) {
     d <- data.table::data.table(data)
     obsIDName <- obsID
     maxObs <- max(d[, get(obsIDName)])
     nObs <- ceiling(seq(ceiling(maxObs/nbreaks), maxObs, length.out = nbreaks))
-    sampleSize <- round(nObs / max(d$qID))
-    subsets <- list()
-    for (i in 1:nbreaks) { subsets[[i]] <- d[get(obsIDName) < nObs[i],] }
-    d <- data.table::data.table(sampleSize = sampleSize, data = subsets)
-    d[, model := lapply(data, function(x) suppressMessages(logitr::logitr(
-        data            = x,
-        choice          = choice,
-        obsID           = obsIDName,
-        pars            = pars,
-        price           = price,
-        randPars        = randPars,
-        randPrice       = randPrice,
-        modelSpace      = modelSpace,
-        weights         = weights,
-        panelID         = panelID,
-        clusterID       = clusterID,
-        robust          = robust,
-        numMultiStarts  = numMultiStarts,
-        useAnalyticGrad = useAnalyticGrad,
-        scaleInputs     = scaleInputs,
-        startParBounds  = startParBounds,
-        standardDraws   = standardDraws,
-        numDraws        = numDraws,
-        startVals       = startVals,
-        options         = options)))
-    ]
+    obsIDs <- sequence(nObs)
+    d <- d[obsIDs,]
+    d$sampleSize <- rep(round(nObs / max(d$qID)), times = nObs)
     return(d)
 }

@@ -1,3 +1,7 @@
+# conjointTools 0.0.6
+
+Improved how the models are estimated in `estimateModels()` for increased speed using a nested approach with {data.table}.
+
 # conjointTools 0.0.5
 
 Updated functions to be consistent with some breaking changes introduced when {logitr} was updated from 0.2.0 to 0.3.0, which is necessary since {logitr} is the underlying package used to estimate models in the power analyses.

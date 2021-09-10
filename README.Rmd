@@ -100,7 +100,7 @@ The resulting data frame includes the following additional columns:
 - `altID`:Identifies the alternative in any one choice observation.
 - `obsID`: Identifies each unique choice observation across all respondents.
 
-## Simulating choices
+## Simulate choices
 
 You can simulate choices for a given `survey` using the `simulateChoices()` function. By default, random choices are simulated:
 
@@ -119,7 +119,7 @@ You can also pass a list of parameters to define a utility model that will be us
 - 4 discrete parameters for `type`
 - 2 discrete parameters for `freshness`
 
-```{r}
+```{r, eval=FALSE}
 data <- simulateChoices(
     survey = survey,
     altID  = "altID",
@@ -129,7 +129,6 @@ data <- simulateChoices(
         type      = c(0.1, 0.2, 0.3, 0.4),
         freshness = c(0.1, -0.1))
 )
-head(data)
 ```
 
 You can also simulate data with more complex models, such as mixed logit models where parameters follow a normal or log-normal distribution across the population, or interaction between parameters. In the example below, the choices are simulated using a utility model with the following parameters:
@@ -154,7 +153,7 @@ data <- simulateChoices(
 )
 ```
 
-## Conducting a power analysis
+## Conduct a power analysis
 
 The simulated choice data can be used to conduct a power analysis by estimating multiple models with different sample sizes. The `estimateModels()` function achieves this by partitioning the simulated choice data into multiple sizes (defined by the `nbreaks` argument) and then estimating a user-defined choice model on each data subset. In the example below, 10 different sample sizes are used to estimate 10 models.
 
