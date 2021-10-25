@@ -1,13 +1,14 @@
+url: https://jhelvy.github.io/conjointTools/
+
 home:
   title: Tools For Designing Conjoint Survey Experiments.
-  description:
 
 template:
- params:
+  params:
     bootswatch: cosmo
-twitter:
-    creator: "@JohnHelveston"
-    card: summary_large_image
+    twitter:
+      creator: "@JohnHelveston"
+      card: summary
 
 navbar:
   title: "conjointTools"
