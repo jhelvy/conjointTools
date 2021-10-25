@@ -140,7 +140,7 @@ estimateModels <- function(
   )
 ) {
     data_list <- makeDataList(data, obsID, nbreaks)
-    result <- parallel::mclapply(
+    result <- structure(parallel::mclapply(
         data_list,
         logitr::logitr,
         outcome         = outcome,
@@ -164,6 +164,8 @@ estimateModels <- function(
         vcov            = vcov,
         predict         = predict,
         options         = options
+    ),
+    class = "cjtools"
     )
     return(result)
 }

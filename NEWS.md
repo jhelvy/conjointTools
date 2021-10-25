@@ -2,7 +2,7 @@
 
 - Updated functions to use new `predict.logitr()` method introduced in {logitr} v0.4.0. 
 - Removed dependency on {data.table} and added use of {parallel} to increase speed of the `estimateModels()` function.
-- Added a `print.cjmodels()` method for a prettier printing of the models object that is returned from the `estimateModels()` function.
+- Added a `print.cjtools()` method for a prettier printing of the models object that is returned from the `estimateModels()` function.
 
 # conjointTools 0.0.6
 
