@@ -5,8 +5,6 @@
 #'
 #' @param survey A survey data frame exported from the `makeSurvey()`
 #' function.
-#' @param altID The name of the column that identifies each alternative
-#' in each set of alternatives.
 #' @param obsID The name of the column that identifies each choice observation.
 #' Defaults to `"obsID"`.
 #' @param pars A list of one or more parameters separated by commas that define
@@ -45,7 +43,6 @@
 #' # Simulate random choices for the survey
 #' data_random <- simulateChoices(
 #'     survey = survey,
-#'     altID  = "altID",
 #'     obsID  = "obsID"
 #' )
 #'
@@ -55,7 +52,6 @@
 #' #   - 2 discrete parameters for "freshness"
 #' data_mnl <- simulateChoices(
 #'     survey = survey,
-#'     altID  = "altID",
 #'     obsID  = "obsID",
 #'     pars = list(
 #'         price     = 0.1,
@@ -70,7 +66,6 @@
 #' #   - 2 interaction parameters between "price" and "freshness"
 #' data_mxl <- simulateChoices(
 #'     survey = survey,
-#'     altID  = "altID",
 #'     obsID  = "obsID",
 #'     pars = list(
 #'         price     = 0.1,
@@ -80,13 +75,12 @@
 #' )
 simulateChoices = function(
   survey,
-  altID = "altID",
   obsID = "obsID",
   pars = NULL,
   numDraws = 100
 ) {
     if (is.null(pars)) { return(simulateRandomChoices(survey, obsID)) }
-    return(simulateUtilityChoices(survey, altID, obsID, pars, numDraws))
+    return(simulateUtilityChoices(survey, obsID, pars, numDraws))
 }
 
 simulateRandomChoices <- function(survey, obsID) {
@@ -102,15 +96,15 @@ simulateRandomChoices <- function(survey, obsID) {
     return(survey)
 }
 
-simulateUtilityChoices <- function(survey, altID, obsID, pars, numDraws) {
+simulateUtilityChoices <- function(survey, obsID, pars, numDraws) {
     model <- defineTrueModel(survey, pars, numDraws)
-    result <- logitr::predictChoices(
-      model = model,
-      alts  = survey,
-      altID = altID,
-      obsID = obsID)
-    result$choice <- result$choice_predict # Rename choice column
-    result$choice_predict <- NULL
+    result <- stats::predict(
+      object = model,
+      newdata = survey,
+      obsID = obsID,
+      type = "outcome")
+    result$choice <- result$predicted_outcome # Rename choice column
+    result$predicted_outcome <- NULL
     return(result)
 }
 
@@ -134,7 +128,7 @@ defineTrueModel <- function(survey, pars, numDraws) {
     parIDs <- getParIDs(parSetup)
     coefs <- getCoefficients(pars, parNamesCoded, randPars, randParsCoded)
     return(structure(list(
-      coef      = coefs,
+      coefficients = coefs,
       modelType = ifelse(length(parNamesRand) > 0, "mxl", "mnl"),
       parSetup  = parSetup,
       parIDs    = parIDs,
