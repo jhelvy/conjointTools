@@ -19,6 +19,6 @@ print.cjtools <- function (
   ...
 ) {
   cat("A list of models estimated with the following sample sizes:\n")
-  cat(names(models), "\n")
+  cat(names(x), "\n")
   invisible(x)
 }
