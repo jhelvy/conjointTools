@@ -49,7 +49,6 @@ survey <- makeSurvey(
 #   - 2 random normal discrete parameters for "freshness"
 data_mxl <- simulateChoices(
     survey = survey,
-    altID  = "altID",
     obsID  = "obsID",
     pars = list(
         price     = 0.1,

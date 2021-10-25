@@ -43,7 +43,6 @@ survey <- makeSurvey(
 # Simulate random choices for the survey
 data <- simulateChoices(
     survey = survey,
-    altID  = "altID",
     obsID  = "obsID"
 )
 
@@ -52,7 +51,7 @@ models <- estimateModels(
     nbreaks = 10,
     data    = data,
     pars    = c("price", "type", "freshness"),
-    choice  = "choice",
+    outcome = "choice",
     obsID   = "obsID"
 )
 

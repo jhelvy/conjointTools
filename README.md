@@ -117,10 +117,10 @@ head(survey)
 
 The resulting data frame includes the following additional columns:
 
-  - `respID`: Identifies each survey respondent.
-  - `qID`: Identifies the choice question answered by the respondent.
-  - `altID`:Identifies the alternative in any one choice observation.
-  - `obsID`: Identifies each unique choice observation across all
+-   `respID`: Identifies each survey respondent.
+-   `qID`: Identifies the choice question answered by the respondent.
+-   `altID`:Identifies the alternative in any one choice observation.
+-   `obsID`: Identifies each unique choice observation across all
     respondents.
 
 ## Simulate choices
@@ -131,7 +131,6 @@ You can simulate choices for a given `survey` using the
 ``` r
 data <- simulateChoices(
     survey = survey,
-    altID  = "altID",
     obsID  = "obsID"
 )
 head(data)
@@ -148,16 +147,13 @@ You can also pass a list of parameters to define a utility model that
 will be used to simulate choices. In the example below, the choices are
 simulated using a utility model with the following parameters:
 
-  - 1 continuous `price` parameter
-  - 4 discrete parameters for `type`
-  - 2 discrete parameters for `freshness`
-
-<!-- end list -->
+-   1 continuous `price` parameter
+-   4 discrete parameters for `type`
+-   2 discrete parameters for `freshness`
 
 ``` r
 data <- simulateChoices(
     survey = survey,
-    altID  = "altID",
     obsID  = "obsID",
     pars = list(
         price     = 0.1,
@@ -172,10 +168,10 @@ across the population, or interaction between parameters. In the example
 below, the choices are simulated using a utility model with the
 following parameters:
 
-  - 1 continuous “price” parameter
-  - 4 discrete parameters for “type”
-  - 2 random normal discrete parameters for “freshness”
-  - 2 interaction parameters between “price” and “freshness”
+-   1 continuous “price” parameter
+-   4 discrete parameters for “type”
+-   2 random normal discrete parameters for “freshness”
+-   2 interaction parameters between “price” and “freshness”
 
 The `randN()` function is use to make the 2 `freshness` parameters
 follow a normal distribution with a specified mean (`mu`) and standard
@@ -184,7 +180,6 @@ deviation (`sigma`).
 ``` r
 data <- simulateChoices(
     survey = survey,
-    altID  = "altID",
     obsID  = "obsID",
     pars = list(
         price     = 0.1,
@@ -208,38 +203,30 @@ models <- estimateModels(
     nbreaks = 10,
     data    = data,
     pars    = c("price", "type", "freshness"),
-    choice  = "choice",
+    outcome = "choice",
     obsID   = "obsID"
 )
 ```
 
-The resulting `models` object is a data.table where each row represents
-a separate simulation. The columns are:
+The resulting `models` object is a list of estimated models, each
+estimated using the [{logitr}](https://jhelvy.github.io/logitr) package.
 
-  - `sampleSize`: The same size used in the simulation.
-  - `data`: The subset of data used in the estimated model.
-  - `model`: The estimated model object.
-
-All models are estimated using the
-[{logitr}](https://jhelvy.github.io/logitr) package.
-
-While the `models` data.table is a rather complex object in that it
-contains columns of lists, helper functions can be used to extract
-information of interest. For example, the estimated coefficients and
-standard errors from each model can be extracted using the
-`getModelResults()` function:
+While the `models` object is a rather complex object in that it contains
+multiple models, helper functions can be used to extract information of
+interest. For example, the estimated coefficients and standard errors
+from each model can be extracted using the `getModelResults()` function:
 
 ``` r
 results <- getModelResults(models)
 
 head(results)
-#>    sampleSize               coef         est        se
-#> 1:        200              price -0.07093766 0.0616323
-#> 2:        200           typeGala  0.01852680 0.1909831
-#> 3:        200     typeHoneycrisp -0.18315704 0.2019748
-#> 4:        200      typePink Lady  0.03520526 0.1888064
-#> 5:        200  typeRed Delicious -0.09550322 0.2008047
-#> 6:        200 freshnessExcellent  0.01345243 0.1576876
+#>   sampleSize               coef         est        se
+#> 1        200              price -0.07093766 0.0616323
+#> 2        200           typeGala  0.01852680 0.1909831
+#> 3        200     typeHoneycrisp -0.18315704 0.2019748
+#> 4        200      typePink Lady  0.03520526 0.1888064
+#> 5        200  typeRed Delicious -0.09550322 0.2008047
+#> 6        200 freshnessExcellent  0.01345243 0.1576876
 ```
 
 Here is a summary of the standard errors for each sample size:
@@ -258,9 +245,9 @@ ggplot(results) +
 
 ## Author, Version, and License Information
 
-  - Author: *John Paul Helveston* <https://www.jhelvy.com/>
-  - Date First Written: *October 23, 2020*
-  - License:
+-   Author: *John Paul Helveston* <https://www.jhelvy.com/>
+-   Date First Written: *October 23, 2020*
+-   License:
     [MIT](https://github.com/jhelvy/conjointTools/blob/master/LICENSE.md)
 
 ## Citation Information
@@ -283,7 +270,7 @@ citation("conjointTools")
 #>     title = {conjointTools: Tools For Designing Conjoint Survey Experiments},
 #>     author = {John Paul Helveston},
 #>     year = {2021},
-#>     note = {R package version 0.0.6},
+#>     note = {R package version 0.0.7},
 #>     url = {https://jhelvy.github.io/conjointTools/},
 #>   }
 ```

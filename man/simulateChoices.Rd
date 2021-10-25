@@ -4,20 +4,11 @@
 \alias{simulateChoices}
 \title{Simulate choices for a given survey}
 \usage{
-simulateChoices(
-  survey,
-  altID = "altID",
-  obsID = "obsID",
-  pars = NULL,
-  numDraws = 100
-)
+simulateChoices(survey, obsID = "obsID", pars = NULL, numDraws = 100)
 }
 \arguments{
 \item{survey}{A survey data frame exported from the \code{makeSurvey()}
 function.}
-
-\item{altID}{The name of the column that identifies each alternative
-in each set of alternatives.}
 
 \item{obsID}{The name of the column that identifies each choice observation.
 Defaults to \code{"obsID"}.}
@@ -65,7 +56,6 @@ survey <- makeSurvey(
 # Simulate random choices for the survey
 data_random <- simulateChoices(
     survey = survey,
-    altID  = "altID",
     obsID  = "obsID"
 )
 
@@ -75,7 +65,6 @@ data_random <- simulateChoices(
 #   - 2 discrete parameters for "freshness"
 data_mnl <- simulateChoices(
     survey = survey,
-    altID  = "altID",
     obsID  = "obsID",
     pars = list(
         price     = 0.1,
@@ -90,7 +79,6 @@ data_mnl <- simulateChoices(
 #   - 2 interaction parameters between "price" and "freshness"
 data_mxl <- simulateChoices(
     survey = survey,
-    altID  = "altID",
     obsID  = "obsID",
     pars = list(
         price     = 0.1,

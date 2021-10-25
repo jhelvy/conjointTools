@@ -41,12 +41,11 @@ survey_labeled <- makeSurvey(
     group     = "type"
 )
 
-# # Simulate random choices for the survey
-# data <- simulateChoices(
-#     survey = survey,
-#     altID  = "altID",
-#     obsID  = "obsID"
-# )
+# Simulate random choices for the survey
+data <- simulateChoices(
+    survey = survey,
+    obsID  = "obsID"
+)
 
 # Simulate choices based on a utility model with the following parameters:
 #   - 1 continuous "price" parameter
@@ -54,7 +53,6 @@ survey_labeled <- makeSurvey(
 #   - 2 discrete parameters for "freshness"
 data <- simulateChoices(
     survey = survey,
-    altID  = "altID",
     obsID  = "obsID",
     pars = list(
         price     = 0.1,
@@ -69,7 +67,6 @@ data <- simulateChoices(
 # #   - 2 interaction parameters between "price" and "freshness"
 # data <- simulateChoices(
 #     survey = survey,
-#     altID  = "altID",
 #     obsID  = "obsID",
 #     pars = list(
 #         price     = 0.1,
@@ -83,12 +80,14 @@ models <- estimateModels(
     nbreaks = 10,
     data    = data,
     pars    = c("price", "type", "freshness"),
-    choice  = "choice",
+    outcome = "choice",
     obsID   = "obsID"
 )
 
 # Extract coefficients and standard errors from models
 results <- getModelResults(models)
+head(results)
+tail(results)
 
 # View summary of standard errors for each sample size
 library(ggplot2)
