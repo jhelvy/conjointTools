@@ -47,18 +47,18 @@ data <- simulateChoices(
     obsID  = "obsID"
 )
 
-# # Simulate choices based on a utility model with the following parameters:
-# #   - 1 continuous "price" parameter
-# #   - 4 discrete parameters for "type"
-# #   - 2 discrete parameters for "freshness"
-# data <- simulateChoices(
-#     survey = survey,
-#     obsID  = "obsID",
-#     pars = list(
-#         price     = 0.1,
-#         type      = c(0.1, 0.2, 0.3, 0.4),
-#         freshness = c(0.1, -0.1))
-# )
+# Simulate choices based on a utility model with the following parameters:
+#   - 1 continuous "price" parameter
+#   - 4 discrete parameters for "type"
+#   - 2 discrete parameters for "freshness"
+data <- simulateChoices(
+    survey = survey,
+    obsID  = "obsID",
+    pars = list(
+        price     = 0.1,
+        type      = c(0.1, 0.2, 0.3, 0.4),
+        freshness = c(0.1, -0.1))
+)
 
 # # Simulate choices based on a utility model with the following parameters:
 # #   - 1 continuous "price" parameter

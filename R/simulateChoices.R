@@ -106,6 +106,8 @@ simulateUtilityChoices <- function(survey, obsID, pars, numDraws) {
       returnData = TRUE)
     result$choice <- result$predicted_outcome # Rename choice column
     result$predicted_outcome <- NULL
+    # Add back index names
+    result <- cbind(survey[c("respID", "qID", "altID")], result)
     return(result)
 }
 
