@@ -102,7 +102,8 @@ simulateUtilityChoices <- function(survey, obsID, pars, numDraws) {
       object = model,
       newdata = survey,
       obsID = obsID,
-      type = "outcome")
+      type = "outcome",
+      returnData = TRUE)
     result$choice <- result$predicted_outcome # Rename choice column
     result$predicted_outcome <- NULL
     return(result)
@@ -249,7 +250,6 @@ getCoefficients <- function(pars, parNamesCoded, randPars, randParsCoded) {
 #' #   - 2 random normal discrete parameters for "freshness"
 #' data_mxl <- simulateChoices(
 #'     survey = survey,
-#'     altID  = "altID",
 #'     obsID  = "obsID",
 #'     pars = list(
 #'         price     = 0.1,
@@ -301,7 +301,6 @@ randN <- function(mu = 0, sigma = 1) {
 #' #   - 2 random log-normal discrete parameters for "freshness"
 #' data_mxl <- simulateChoices(
 #'     survey = survey,
-#'     altID  = "altID",
 #'     obsID  = "obsID",
 #'     pars = list(
 #'         price     = 0.1,

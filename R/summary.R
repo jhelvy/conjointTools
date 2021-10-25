@@ -33,7 +33,6 @@
 #' # Simulate random choices for the survey
 #' data <- simulateChoices(
 #'     survey = survey,
-#'     altID  = "altID",
 #'     obsID  = "obsID"
 #' )
 #'
@@ -42,19 +41,22 @@
 #'     nbreaks = 10,
 #'     data    = data,
 #'     pars    = c("price", "type", "freshness"),
-#'     choice  = "choice",
+#'     outcome = "choice",
 #'     obsID   = "obsID"
 #' )
 #'
 #' # Extract coefficients and standard errors from models
 #' results <- getModelResults(models)
 getModelResults <- function(models) {
-    # Initiate objects created in data.table so R CMD check won't complain
-    sampleSize <- model <- coef <- est <- se <- NULL
-    models[, coef := lapply(model, function(x) names(coef(x)))]
-    models[, est := lapply(model, function(x) coef(x))]
-    models[, se := lapply(model, function(x) coef(summary(x))$`Std. Error`)]
-    results <- models[, list(coef[[1]], est[[1]], se[[1]]), by = sampleSize]
-    data.table::setnames(results, c("V1", "V2", "V3"), c("coef", "est", "se"))
+    est <- lapply(models, function(x) stats::coef(x))
+    se <- lapply(models, function(x) logitr::se(x))
+    names <- lapply(est, names)
+    results <- data.frame(
+        sampleSize = rep(as.numeric(names(models)), each = length(est[[1]])),
+        coef = do.call(c, names),
+        est = do.call(c, est),
+        se = do.call(c, se)
+    )
+    row.names(results) <- NULL
     return(results)
 }

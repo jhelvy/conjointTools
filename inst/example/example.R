@@ -47,45 +47,47 @@ data <- simulateChoices(
     obsID  = "obsID"
 )
 
-# Simulate choices based on a utility model with the following parameters:
-#   - 1 continuous "price" parameter
-#   - 4 discrete parameters for "type"
-#   - 2 discrete parameters for "freshness"
-data <- simulateChoices(
-    survey = survey,
-    obsID  = "obsID",
-    pars = list(
-        price     = 0.1,
-        type      = c(0.1, 0.2, 0.3, 0.4),
-        freshness = c(0.1, -0.1))
-)
+# # Simulate choices based on a utility model with the following parameters:
+# #   - 1 continuous "price" parameter
+# #   - 4 discrete parameters for "type"
+# #   - 2 discrete parameters for "freshness"
+# data <- simulateChoices(
+#     survey = survey,
+#     obsID  = "obsID",
+#     pars = list(
+#         price     = 0.1,
+#         type      = c(0.1, 0.2, 0.3, 0.4),
+#         freshness = c(0.1, -0.1))
+# )
 
-# Simulate choices based on a utility model with the following parameters:
-#   - 1 continuous "price" parameter
-#   - 4 discrete parameters for "type"
-#   - 2 random normal discrete parameters for "freshness"
-#   - 2 interaction parameters between "price" and "freshness"
-data <- simulateChoices(
-    survey = survey,
-    obsID  = "obsID",
-    pars = list(
-        price     = 0.1,
-        type      = c(0.1, 0.2, 0.3, 0.4),
-        freshness = randN(mu = c(0.1, -0.1), sigma = c(1, 2)),
-        `price*freshness` = c(1, 2))
-)
+# # Simulate choices based on a utility model with the following parameters:
+# #   - 1 continuous "price" parameter
+# #   - 4 discrete parameters for "type"
+# #   - 2 random normal discrete parameters for "freshness"
+# #   - 2 interaction parameters between "price" and "freshness"
+# data <- simulateChoices(
+#     survey = survey,
+#     obsID  = "obsID",
+#     pars = list(
+#         price     = 0.1,
+#         type      = c(0.1, 0.2, 0.3, 0.4),
+#         freshness = randN(mu = c(0.1, -0.1), sigma = c(1, 2)),
+#         `price*freshness` = c(1, 2))
+# )
 
 # Estimate models with different sample sizes
 models <- estimateModels(
     nbreaks = 10,
     data    = data,
     pars    = c("price", "type", "freshness"),
-    choice  = "choice",
+    outcome = "choice",
     obsID   = "obsID"
 )
 
 # Extract coefficients and standard errors from models
 results <- getModelResults(models)
+head(results)
+tail(results)
 
 # View summary of standard errors for each sample size
 library(ggplot2)
