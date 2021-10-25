@@ -5,7 +5,6 @@
 #' @name miscmethods.cjtools
 #' @aliases print.cjtools
 #' @param x is an object of class `cjtools`.
-#' @param object is an object of class `cjtools`.
 #' @param digits the number of digits for printing, defaults to `3`.
 #' @param width the width of the printing.
 #' @param ... further arguments.

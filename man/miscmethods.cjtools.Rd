@@ -20,8 +20,6 @@
 \item{width}{the width of the printing.}
 
 \item{...}{further arguments.}
-
-\item{object}{is an object of class \code{cjtools}.}
 }
 \description{
 Miscellaneous methods for \code{cjtools} class objects.
