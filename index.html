@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">conjointTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.6.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.7.9000</span>
       </span>
     </div>
 
@@ -169,7 +169,6 @@
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/simulateChoices.html">simulateChoices</a></span><span class="op">(</span>
     survey <span class="op">=</span> <span class="va">survey</span>,
-    altID  <span class="op">=</span> <span class="st">"altID"</span>,
     obsID  <span class="op">=</span> <span class="st">"obsID"</span>
 <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
@@ -188,10 +187,9 @@
 <li>2 discrete parameters for <code>freshness</code>
 </li>
 </ul>
-<!-- end list --><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/simulateChoices.html">simulateChoices</a></span><span class="op">(</span>
     survey <span class="op">=</span> <span class="va">survey</span>,
-    altID  <span class="op">=</span> <span class="st">"altID"</span>,
     obsID  <span class="op">=</span> <span class="st">"obsID"</span>,
     pars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
         price     <span class="op">=</span> <span class="fl">0.1</span>,
@@ -209,7 +207,6 @@
 <div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/simulateChoices.html">simulateChoices</a></span><span class="op">(</span>
     survey <span class="op">=</span> <span class="va">survey</span>,
-    altID  <span class="op">=</span> <span class="st">"altID"</span>,
     obsID  <span class="op">=</span> <span class="st">"obsID"</span>,
     pars <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>
         price     <span class="op">=</span> <span class="fl">0.1</span>,
@@ -227,31 +224,22 @@
     nbreaks <span class="op">=</span> <span class="fl">10</span>,
     data    <span class="op">=</span> <span class="va">data</span>,
     pars    <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"price"</span>, <span class="st">"type"</span>, <span class="st">"freshness"</span><span class="op">)</span>,
-    choice  <span class="op">=</span> <span class="st">"choice"</span>,
+    outcome <span class="op">=</span> <span class="st">"choice"</span>,
     obsID   <span class="op">=</span> <span class="st">"obsID"</span>
 <span class="op">)</span></code></pre></div>
-<p>The resulting <code>models</code> object is a data.table where each row represents a separate simulation. The columns are:</p>
-<ul>
-<li>
-<code>sampleSize</code>: The same size used in the simulation.</li>
-<li>
-<code>data</code>: The subset of data used in the estimated model.</li>
-<li>
-<code>model</code>: The estimated model object.</li>
-</ul>
-<p>All models are estimated using the <a href="https://jhelvy.github.io/logitr">{logitr}</a> package.</p>
-<p>While the <code>models</code> data.table is a rather complex object in that it contains columns of lists, helper functions can be used to extract information of interest. For example, the estimated coefficients and standard errors from each model can be extracted using the <code><a href="reference/getModelResults.html">getModelResults()</a></code> function:</p>
+<p>The resulting <code>models</code> object is a list of estimated models, each estimated using the <a href="https://jhelvy.github.io/logitr">{logitr}</a> package.</p>
+<p>While the <code>models</code> object is a rather complex object in that it contains multiple models, helper functions can be used to extract information of interest. For example, the estimated coefficients and standard errors from each model can be extracted using the <code><a href="reference/getModelResults.html">getModelResults()</a></code> function:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getModelResults.html">getModelResults</a></span><span class="op">(</span><span class="va">models</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span>
-<span class="co">#&gt;    sampleSize               coef         est        se</span>
-<span class="co">#&gt; 1:        200              price -0.07093766 0.0616323</span>
-<span class="co">#&gt; 2:        200           typeGala  0.01852680 0.1909831</span>
-<span class="co">#&gt; 3:        200     typeHoneycrisp -0.18315704 0.2019748</span>
-<span class="co">#&gt; 4:        200      typePink Lady  0.03520526 0.1888064</span>
-<span class="co">#&gt; 5:        200  typeRed Delicious -0.09550322 0.2008047</span>
-<span class="co">#&gt; 6:        200 freshnessExcellent  0.01345243 0.1576876</span></code></pre></div>
+<span class="co">#&gt;   sampleSize               coef         est        se</span>
+<span class="co">#&gt; 1        200              price -0.07093766 0.0616323</span>
+<span class="co">#&gt; 2        200           typeGala  0.01852680 0.1909831</span>
+<span class="co">#&gt; 3        200     typeHoneycrisp -0.18315704 0.2019748</span>
+<span class="co">#&gt; 4        200      typePink Lady  0.03520526 0.1888064</span>
+<span class="co">#&gt; 5        200  typeRed Delicious -0.09550322 0.2008047</span>
+<span class="co">#&gt; 6        200 freshnessExcellent  0.01345243 0.1576876</span></code></pre></div>
 <p>Here is a summary of the standard errors for each sample size:</p>
 <div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">ggplot2</span><span class="op">)</span>
@@ -293,7 +281,7 @@
 <span class="co">#&gt;     title = {conjointTools: Tools For Designing Conjoint Survey Experiments},</span>
 <span class="co">#&gt;     author = {John Paul Helveston},</span>
 <span class="co">#&gt;     year = {2021},</span>
-<span class="co">#&gt;     note = {R package version 0.0.6},</span>
+<span class="co">#&gt;     note = {R package version 0.0.7},</span>
 <span class="co">#&gt;     url = {https://jhelvy.github.io/conjointTools/},</span>
 <span class="co">#&gt;   }</span></code></pre></div>
 </div>

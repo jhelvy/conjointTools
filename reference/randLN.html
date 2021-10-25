@@ -73,7 +73,7 @@ simulateChoices() function." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">conjointTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.6.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.7.9000</span>
       </span>
     </div>
 
@@ -173,14 +173,13 @@ utility model used to simulate choices in the <code><a href='simulateChoices.htm
 <span class='co'>#   - 2 random log-normal discrete parameters for "freshness"</span>
 <span class='va'>data_mxl</span> <span class='op'>&lt;-</span> <span class='fu'><a href='simulateChoices.html'>simulateChoices</a></span><span class='op'>(</span>
     survey <span class='op'>=</span> <span class='va'>survey</span>,
-    altID  <span class='op'>=</span> <span class='st'>"altID"</span>,
     obsID  <span class='op'>=</span> <span class='st'>"obsID"</span>,
     pars <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/list.html'>list</a></span><span class='op'>(</span>
         price     <span class='op'>=</span> <span class='fl'>0.1</span>,
         type      <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.2</span>, <span class='fl'>0.3</span>, <span class='fl'>0.4</span><span class='op'>)</span>,
         freshness <span class='op'>=</span> <span class='fu'>randLN</span><span class='op'>(</span>mu <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.2</span><span class='op'>)</span>, sigma <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='fl'>0.1</span>, <span class='fl'>0.2</span><span class='op'>)</span><span class='op'>)</span><span class='op'>)</span>
 <span class='op'>)</span>
-</div></pre>
+</div><div class='output co'>#&gt; <span class='error'>Error in UseMethod("predict"): no applicable method for 'predict' applied to an object of class "logitr"</span></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

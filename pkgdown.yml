@@ -2,5 +2,8 @@ pandoc: 2.7.3
 pkgdown: 1.6.1
 pkgdown_sha: ~
 articles: {}
-last_built: 2021-09-10T20:21Z
+last_built: 2021-10-25T17:23Z
+urls:
+  reference: https://jhelvy.github.io/conjointTools//reference
+  article: https://jhelvy.github.io/conjointTools//articles
 

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://jhelvy.github.io/conjointTools//index.html</loc>
+  </url>
+  <url>
+    <loc>https://jhelvy.github.io/conjointTools//reference/estimateModels.html</loc>
+  </url>
+  <url>
+    <loc>https://jhelvy.github.io/conjointTools//reference/getModelResults.html</loc>
+  </url>
+  <url>
+    <loc>https://jhelvy.github.io/conjointTools//reference/makeDoe.html</loc>
+  </url>
+  <url>
+    <loc>https://jhelvy.github.io/conjointTools//reference/makeSurvey.html</loc>
+  </url>
+  <url>
+    <loc>https://jhelvy.github.io/conjointTools//reference/miscmethods.cjtools.html</loc>
+  </url>
+  <url>
+    <loc>https://jhelvy.github.io/conjointTools//reference/randLN.html</loc>
+  </url>
+  <url>
+    <loc>https://jhelvy.github.io/conjointTools//reference/randN.html</loc>
+  </url>
+  <url>
+    <loc>https://jhelvy.github.io/conjointTools//reference/recodeDesign.html</loc>
+  </url>
+  <url>
+    <loc>https://jhelvy.github.io/conjointTools//reference/simulateChoices.html</loc>
+  </url>
+</urlset>
