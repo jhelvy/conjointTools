@@ -4,7 +4,7 @@
 \alias{makeDoe}
 \title{Make a design of experiment}
 \usage{
-makeDoe(levels, type = NULL, nTrials = NA, search = FALSE)
+makeDoe(levels, type = NULL, nTrials = NA, minTrials = NULL, search = FALSE)
 }
 \arguments{
 \item{levels}{A named list of vectors defining each attribute (the names)
@@ -21,6 +21,11 @@ design. Defaults to \code{NA}, but must be a number less than the number of
 alternatives in the full factorial design if the \code{type} argument is anything
 other than \code{NULL}. If \code{search = TRUE}, then all feasible designs will be
 calculated up to \code{nTrials} or until a perfect D-efficiency is found.}
+
+\item{minTrials}{If \code{search == TRUE} and \code{minTrials} is a number less than
+or equal to \code{nTrials}, then the feasible designs are calculated over the
+range of \code{minTrials} to \code{nTrials}. Defaults to \code{NULL}, in which case the
+search starts at the lowest feasible number of levels.}
 
 \item{search}{If \code{TRUE}, all feasible designs are calculated up to \code{nTrials}
 or until a perfect D-efficiency is found, after which a summary of the

@@ -12,6 +12,10 @@
 #' alternatives in the full factorial design if the `type` argument is anything
 #' other than `NULL`. If `search = TRUE`, then all feasible designs will be
 #' calculated up to `nTrials` or until a perfect D-efficiency is found.
+#' @param minTrials If `search == TRUE` and `minTrials` is a number less than
+#' or equal to `nTrials`, then the feasible designs are calculated over the
+#' range of `minTrials` to `nTrials`. Defaults to `NULL`, in which case the
+#' search starts at the lowest feasible number of levels.
 #' @param search If `TRUE`, all feasible designs are calculated up to `nTrials`
 #' or until a perfect D-efficiency is found, after which a summary of the
 #' search results is printed and the top-ranked d-efficient design is returned.
@@ -30,14 +34,28 @@
 #'
 #' # Make a fraction-factorial design of experiment based on D-efficiency
 #' doe <- makeDoe(levels, type = "D", nTrials = 100)
-makeDoe <- function(levels, type = NULL, nTrials = NA, search = FALSE) {
+makeDoe <- function(
+    levels,
+    type      = NULL,
+    nTrials   = NA,
+    minTrials = NULL,
+    search    = FALSE
+) {
     vars <- unlist(lapply(levels, length))
     doe <- getFullFactorial(levels, vars)
     if (!is.null(type)) {
         minLevels <- sum(vars) - length(vars)
-        checkDoeInputs(doe, type, nTrials, minLevels)
+        checkDoeInputs(doe, type, nTrials, minLevels, minTrials)
         if (search) {
-            minLevels <- minLevels + 3
+            if (!is.null(minTrials)) {
+                minLevels <- minTrials
+            } else {
+                # Add a cushion so you get less singularity problems
+                minLevels <- minLevels + 3
+            }
+            if (minLevels >= nTrials) {
+                minLevels <- nTrials
+            }
         } else {
             minLevels <- nTrials
         }
@@ -82,13 +100,35 @@ computeDesign <- function(ff, nTrials, type) {
 }
 
 aggregateDoeSearch <- function(results) {
-    return(data.frame(
+    result <- data.frame(
         nTrials = unlist(lapply(results, function(x) x$nTrials)),
         d = unlist(lapply(results, function(x) x$d)),
         balanced = unlist(lapply(results, function(x) x$balanced))
-    ))
+    )
+    row.names(result) <- NULL
+    return(result)
 }
 
+#' Make a design of experiment
+#'
+#' @param doe A named list of vectors defining each attribute (the names)
+#' and each level for each attribute (the vectors). For example, a design
+#' with two attributes, "price" and "type", that each had three levels should
+#' be defined as `levels = list(price = c(1, 2, 3), type = c(1, 2, 3))`.
+#' @export
+#' @examples
+#' # Define the attributes and levels
+#' levels <- list(
+#'   price     = seq(1, 4, 0.5), # $ per pound
+#'   type      = c('Fuji', 'Gala', 'Honeycrisp', 'Pink Lady', 'Red Delicious'),
+#'   freshness = c('Excellent', 'Average', 'Poor')
+#' )
+#'
+#' # Make a fraction-factorial design of experiment based on D-efficiency
+#' doe <- makeDoe(levels, type = "D", nTrials = 70)
+#'
+#' # Print the design efficiency and whether it is balanced:
+#' evaluateDoe(doe)
 evaluateDoe <- function(doe) {
     vars <- apply(doe, 2, function(x) length(unique(x)))
     ff <- getFullFactorial(levels, vars)

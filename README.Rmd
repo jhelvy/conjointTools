@@ -55,23 +55,33 @@ levels <- list(
 With these levels defined, making the design of experiment is straightforward using the `makeDoe()` function:
 
 ```{r}
-# Make a full-factorial design of experiment
 doe <- makeDoe(levels)
-
 head(doe)
 ```
 
 You can also make an "optimized" fractional-factorial design based on different criteria. For example, to make a "D-optimal" design, add the `type = "D"` argument and specify the number of trials you want to use from the full factorial design:
 
 ```{r}
-# Make a full-factorial design of experiment
 doe <- makeDoe(levels, type = "D", nTrials = 50)
+```
+
+If you're unsure of how many trials to use, you can set `search = TRUE` to search across all feasible designs up to `nTrials` (with an optional `minTrials` argument as a starting point):
+
+```{r}
+doe <- makeDoe(levels, type = "D", nTrials = 50, search = TRUE, minTrials = 30)
+```
+
+If using `search = TRUE`, the design with the highest D-efficiency is returned.
+
+You can also check the D-efficiency of any design using the `evaluateDoe()` function:
+
+```{r}
+evaluateDoe(doe)
 ```
 
 Once you've made your design, you can easily re-code it using the actual labels in your `levels` object using `recodeDesign()`:
 
 ```{r}
-# Re-code levels
 doe <- recodeDesign(doe, levels)
 
 head(doe)
