@@ -4,7 +4,7 @@
 \alias{makeDoe}
 \title{Make a design of experiment}
 \usage{
-makeDoe(levels, type = NULL, nTrials = NA)
+makeDoe(levels, type = NULL, nTrials = NA, search = FALSE)
 }
 \arguments{
 \item{levels}{A named list of vectors defining each attribute (the names)
@@ -19,7 +19,8 @@ factorial design with either D, A, or I optimality criteria.}
 \item{nTrials}{The number of trials to be used in a fractional factorial
 design. Defaults to \code{NA}, but must be a number less than the number of
 alternatives in the full factorial design if the \code{type} argument is anything
-other than \code{NULL}.}
+other than \code{NULL}. If \code{search = TRUE}, then all feasible designs will be
+calculated up to \code{nTrials}.}
 }
 \value{
 Returns a full factorial or fraction factorial design of experiment.

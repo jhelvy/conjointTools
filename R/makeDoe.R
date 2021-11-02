@@ -10,7 +10,8 @@
 #' @param nTrials The number of trials to be used in a fractional factorial
 #' design. Defaults to `NA`, but must be a number less than the number of
 #' alternatives in the full factorial design if the `type` argument is anything
-#' other than `NULL`.
+#' other than `NULL`. If `search = TRUE`, then all feasible designs will be
+#' calculated up to `nTrials`.
 #' @return Returns a full factorial or fraction factorial design of experiment.
 #' @export
 #' @examples
@@ -26,33 +27,65 @@
 #'
 #' # Make a fraction-factorial design of experiment based on D-efficiency
 #' doe <- makeDoe(levels, type = "D", nTrials = 100)
-makeDoe <- function(levels, type = NULL, nTrials = NA) {
+makeDoe <- function(levels, type = NULL, nTrials = NA, search = FALSE) {
     vars <- unlist(lapply(levels, length))
-    doe <- AlgDesign::gen.factorial(
+    ff <- AlgDesign::gen.factorial(
         levels = vars, varNames = names(vars), factors = "all"
     )
-    Deff <- 1
+    result <- list(doe = ff, d = 1, balanced = TRUE, orthogonal = TRUE)
     if (!is.null(type)) {
-        checkDoeInputs(doe, type, vars, nTrials)
-        result <- AlgDesign::optFederov(
-            data = doe, nTrials = nTrials, criterion = type, approximate = FALSE
-        )
-        row.names(result$design) <- NULL
-        doe <- result$design
-        Deff <- result$Dea
+        checkDoeInputs(ff, type, vars, nTrials)
+        if (search) {
+            result <- computeDesign(ff, nTrials, type)
+        } else {
+            result <- computeDesign(ff, nTrials, type)
+        }
     }
-    comment(doe) <- paste0("D Efficiency: ", Deff)
+    doe <- result$doe
+    comment(doe) <- paste0(
+        "D Efficiency: ", result$d, "\n",
+        "Balanced: ", result$balanced, "\n",
+        "Orthogonal: ", result$orthogonal, "\n"
+    )
     class(doe) <- c("data.frame", "cjdesign")
     return(doe)
 }
 
-checkDoeInputs <- function(doe, type, vars, nTrials) {
+computeDesign <- function(ff, nTrials, type) {
+    result <- AlgDesign::optFederov(
+        data = ff, nTrials = nTrials, criterion = type,
+        approximate = FALSE
+    )
+    row.names(result$design) <- NULL
+    doe <- result$design
+    return(list(
+        doe = doe,
+        d = result$Dea,
+        balanced = isBalanced(doe),
+        orthogonal = isOrthogonal(doe)
+    ))
+}
+
+isBalanced <- function(doe) {
+    counts <- apply(doe, 2, table)
+    numCounts <- unlist(lapply(counts, function(x) length(unique(x))))
+    if (any(numCounts != 1)) {
+        return(FALSE)
+    }
+    return(TRUE)
+}
+
+isOrthogonal <- function(doe) {
+    return(TRUE)
+}
+
+checkDoeInputs <- function(ff, type, vars, nTrials) {
     if (is.na(nTrials)) {
         stop(
             'Fractional factorial designs require a numeric input for the ',
             '"nTrials" argument.')
     }
-    maxTrials <- nrow(doe)
+    maxTrials <- nrow(ff)
     if (nTrials > maxTrials) {
         stop(
             'There are only ', maxTrials, ' trials in the full factorial ',
