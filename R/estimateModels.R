@@ -165,7 +165,7 @@ estimateModels <- function(
         predict         = predict,
         options         = options
     ),
-    class = "cjtools"
+    class = "cjmodels"
     )
     return(result)
 }

@@ -28,38 +28,46 @@
 #' doe <- makeDoe(levels, type = "D", nTrials = 100)
 makeDoe <- function(levels, type = NULL, nTrials = NA) {
     vars <- unlist(lapply(levels, length))
-    ff <- AlgDesign::gen.factorial(
+    doe <- AlgDesign::gen.factorial(
         levels = vars, varNames = names(vars), factors = "all"
     )
-    if (is.null(type)) {
-        return(ff)
+    Deff <- 1
+    if (!is.null(type)) {
+        checkDoeInputs(doe, type, vars, nTrials)
+        result <- AlgDesign::optFederov(
+            data = doe, nTrials = nTrials, criterion = type, approximate = FALSE
+        )
+        row.names(result$design) <- NULL
+        doe <- result$design
+        Deff <- result$Dea
     }
+    comment(doe) <- paste0("D Efficiency: ", Deff)
+    class(doe) <- c("data.frame", "cjdesign")
+    return(doe)
+}
+
+checkDoeInputs <- function(doe, type, vars, nTrials) {
     if (is.na(nTrials)) {
         stop(
             'Fractional factorial designs require a numeric input for the ',
             '"nTrials" argument.')
     }
-    if (nTrials > nrow(ff)) {
-        n <- nrow(ff)
+    maxTrials <- nrow(doe)
+    if (nTrials > maxTrials) {
         stop(
-            'The full factorial design has ', n, ' rows. Please ',
-            'specify a number of "nTrials" that is less than ', n, '.')
+            'There are only ', maxTrials, ' trials in the full factorial ',
+            'design. Set nTrials <= ', maxTrials
+        )
     }
-    if (type %in% c("D", "A", "I")) {
-        result <- AlgDesign::optFederov(
-            data = ff, nTrials = nTrials, criterion = type,
-            approximate = FALSE
+    numLevels <- sum(vars)
+    if (nTrials < numLevels) {
+        stop(
+            'There are ', numLevels, ' unique levels in "levels". ',
+            'Set nTrials >= ', numLevels
         )
-        # Print summary
-        message(
-            "Design summary:\n",
-            "D: ", round(result$D, 6), "\n",
-            "A: ", round(result$A, 6)
-        )
-        # Return design
-        doe <- ff[result$rows,]
-        row.names(doe) <- NULL
-        return(doe)
+    }
+    if (! type %in% c("D", "A", "I")) {
+        stop('The type argument must be "D", "A", or "I"')
     }
 }
 
