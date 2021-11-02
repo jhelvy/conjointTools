@@ -1,4 +1,4 @@
-checkDoeInputs <- function(ff, type, nTrials) {
+checkDoeInputs <- function(ff, type, nTrials, minLevels) {
     if (is.na(nTrials)) {
         stop(
             'Fractional factorial designs require a numeric input for the ',
@@ -11,8 +11,6 @@ checkDoeInputs <- function(ff, type, nTrials) {
             'design. Set nTrials <= ', maxTrials
         )
     }
-    vars <- apply(ff, 2, function(x) length(unique(x)))
-    minLevels <- sum(vars) - length(vars)
     if (nTrials <= minLevels) {
         stop(
             'Based on the levels in "levels", the fractional design must have ',

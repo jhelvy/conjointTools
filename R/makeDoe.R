@@ -28,31 +28,39 @@
 #' # Make a fraction-factorial design of experiment based on D-efficiency
 #' doe <- makeDoe(levels, type = "D", nTrials = 100)
 makeDoe <- function(levels, type = NULL, nTrials = NA, search = FALSE) {
-    ff <- getFullFactorial(levels)
-    result <- list(doe = ff, d = 1, balanced = TRUE, orthogonal = TRUE)
+    vars <- unlist(lapply(levels, length))
+    doe <- getFullFactorial(levels, vars)
     if (!is.null(type)) {
-        checkDoeInputs(ff, type, nTrials)
+        minLevels <- sum(vars) - length(vars)
+        checkDoeInputs(doe, type, nTrials, minLevels)
         if (search) {
-            result <- computeDesign(ff, nTrials, type)
+            minLevels <- minLevels + 1
         } else {
-            result <- computeDesign(ff, nTrials, type)
+            minLevels <- nTrials
         }
+        doe <- searchDesigns(doe, nTrials, type, minLevels)
     }
-    doe <- result$doe
-    comment(doe) <- paste0(
-        "D Efficiency: ", result$d, "\n",
-        "Balanced: ", result$balanced, "\n"
-    )
-    class(doe) <- c("data.frame", "cjdesign")
     return(doe)
 }
 
-getFullFactorial <- function(levels) {
-    vars <- unlist(lapply(levels, length))
+getFullFactorial <- function(levels, vars) {
     ff <- AlgDesign::gen.factorial(
         levels = vars, varNames = names(vars), factors = "all"
     )
     return(ff)
+}
+
+searchDesigns <- function(ff, nTrials, type, minLevels) {
+    results <- list()
+    for (i in seq(minLevels, nTrials)) {
+        result <- computeDesign(ff, nTrials = i, type)
+        results[[as.character(i)]] <- result
+        if (result$d == 1) { break }
+    }
+    result <- aggregateDoeSearch(results)
+    result <- result[order(-result$d, result$balanced),]
+    print(result)
+    return(results[[as.character(result$nTrials[1])]]$doe)
 }
 
 computeDesign <- function(ff, nTrials, type) {
@@ -65,13 +73,22 @@ computeDesign <- function(ff, nTrials, type) {
     return(list(
         doe = doe,
         d = result$Dea,
-        balanced = isBalanced(doe)
+        balanced = isBalanced(doe),
+        nTrials = nTrials
+    ))
+}
+
+aggregateDoeSearch <- function(results) {
+    return(data.frame(
+        nTrials = unlist(lapply(results, function(x) x$nTrials)),
+        d = unlist(lapply(results, function(x) x$d)),
+        balanced = unlist(lapply(results, function(x) x$balanced))
     ))
 }
 
 evaluateDoe <- function(doe) {
-    levels <- apply(doe, 2, unique)
-    ff <- getFullFactorial(levels)
+    vars <- apply(doe, 2, function(x) length(unique(x)))
+    ff <- getFullFactorial(levels, vars)
     frml <- formula("~-1 + .")
     eff <- AlgDesign::eval.design(frml = frml, design = doe, X = ff)
     return(list(
