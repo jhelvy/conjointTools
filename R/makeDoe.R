@@ -170,8 +170,8 @@ isBalanced <- function(doe) {
 #' doe <- makeDoe(levels)
 #'
 #' # Re-code levels
-#' doe <- recodeDesign(doe, levels)
-recodeDesign <- function(doe, levels) {
+#' doe <- recodeDoe(doe, levels)
+recodeDoe <- function(doe, levels) {
   types <- unlist(lapply(levels, class))
   for (i in seq_len(length(levels))) {
     col <- which(names(doe) == names(levels)[i])

@@ -138,7 +138,7 @@ levels <- list(
 
 # Make a full-factorial design of experiment and recode the levels
 doe <- makeDoe(levels)
-doe <- recodeDesign(doe, levels)
+doe <- recodeDoe(doe, levels)
 
 # Make the survey
 survey <- makeSurvey(

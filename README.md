@@ -117,10 +117,10 @@ evaluateDoe(doe)
 ```
 
 Once you’ve made your design, you can easily re-code it using the actual
-labels in your `levels` object using `recodeDesign()`:
+labels in your `levels` object using `recodeDoe()`:
 
 ``` r
-doe <- recodeDesign(doe, levels)
+doe <- recodeDoe(doe, levels)
 
 head(doe)
 #>   price type freshness

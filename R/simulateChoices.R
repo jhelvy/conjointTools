@@ -30,7 +30,7 @@
 #' doe <- makeDoe(levels)
 #'
 #' # Re-code levels
-#' doe <- recodeDesign(doe, levels)
+#' doe <- recodeDoe(doe, levels)
 #'
 #' # Make the conjoint survey by randomly sampling from the doe
 #' survey <- makeSurvey(
@@ -236,7 +236,7 @@ getCoefficients <- function(pars, parNamesCoded, randPars, randParsCoded) {
 #' doe <- makeDoe(levels)
 #'
 #' # Re-code levels
-#' doe <- recodeDesign(doe, levels)
+#' doe <- recodeDoe(doe, levels)
 #'
 #' # Make the conjoint survey by randomly sampling from the doe
 #' survey <- makeSurvey(
@@ -287,7 +287,7 @@ randN <- function(mu = 0, sigma = 1) {
 #' doe <- makeDoe(levels)
 #'
 #' # Re-code levels
-#' doe <- recodeDesign(doe, levels)
+#' doe <- recodeDoe(doe, levels)
 #'
 #' # Make the conjoint survey by randomly sampling from the doe
 #' survey <- makeSurvey(
