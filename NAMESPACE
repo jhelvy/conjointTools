@@ -2,6 +2,7 @@
 
 S3method(print,cjmodels)
 export(estimateModels)
+export(evaluateDoe)
 export(getModelResults)
 export(makeDoe)
 export(makeSurvey)

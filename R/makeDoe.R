@@ -111,10 +111,8 @@ aggregateDoeSearch <- function(results) {
 
 #' Make a design of experiment
 #'
-#' @param doe A named list of vectors defining each attribute (the names)
-#' and each level for each attribute (the vectors). For example, a design
-#' with two attributes, "price" and "type", that each had three levels should
-#' be defined as `levels = list(price = c(1, 2, 3), type = c(1, 2, 3))`.
+#' @param doe A design of experiment data frame. Each row is an alternative,
+#' each column is an attribute.
 #' @export
 #' @examples
 #' # Define the attributes and levels
