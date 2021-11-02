@@ -20,7 +20,11 @@ factorial design with either D, A, or I optimality criteria.}
 design. Defaults to \code{NA}, but must be a number less than the number of
 alternatives in the full factorial design if the \code{type} argument is anything
 other than \code{NULL}. If \code{search = TRUE}, then all feasible designs will be
-calculated up to \code{nTrials}.}
+calculated up to \code{nTrials} or until a perfect D-efficiency is found.}
+
+\item{search}{If \code{TRUE}, all feasible designs are calculated up to \code{nTrials}
+or until a perfect D-efficiency is found, after which a summary of the
+search results is printed and the top-ranked d-efficient design is returned.}
 }
 \value{
 Returns a full factorial or fraction factorial design of experiment.

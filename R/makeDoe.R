@@ -11,7 +11,10 @@
 #' design. Defaults to `NA`, but must be a number less than the number of
 #' alternatives in the full factorial design if the `type` argument is anything
 #' other than `NULL`. If `search = TRUE`, then all feasible designs will be
-#' calculated up to `nTrials`.
+#' calculated up to `nTrials` or until a perfect D-efficiency is found.
+#' @param search If `TRUE`, all feasible designs are calculated up to `nTrials`
+#' or until a perfect D-efficiency is found, after which a summary of the
+#' search results is printed and the top-ranked d-efficient design is returned.
 #' @return Returns a full factorial or fraction factorial design of experiment.
 #' @export
 #' @examples
@@ -34,7 +37,7 @@ makeDoe <- function(levels, type = NULL, nTrials = NA, search = FALSE) {
         minLevels <- sum(vars) - length(vars)
         checkDoeInputs(doe, type, nTrials, minLevels)
         if (search) {
-            minLevels <- minLevels + 1
+            minLevels <- minLevels + 3
         } else {
             minLevels <- nTrials
         }
@@ -89,7 +92,7 @@ aggregateDoeSearch <- function(results) {
 evaluateDoe <- function(doe) {
     vars <- apply(doe, 2, function(x) length(unique(x)))
     ff <- getFullFactorial(levels, vars)
-    frml <- formula("~-1 + .")
+    frml <- stats::formula("~-1 + .")
     eff <- AlgDesign::eval.design(frml = frml, design = doe, X = ff)
     return(list(
         d_eff = eff$Deffbound,
