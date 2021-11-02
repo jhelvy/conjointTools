@@ -28,13 +28,10 @@
 #' # Make a fraction-factorial design of experiment based on D-efficiency
 #' doe <- makeDoe(levels, type = "D", nTrials = 100)
 makeDoe <- function(levels, type = NULL, nTrials = NA, search = FALSE) {
-    vars <- unlist(lapply(levels, length))
-    ff <- AlgDesign::gen.factorial(
-        levels = vars, varNames = names(vars), factors = "all"
-    )
+    ff <- getFullFactorial(levels)
     result <- list(doe = ff, d = 1, balanced = TRUE, orthogonal = TRUE)
     if (!is.null(type)) {
-        checkDoeInputs(ff, type, vars, nTrials)
+        checkDoeInputs(ff, type, nTrials)
         if (search) {
             result <- computeDesign(ff, nTrials, type)
         } else {
@@ -44,11 +41,18 @@ makeDoe <- function(levels, type = NULL, nTrials = NA, search = FALSE) {
     doe <- result$doe
     comment(doe) <- paste0(
         "D Efficiency: ", result$d, "\n",
-        "Balanced: ", result$balanced, "\n",
-        "Orthogonal: ", result$orthogonal, "\n"
+        "Balanced: ", result$balanced, "\n"
     )
     class(doe) <- c("data.frame", "cjdesign")
     return(doe)
+}
+
+getFullFactorial <- function(levels) {
+    vars <- unlist(lapply(levels, length))
+    ff <- AlgDesign::gen.factorial(
+        levels = vars, varNames = names(vars), factors = "all"
+    )
+    return(ff)
 }
 
 computeDesign <- function(ff, nTrials, type) {
@@ -61,8 +65,18 @@ computeDesign <- function(ff, nTrials, type) {
     return(list(
         doe = doe,
         d = result$Dea,
-        balanced = isBalanced(doe),
-        orthogonal = isOrthogonal(doe)
+        balanced = isBalanced(doe)
+    ))
+}
+
+evaluateDoe <- function(doe) {
+    levels <- apply(doe, 2, unique)
+    ff <- getFullFactorial(levels)
+    frml <- formula("~-1 + .")
+    eff <- AlgDesign::eval.design(frml = frml, design = doe, X = ff)
+    return(list(
+        d_eff = eff$Deffbound,
+        balanced = isBalanced(doe)
     ))
 }
 
@@ -73,35 +87,6 @@ isBalanced <- function(doe) {
         return(FALSE)
     }
     return(TRUE)
-}
-
-isOrthogonal <- function(doe) {
-    return(TRUE)
-}
-
-checkDoeInputs <- function(ff, type, vars, nTrials) {
-    if (is.na(nTrials)) {
-        stop(
-            'Fractional factorial designs require a numeric input for the ',
-            '"nTrials" argument.')
-    }
-    maxTrials <- nrow(ff)
-    if (nTrials > maxTrials) {
-        stop(
-            'There are only ', maxTrials, ' trials in the full factorial ',
-            'design. Set nTrials <= ', maxTrials
-        )
-    }
-    numLevels <- sum(vars)
-    if (nTrials < numLevels) {
-        stop(
-            'There are ', numLevels, ' unique levels in "levels". ',
-            'Set nTrials >= ', numLevels
-        )
-    }
-    if (! type %in% c("D", "A", "I")) {
-        stop('The type argument must be "D", "A", or "I"')
-    }
 }
 
 #' Re-code the levels in a design of experiment
