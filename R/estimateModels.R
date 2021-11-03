@@ -140,7 +140,7 @@ estimateModels <- function(
   )
 ) {
     data_list <- makeDataList(data, obsID, nbreaks)
-    result <- structure(parallel::mclapply(
+    result <- structure(lapply(
         data_list,
         logitr::logitr,
         outcome         = outcome,
