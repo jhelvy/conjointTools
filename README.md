@@ -60,10 +60,11 @@ head(doe)
 #> 6     6    1         1
 ```
 
-You can also make an “optimized” fractional-factorial design based on
-different criteria. For example, to make a “D-optimal” design, add the
+You can also make a fractional-factorial design based on different
+criteria. For example, to make a “D-optimal” design, add the
 `type = "D"` argument and specify the number of trials you want to use
-from the full factorial design:
+from the full factorial design (you can also use `"A"` and `"I"` to
+optimize for different efficiency measures):
 
 ``` r
 doe <- makeDoe(levels, type = "D", nTrials = 50)
@@ -73,10 +74,10 @@ doe <- makeDoe(levels, type = "D", nTrials = 50)
 
 If you’re unsure of how many trials to use, you can set `search = TRUE`
 to search across all feasible designs up to `nTrials` (with an optional
-`minTrials` argument as a starting point):
+`minTrials` argument as a starting number of trials in the search):
 
 ``` r
-doe <- makeDoe(levels, type = "D", nTrials = 50, search = TRUE, minTrials = 30)
+doe <- makeDoe(levels, type = "D", nTrials = 50, minTrials = 30, search = TRUE)
 #>    nTrials     d balanced
 #> 16      45 0.916    FALSE
 #> 13      42 0.901    FALSE
@@ -101,8 +102,8 @@ doe <- makeDoe(levels, type = "D", nTrials = 50, search = TRUE, minTrials = 30)
 #> 5       34 0.675    FALSE
 ```
 
-If using `search = TRUE`, the design with the highest D-efficiency is
-returned.
+If using `search = TRUE`, a summary of all designs will be printed to
+the console, and the design with the highest D-efficiency is returned.
 
 You can also check the D-efficiency of any design using the
 `evaluateDoe()` function:
@@ -121,7 +122,6 @@ labels in your `levels` object using `recodeDoe()`:
 
 ``` r
 doe <- recodeDoe(doe, levels)
-
 head(doe)
 #>   price type freshness
 #> 1   2.0 Fuji Excellent
@@ -131,6 +131,10 @@ head(doe)
 #> 5   3.5 Gala Excellent
 #> 6   4.0 Gala Excellent
 ```
+
+You should re-code your design prior to making a survey if you want to
+show the actual label values in the survey rather than just the
+attribute level numbers (e.g., 1, 2, 3, etc.).
 
 ## Make conjoint surveys
 
