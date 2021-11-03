@@ -46,7 +46,7 @@ makeDoe <- function(
     nRepeats  = 5
 ) {
     vars <- unlist(lapply(levels, length))
-    doe <- getFullFactorial(levels, vars)
+    doe <- getFullFactorial(vars)
     if (!is.null(type)) {
         minLevels <- sum(vars) - length(vars)
         checkDoeInputs(doe, type, nTrials, minLevels, minTrials)
@@ -68,7 +68,7 @@ makeDoe <- function(
     return(doe)
 }
 
-getFullFactorial <- function(levels, vars) {
+getFullFactorial <- function(vars) {
     ff <- AlgDesign::gen.factorial(
         levels = vars, varNames = names(vars), factors = "all"
     )
@@ -103,6 +103,15 @@ computeDesign <- function(ff, nTrials, type, nRepeats) {
     ))
 }
 
+isBalanced <- function(doe) {
+  counts <- apply(doe, 2, table)
+  numCounts <- unlist(lapply(counts, function(x) length(unique(x))))
+  if (any(numCounts != 1)) {
+    return(FALSE)
+  }
+  return(TRUE)
+}
+
 aggregateDoeSearch <- function(results) {
     result <- data.frame(
         nTrials = unlist(lapply(results, function(x) x$nTrials)),
@@ -113,10 +122,15 @@ aggregateDoeSearch <- function(results) {
     return(result)
 }
 
-#' Make a design of experiment
+#' Evaluate a design of experiment
 #'
+#' Obtain a list of information about a given design, including the
+#' D-efficiency and whether or not the design is balanced.
 #' @param doe A design of experiment data frame. Each row is an alternative,
 #' each column is an attribute.
+#' @return Returns a list of information about a given design, including the
+#' D-efficiency and whether or not the design is balanced.
+#' `levels` argument.
 #' @export
 #' @examples
 #' # Define the attributes and levels
@@ -133,22 +147,13 @@ aggregateDoeSearch <- function(results) {
 #' evaluateDoe(doe)
 evaluateDoe <- function(doe) {
     vars <- apply(doe, 2, function(x) length(unique(x)))
-    ff <- getFullFactorial(levels, vars)
+    ff <- getFullFactorial(vars)
     frml <- stats::formula("~-1 + .")
     eff <- AlgDesign::eval.design(frml = frml, design = doe, X = ff)
     return(list(
         d_eff = eff$Deffbound,
         balanced = isBalanced(doe)
     ))
-}
-
-isBalanced <- function(doe) {
-    counts <- apply(doe, 2, table)
-    numCounts <- unlist(lapply(counts, function(x) length(unique(x))))
-    if (any(numCounts != 1)) {
-        return(FALSE)
-    }
-    return(TRUE)
 }
 
 #' Re-code the levels in a design of experiment
