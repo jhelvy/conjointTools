@@ -4,7 +4,14 @@
 \alias{makeDoe}
 \title{Make a design of experiment}
 \usage{
-makeDoe(levels, type = NULL, nTrials = NA, minTrials = NULL, search = FALSE)
+makeDoe(
+  levels,
+  type = NULL,
+  nTrials = NA,
+  minTrials = NULL,
+  search = FALSE,
+  nRepeats = 5
+)
 }
 \arguments{
 \item{levels}{A named list of vectors defining each attribute (the names)
@@ -30,6 +37,10 @@ search starts at the lowest feasible number of levels.}
 \item{search}{If \code{TRUE}, all feasible designs are calculated up to \code{nTrials}
 or until a perfect D-efficiency is found, after which a summary of the
 search results is printed and the top-ranked d-efficient design is returned.}
+
+\item{nRepeats}{Number of times the design search using
+\code{AlgDesign::optFederov()} is repeated for any one instance of \code{nTrials}.
+Defaults to \code{5}.}
 }
 \value{
 Returns a full factorial or fraction factorial design of experiment.

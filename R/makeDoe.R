@@ -19,6 +19,9 @@
 #' @param search If `TRUE`, all feasible designs are calculated up to `nTrials`
 #' or until a perfect D-efficiency is found, after which a summary of the
 #' search results is printed and the top-ranked d-efficient design is returned.
+#' @param nRepeats Number of times the design search using
+#' `AlgDesign::optFederov()` is repeated for any one instance of `nTrials`.
+#' Defaults to `5`.
 #' @return Returns a full factorial or fraction factorial design of experiment.
 #' @export
 #' @examples
@@ -39,7 +42,8 @@ makeDoe <- function(
     type      = NULL,
     nTrials   = NA,
     minTrials = NULL,
-    search    = FALSE
+    search    = FALSE,
+    nRepeats  = 5
 ) {
     vars <- unlist(lapply(levels, length))
     doe <- getFullFactorial(levels, vars)
@@ -59,7 +63,7 @@ makeDoe <- function(
         } else {
             minLevels <- nTrials
         }
-        doe <- searchDesigns(doe, nTrials, type, minLevels)
+        doe <- searchDesigns(doe, nTrials, type, minLevels, nRepeats)
     }
     return(doe)
 }
@@ -71,10 +75,10 @@ getFullFactorial <- function(levels, vars) {
     return(ff)
 }
 
-searchDesigns <- function(ff, nTrials, type, minLevels) {
+searchDesigns <- function(ff, nTrials, type, minLevels, nRepeats) {
     results <- list()
     for (i in seq(minLevels, nTrials)) {
-        result <- computeDesign(ff, nTrials = i, type)
+        result <- computeDesign(ff, nTrials = i, type, nRepeats)
         results[[as.character(i)]] <- result
         if (result$d == 1) { break }
     }
@@ -84,10 +88,10 @@ searchDesigns <- function(ff, nTrials, type, minLevels) {
     return(results[[as.character(result$nTrials[1])]]$doe)
 }
 
-computeDesign <- function(ff, nTrials, type) {
+computeDesign <- function(ff, nTrials, type, nRepeats) {
     result <- AlgDesign::optFederov(
         data = ff, nTrials = nTrials, criterion = type,
-        approximate = FALSE
+        approximate = FALSE, nRepeats = nRepeats
     )
     row.names(result$design) <- NULL
     doe <- result$design
