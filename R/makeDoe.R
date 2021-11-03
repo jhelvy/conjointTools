@@ -146,14 +146,35 @@ aggregateDoeSearch <- function(results) {
 #' # Print the design efficiency and whether it is balanced:
 #' evaluateDoe(doe)
 evaluateDoe <- function(doe) {
-    vars <- apply(doe, 2, function(x) length(unique(x)))
+    levels <- apply(doe, 2, function(x) unique(x))
+    vars <- unlist(lapply(levels, length))
+    # vars <- apply(doe, 2, function(x) length(unique(x)))
     ff <- getFullFactorial(vars)
+    design <- decodeDoe(doe, ff, levels)
     frml <- stats::formula("~-1 + .")
-    eff <- AlgDesign::eval.design(frml = frml, design = doe, X = ff)
+    eff <- AlgDesign::eval.design(frml = frml, design = design, X = ff)
     return(list(
         d_eff = eff$Deffbound,
         balanced = isBalanced(doe)
     ))
+}
+
+decodeDoe <- function(doe, ff, levels) {
+  levels <- apply(doe, 2, function(x) unique(x))
+  levels <- lapply(levels, function(x) seq(length(x)))
+  test <- recodeDoe(doe, levels)
+
+  types <- unlist(lapply(levels, class))
+  for (i in seq_len(length(levels))) {
+    col <- which(names(doe) == names(levels)[i])
+    levels(doe[,col]) <- levels[[i]]
+    if ((types[i] == "numeric") | (types[i] == "integer")) {
+      doe[,col] <- as.numeric(as.character(doe[,col]))
+    } else {
+      doe[,col] <- as.character(doe[,col])
+    }
+  }
+
 }
 
 #' Re-code the levels in a design of experiment
@@ -181,14 +202,14 @@ evaluateDoe <- function(doe) {
 #' # Re-code levels
 #' doe <- recodeDoe(doe, levels)
 recodeDoe <- function(doe, levels) {
-  types <- unlist(lapply(levels, class))
+  type_numeric <- unlist(lapply(levels, is.numeric))
   for (i in seq_len(length(levels))) {
     col <- which(names(doe) == names(levels)[i])
     levels(doe[,col]) <- levels[[i]]
-    if (types[i] == "numeric") {
-        doe[,col] <- as.numeric(as.character(doe[,col]))
-    } else if (types[i] == "character") {
-        doe[,col] <- as.character(doe[,col])
+    if (type_numeric[i]) {
+      doe[,col] <- as.numeric(as.character(doe[,col]))
+    } else {
+      doe[,col] <- as.character(doe[,col])
     }
   }
   return(doe)
