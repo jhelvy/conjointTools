@@ -117,8 +117,8 @@ defineTrueModel <- function(survey, pars, numDraws) {
     # Separate out random and fixed parameters
     parNamesRand <- names(pars[lapply(pars, class) == "list"])
     parNamesFixed <- parNames[! parNames %in% parNamesRand]
-    # Re-code continuous survey vars as numeric
-    cNames <- getContinuousParNames(pars, parNamesFixed, parNamesRand)
+    # Make sure continuous survey vars are numeric
+    cNames <- getContinuousParNames(survey, parNames)
     if (length(cNames) > 0) {
       survey[,cNames] <- lapply(survey[cNames], as.numeric)
     }
@@ -153,12 +153,10 @@ dropInteractions <- function(parNames) {
     return(parNames)
 }
 
-getContinuousParNames <- function(pars, parNamesFixed, parNamesRand) {
-    nFixed <- unlist(lapply(pars[parNamesFixed], length))
-    nRand <- unlist(
-        lapply(pars[parNamesRand], function(x) length(x$pars[[1]])))
-    nlevels <- c(nRand, nFixed)
-    return(names(nlevels[nlevels == 1]))
+getContinuousParNames <- function(survey, parNames) {
+    levels <- lapply(survey[parNames], function(x) unique(x))
+    type_numeric <- unlist(lapply(levels, is.numeric))
+    return(names(type_numeric[type_numeric]))
 }
 
 # Modified from {logitr}

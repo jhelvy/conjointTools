@@ -5,6 +5,10 @@
 - Changed the name of `recodeDesign()` to `recodeDoe()` and made it more robust to different data types in `levels`.
 - Replaced the use of `parallel::mcapply()` in `estimateModels()` that was introduced in 0.0.7 with just `lapply()` as the `parallel` approach is not supported in Windows. Will add more robust parallel implementation in next package update.
 
+Bug fixes:
+
+- When using `simulateChoices()` with a provided utility model, the function was incorrectly categorizing categorical variables with only 2 levels as being numeric. This is now fixed.
+
 # conjointTools 0.0.7
 
 - Updated functions to use new `predict.logitr()` method introduced in {logitr} v0.4.0. 
