@@ -1,3 +1,10 @@
+# conjointTools 0.0.8
+
+- Several updates to the `makeDoe()` function, including an improved print out of the summary of the design (D-efficiency & balanced or not), as well as optional arguments to conduct a search of designs.
+- Added a new `evaluateDoe()` function which returns a list of information about a given design, including the D-efficiency and whether or not the design is balanced.
+- Changed the name of `recodeDesign()` to `recodeDoe()` and made it more robust to different data types in `levels`.
+- Replaced the use of `parallel::mcapply()` in `estimateModels()` that was introduced in 0.0.7 with just `lapply()` as the `parallel` approach is not supported in Windows. Will add more robust parallel implementation in next package update.
+
 # conjointTools 0.0.7
 
 - Updated functions to use new `predict.logitr()` method introduced in {logitr} v0.4.0. 

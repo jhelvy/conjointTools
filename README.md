@@ -25,7 +25,7 @@ remotes::install_github("jhelvy/conjointTools")
 Load the library with:
 
 ``` r
-library(conjointTools)
+library("conjointTools")
 ```
 
 ## Make experiment designs
@@ -49,9 +49,7 @@ With these levels defined, making the design of experiment is
 straightforward using the `makeDoe()` function:
 
 ``` r
-# Make a full-factorial design of experiment
 doe <- makeDoe(levels)
-
 head(doe)
 #>   price type freshness
 #> 1     1    1         1
@@ -62,32 +60,81 @@ head(doe)
 #> 6     6    1         1
 ```
 
-You can also make an “optimized” fractional-factorial design based on
-different criteria. For example, to make a “D-optimal” design, add the
+You can also make a fractional-factorial design based on different
+criteria. For example, to make a “D-optimal” design, add the
 `type = "D"` argument and specify the number of trials you want to use
-from the full factorial design:
+from the full factorial design (you can also use `"A"` and `"I"` to
+optimize for different efficiency measures):
 
 ``` r
-# Make a full-factorial design of experiment
 doe <- makeDoe(levels, type = "D", nTrials = 50)
+#>   nTrials     d balanced
+#> 1      50 0.893    FALSE
+```
+
+If you’re unsure of how many trials to use, you can set `search = TRUE`
+to search across all feasible designs up to `nTrials` (with an optional
+`minTrials` argument as a starting number of trials in the search):
+
+``` r
+doe <- makeDoe(levels, type = "D", nTrials = 50, minTrials = 30, search = TRUE)
+#>    nTrials     d balanced
+#> 16      45 0.916    FALSE
+#> 13      42 0.901    FALSE
+#> 14      43 0.896    FALSE
+#> 17      46 0.894    FALSE
+#> 21      50 0.893    FALSE
+#> 6       35 0.891    FALSE
+#> 7       36 0.884    FALSE
+#> 15      44 0.878    FALSE
+#> 18      47 0.878    FALSE
+#> 20      49 0.876    FALSE
+#> 19      48 0.859    FALSE
+#> 8       37 0.857    FALSE
+#> 9       38 0.853    FALSE
+#> 10      39 0.835    FALSE
+#> 11      40 0.815    FALSE
+#> 12      41 0.798    FALSE
+#> 1       30 0.733    FALSE
+#> 2       31 0.729    FALSE
+#> 3       32 0.711    FALSE
+#> 4       33 0.693    FALSE
+#> 5       34 0.675    FALSE
+```
+
+If using `search = TRUE`, a summary of all designs will be printed to
+the console, and the design with the highest D-efficiency is returned.
+
+You can also check the D-efficiency of any design using the
+`evaluateDoe()` function:
+
+``` r
+evaluateDoe(doe)
+#> $d_eff
+#> [1] 0.916
+#> 
+#> $balanced
+#> [1] FALSE
 ```
 
 Once you’ve made your design, you can easily re-code it using the actual
-labels in your `levels` object using `recodeDesign()`:
+labels in your `levels` object using `recodeDoe()`:
 
 ``` r
-# Re-code levels
-doe <- recodeDesign(doe, levels)
-
+doe <- recodeDoe(doe, levels)
 head(doe)
 #>   price type freshness
-#> 1   1.0 Fuji Excellent
+#> 1   2.0 Fuji Excellent
 #> 2   2.5 Fuji Excellent
-#> 3   4.0 Fuji Excellent
-#> 4   1.5 Gala Excellent
-#> 5   2.0 Gala Excellent
-#> 6   3.0 Gala Excellent
+#> 3   3.5 Fuji Excellent
+#> 4   3.0 Gala Excellent
+#> 5   3.5 Gala Excellent
+#> 6   4.0 Gala Excellent
 ```
+
+You should re-code your design prior to making a survey if you want to
+show the actual label values in the survey rather than just the
+attribute level numbers (e.g., 1, 2, 3, etc.).
 
 ## Make conjoint surveys
 
@@ -106,13 +153,13 @@ survey <- makeSurvey(
 dim(survey)
 #> [1] 36000     7
 head(survey)
-#>   respID qID altID obsID price       type freshness
-#> 1      1   1     1     1   2.0       Fuji   Average
-#> 2      1   1     2     1   1.5       Gala Excellent
-#> 3      1   1     3     1   3.0  Pink Lady Excellent
-#> 4      1   2     1     2   1.5       Fuji   Average
-#> 5      1   2     2     2   2.0 Honeycrisp      Poor
-#> 6      1   2     3     2   1.0 Honeycrisp      Poor
+#>   respID qID altID obsID price          type freshness
+#> 1      1   1     1     1   3.0          Gala   Average
+#> 2      1   1     2     1   2.0    Honeycrisp      Poor
+#> 3      1   1     3     1   3.5 Red Delicious   Average
+#> 4      1   2     1     2   1.5          Fuji      Poor
+#> 5      1   2     2     2   2.5 Red Delicious Excellent
+#> 6      1   2     3     2   4.0    Honeycrisp   Average
 ```
 
 The resulting data frame includes the following additional columns:
@@ -122,6 +169,78 @@ The resulting data frame includes the following additional columns:
 -   `altID`:Identifies the alternative in any one choice observation.
 -   `obsID`: Identifies each unique choice observation across all
     respondents.
+
+You can also make a “labeled” survey where the levels of one of the
+attributes is used as a label by setting the `group` argument to that
+attribute. This by definition sets the number of alternatives in each
+question to the number of levels in the chosen attribute. Here is an
+example labeled survey using the “freshness” attribute as the label:
+
+``` r
+survey_labeled <- makeSurvey(
+    doe       = doe,
+    nResp     = 2000,
+    nAltsPerQ = 3,
+    nQPerResp = 6,
+    group     = "freshness"
+)
+
+dim(survey_labeled)
+#> [1] 36000     7
+head(survey_labeled)
+#>   respID qID altID obsID price          type freshness
+#> 1      1   1     1     1   2.5     Pink Lady   Average
+#> 2      1   1     2     1   4.0          Gala Excellent
+#> 3      1   1     3     1   1.5 Red Delicious      Poor
+#> 4      1   2     1     2   4.0          Fuji   Average
+#> 5      1   2     2     2   2.5          Fuji Excellent
+#> 6      1   2     3     2   3.0          Fuji      Poor
+```
+
+In the above example, you can see in the first six rows of the survey
+that the `freshness` attribute is always fixed to be the same order,
+ensuring that each level in the `freshness` attribute will always be
+shown in each choice question.
+
+Finally, you can also include an “Outside Good” (e.g., a “none” option)
+in your survey by setting `outsideGood = TRUE`. If included, all
+categorical attributes are dummy-coded to appropriately dummy-code the
+outside good alternative.
+
+``` r
+survey_og <- makeSurvey(
+    doe       = doe,
+    nResp     = 2000,
+    nAltsPerQ = 3,
+    nQPerResp = 6,
+    outsideGood = TRUE
+)
+
+dim(survey_og)
+#> [1] 48000    14
+head(survey_og)
+#>        respID qID altID obsID price type_Fuji type_Gala type_Honeycrisp
+#> 1           1   1     1     1   2.5         0         0               0
+#> 2           1   1     2     1   3.0         0         1               0
+#> 3           1   1     3     1   3.0         0         1               0
+#> 110000      1   1     4     1   0.0         0         0               0
+#> 4           1   2     1     2   1.0         0         1               0
+#> 5           1   2     2     2   2.5         0         0               0
+#>        type_Pink Lady type_Red Delicious freshness_Average freshness_Excellent
+#> 1                   0                  1                 1                   0
+#> 2                   0                  0                 0                   1
+#> 3                   0                  0                 1                   0
+#> 110000              0                  0                 0                   0
+#> 4                   0                  0                 0                   0
+#> 5                   1                  0                 1                   0
+#>        freshness_Poor outsideGood
+#> 1                   0           0
+#> 2                   0           0
+#> 3                   0           0
+#> 110000              0           1
+#> 4                   1           0
+#> 5                   0           0
+```
 
 ## Simulate choices
 
@@ -134,13 +253,13 @@ data <- simulateChoices(
     obsID  = "obsID"
 )
 head(data)
-#>   respID qID altID obsID price       type freshness choice
-#> 1      1   1     1     1   2.0       Fuji   Average      0
-#> 2      1   1     2     1   1.5       Gala Excellent      1
-#> 3      1   1     3     1   3.0  Pink Lady Excellent      0
-#> 4      1   2     1     2   1.5       Fuji   Average      1
-#> 5      1   2     2     2   2.0 Honeycrisp      Poor      0
-#> 6      1   2     3     2   1.0 Honeycrisp      Poor      0
+#>   respID qID altID obsID price          type freshness choice
+#> 1      1   1     1     1   3.0          Gala   Average      1
+#> 2      1   1     2     1   2.0    Honeycrisp      Poor      0
+#> 3      1   1     3     1   3.5 Red Delicious   Average      0
+#> 4      1   2     1     2   1.5          Fuji      Poor      0
+#> 5      1   2     2     2   2.5 Red Delicious Excellent      1
+#> 6      1   2     3     2   4.0    Honeycrisp   Average      0
 ```
 
 You can also pass a list of parameters to define a utility model that
@@ -220,13 +339,13 @@ from each model can be extracted using the `getModelResults()` function:
 results <- getModelResults(models)
 
 head(results)
-#>   sampleSize               coef         est        se
-#> 1        200              price -0.07093766 0.0616323
-#> 2        200           typeGala  0.01852680 0.1909831
-#> 3        200     typeHoneycrisp -0.18315704 0.2019748
-#> 4        200      typePink Lady  0.03520526 0.1888064
-#> 5        200  typeRed Delicious -0.09550322 0.2008047
-#> 6        200 freshnessExcellent  0.01345243 0.1576876
+#>   sampleSize               coef         est         se
+#> 1        200              price  0.07186463 0.06270189
+#> 2        200           typeGala  0.02257590 0.19794632
+#> 3        200     typeHoneycrisp  0.01799576 0.19880331
+#> 4        200      typePink Lady  0.17532205 0.19317624
+#> 5        200  typeRed Delicious  0.02069389 0.19972046
+#> 6        200 freshnessExcellent -0.05825836 0.14620813
 ```
 
 Here is a summary of the standard errors for each sample size:
@@ -241,7 +360,7 @@ ggplot(results) +
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-14-1.png" width="672" />
+<img src="man/figures/README-unnamed-chunk-18-1.png" width="672" />
 
 ## Author, Version, and License Information
 
@@ -270,7 +389,7 @@ citation("conjointTools")
 #>     title = {conjointTools: Tools For Designing Conjoint Survey Experiments},
 #>     author = {John Paul Helveston},
 #>     year = {2021},
-#>     note = {R package version 0.0.7},
+#>     note = {R package version 0.0.8},
 #>     url = {https://jhelvy.github.io/conjointTools/},
 #>   }
 ```

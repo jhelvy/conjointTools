@@ -36,7 +36,7 @@ remotes::install_github("jhelvy/conjointTools")
 
 Load the library with:
 ```{r}
-library(conjointTools)
+library("conjointTools")
 ```
 
 ## Make experiment designs
@@ -55,27 +55,38 @@ levels <- list(
 With these levels defined, making the design of experiment is straightforward using the `makeDoe()` function:
 
 ```{r}
-# Make a full-factorial design of experiment
 doe <- makeDoe(levels)
-
 head(doe)
 ```
 
-You can also make an "optimized" fractional-factorial design based on different criteria. For example, to make a "D-optimal" design, add the `type = "D"` argument and specify the number of trials you want to use from the full factorial design:
+You can also make a fractional-factorial design based on different criteria. For example, to make a "D-optimal" design, add the `type = "D"` argument and specify the number of trials you want to use from the full factorial design (you can also use `"A"` and `"I"` to optimize for different efficiency measures):
 
 ```{r}
-# Make a full-factorial design of experiment
 doe <- makeDoe(levels, type = "D", nTrials = 50)
 ```
 
-Once you've made your design, you can easily re-code it using the actual labels in your `levels` object using `recodeDesign()`:
+If you're unsure of how many trials to use, you can set `search = TRUE` to search across all feasible designs up to `nTrials` (with an optional `minTrials` argument as a starting number of trials in the search):
 
 ```{r}
-# Re-code levels
-doe <- recodeDesign(doe, levels)
+doe <- makeDoe(levels, type = "D", nTrials = 50, minTrials = 30, search = TRUE)
+```
 
+If using `search = TRUE`, a summary of all designs will be printed to the console, and the design with the highest D-efficiency is returned.
+
+You can also check the D-efficiency of any design using the `evaluateDoe()` function:
+
+```{r}
+evaluateDoe(doe)
+```
+
+Once you've made your design, you can easily re-code it using the actual labels in your `levels` object using `recodeDoe()`:
+
+```{r}
+doe <- recodeDoe(doe, levels)
 head(doe)
 ```
+
+You should re-code your design prior to making a survey if you want to show the actual label values in the survey rather than just the attribute level numbers (e.g., 1, 2, 3, etc.).
 
 ## Make conjoint surveys
 
@@ -99,6 +110,38 @@ The resulting data frame includes the following additional columns:
 - `qID`: Identifies the choice question answered by the respondent.
 - `altID`:Identifies the alternative in any one choice observation.
 - `obsID`: Identifies each unique choice observation across all respondents.
+
+You can also make a "labeled" survey where the levels of one of the attributes is used as a label by setting the `group` argument to that attribute. This by definition sets the number of alternatives in each question to the number of levels in the chosen attribute. Here is an example labeled survey using the "freshness" attribute as the label:
+
+```{r}
+survey_labeled <- makeSurvey(
+    doe       = doe,
+    nResp     = 2000,
+    nAltsPerQ = 3,
+    nQPerResp = 6,
+    group     = "freshness"
+)
+
+dim(survey_labeled)
+head(survey_labeled)
+```
+
+In the above example, you can see in the first six rows of the survey that the `freshness` attribute is always fixed to be the same order, ensuring that each level in the `freshness` attribute will always be shown in each choice question.
+
+Finally, you can also include an "Outside Good" (e.g., a "none" option) in your survey by setting `outsideGood = TRUE`. If included, all categorical attributes are dummy-coded to appropriately dummy-code the outside good alternative.
+
+```{r}
+survey_og <- makeSurvey(
+    doe       = doe,
+    nResp     = 2000,
+    nAltsPerQ = 3,
+    nQPerResp = 6,
+    outsideGood = TRUE
+)
+
+dim(survey_og)
+head(survey_og)
+```
 
 ## Simulate choices
 

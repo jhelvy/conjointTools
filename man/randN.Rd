@@ -33,7 +33,7 @@ levels <- list(
 doe <- makeDoe(levels)
 
 # Re-code levels
-doe <- recodeDesign(doe, levels)
+doe <- recodeDoe(doe, levels)
 
 # Make the conjoint survey by randomly sampling from the doe
 survey <- makeSurvey(

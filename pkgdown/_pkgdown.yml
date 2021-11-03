@@ -28,7 +28,8 @@ reference:
   desc: "Functions for creating different experiment designs and coded surveys."
   contents:
   - makeDoe
-  - recodeDesign
+  - evaluateDoe
+  - recodeDoe
   - makeSurvey
 - title: "Simulate Choices"
   desc: "Functions for simulating choices for a given survey design."

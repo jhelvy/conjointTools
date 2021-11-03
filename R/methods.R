@@ -1,17 +1,17 @@
-#' Methods for cjtools objects
+#' Methods for cjmodels objects
 #'
-#' Miscellaneous methods for `cjtools` class objects.
+#' Miscellaneous methods for `cjmodels` class objects.
 #'
-#' @name miscmethods.cjtools
-#' @aliases print.cjtools
-#' @param x is an object of class `cjtools`.
+#' @name miscmethods.cjmodels
+#' @aliases print.cjmodels
+#' @param x is an object of class `cjmodels`.
 #' @param digits the number of digits for printing, defaults to `3`.
 #' @param width the width of the printing.
 #' @param ... further arguments.
 #'
-#' @rdname miscmethods.cjtools
+#' @rdname miscmethods.cjmodels
 #' @export
-print.cjtools <- function (
+print.cjmodels <- function (
   x,
   digits = max(3, getOption("digits") - 2),
   width = getOption("width"),

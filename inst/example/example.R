@@ -13,7 +13,7 @@ levels <- list(
 doe <- makeDoe(levels)
 
 # Re-code levels
-doe <- recodeDesign(doe, levels)
+doe <- recodeDoe(doe, levels)
 
 # Make a survey
 survey <- makeSurvey(

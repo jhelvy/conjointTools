@@ -82,7 +82,7 @@
 #'
 #' # Make a full-factorial design of experiment and recode the levels
 #' doe <- makeDoe(levels)
-#' doe <- recodeDesign(doe, levels)
+#' doe <- recodeDoe(doe, levels)
 #'
 #' # Make the survey
 #' survey <- makeSurvey(
@@ -140,33 +140,34 @@ estimateModels <- function(
   )
 ) {
     data_list <- makeDataList(data, obsID, nbreaks)
-    result <- structure(parallel::mclapply(
-        data_list,
-        logitr::logitr,
-        outcome         = outcome,
-        obsID           = obsID,
-        pars            = pars,
-        price           = price,
-        randPars        = randPars,
-        randPrice       = randPrice,
-        modelSpace      = modelSpace,
-        weights         = weights,
-        panelID         = panelID,
-        clusterID       = clusterID,
-        robust          = robust,
-        startParBounds  = startParBounds,
-        startVals       = startVals,
-        numMultiStarts  = numMultiStarts,
-        useAnalyticGrad = useAnalyticGrad,
-        scaleInputs     = scaleInputs,
-        standardDraws   = standardDraws,
-        numDraws        = numDraws,
-        vcov            = vcov,
-        predict         = predict,
-        options         = options
-    ),
-    class = "cjtools"
-    )
+    suppressMessages(
+      result <- structure(lapply(
+          data_list,
+          logitr::logitr,
+          outcome         = outcome,
+          obsID           = obsID,
+          pars            = pars,
+          price           = price,
+          randPars        = randPars,
+          randPrice       = randPrice,
+          modelSpace      = modelSpace,
+          weights         = weights,
+          panelID         = panelID,
+          clusterID       = clusterID,
+          robust          = robust,
+          startParBounds  = startParBounds,
+          startVals       = startVals,
+          numMultiStarts  = numMultiStarts,
+          useAnalyticGrad = useAnalyticGrad,
+          scaleInputs     = scaleInputs,
+          standardDraws   = standardDraws,
+          numDraws        = numDraws,
+          vcov            = vcov,
+          predict         = predict,
+          options         = options
+      ),
+      class = "cjmodels"
+    ))
     return(result)
 }
 
