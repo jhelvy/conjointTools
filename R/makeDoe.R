@@ -146,11 +146,9 @@ aggregateDoeSearch <- function(results) {
 #' # Print the design efficiency and whether it is balanced:
 #' evaluateDoe(doe)
 evaluateDoe <- function(doe) {
-    levels <- apply(doe, 2, function(x) unique(x))
-    vars <- unlist(lapply(levels, length))
-    # vars <- apply(doe, 2, function(x) length(unique(x)))
+    vars <- apply(doe, 2, function(x) length(unique(x)))
     ff <- getFullFactorial(vars)
-    design <- decodeDoe(doe, ff, levels)
+    design <- decodeDoe(doe, vars)
     frml <- stats::formula("~-1 + .")
     eff <- AlgDesign::eval.design(frml = frml, design = design, X = ff)
     return(list(
@@ -159,22 +157,14 @@ evaluateDoe <- function(doe) {
     ))
 }
 
-decodeDoe <- function(doe, ff, levels) {
-  levels <- apply(doe, 2, function(x) unique(x))
-  levels <- lapply(levels, function(x) seq(length(x)))
-  test <- recodeDoe(doe, levels)
-
-  types <- unlist(lapply(levels, class))
+decodeDoe <- function(doe, vars) {
+  levels <- lapply(vars, function(x) seq_len(x))
   for (i in seq_len(length(levels))) {
     col <- which(names(doe) == names(levels)[i])
+    doe[,col] <- as.factor(doe[,col])
     levels(doe[,col]) <- levels[[i]]
-    if ((types[i] == "numeric") | (types[i] == "integer")) {
-      doe[,col] <- as.numeric(as.character(doe[,col]))
-    } else {
-      doe[,col] <- as.character(doe[,col])
-    }
   }
-
+  return(doe)
 }
 
 #' Re-code the levels in a design of experiment

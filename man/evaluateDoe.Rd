@@ -2,7 +2,7 @@
 % Please edit documentation in R/makeDoe.R
 \name{evaluateDoe}
 \alias{evaluateDoe}
-\title{Make a design of experiment}
+\title{Evaluate a design of experiment}
 \usage{
 evaluateDoe(doe)
 }
@@ -10,8 +10,14 @@ evaluateDoe(doe)
 \item{doe}{A design of experiment data frame. Each row is an alternative,
 each column is an attribute.}
 }
+\value{
+Returns a list of information about a given design, including the
+D-efficiency and whether or not the design is balanced.
+\code{levels} argument.
+}
 \description{
-Make a design of experiment
+Obtain a list of information about a given design, including the
+D-efficiency and whether or not the design is balanced.
 }
 \examples{
 # Define the attributes and levels
