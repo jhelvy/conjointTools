@@ -8,6 +8,7 @@
 Bug fixes:
 
 - When using `simulateChoices()` with a provided utility model, the function was incorrectly categorizing categorical variables with only 2 levels as being numeric. This is now fixed.
+- After updates were made in logitr v0.0.4, the returnData argument actually returned all the data, so extra repeated columns were being returned after predicting choices. This is now fixed.
 
 # conjointTools 0.0.7
 
