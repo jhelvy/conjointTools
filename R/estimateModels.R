@@ -139,10 +139,10 @@ estimateModels <- function(
     algorithm   = "NLOPT_LD_LBFGS"
   )
 ) {
-    data_list <- makeDataList(data, obsID, nbreaks)
+    dataList <- makeDataList(data, obsID, nbreaks)
     suppressMessages(
       result <- structure(lapply(
-          data_list,
+          dataList,
           logitr::logitr,
           outcome         = outcome,
           obsID           = obsID,
@@ -174,8 +174,13 @@ estimateModels <- function(
 makeDataList <- function(data, obsID, nbreaks) {
     maxObs <- max(data[obsID])
     nObs <- ceiling(seq(ceiling(maxObs/nbreaks), maxObs, length.out = nbreaks))
-    obsIDs <- sequence(nObs)
-    d <- data[obsIDs,]
-    d$sampleSize <- rep(round(nObs / max(d$qID)), times = nObs)
-    return(split(d, d$sampleSize))
+    dataList <- list()
+    for (i in 1:nbreaks) {
+      temp <- data[which(data$obsID %in% seq(nObs[i])),]
+      temp$sampleSize <- round(nObs[i] / max(temp$qID))
+      dataList[[i]] <- temp
+    }
+    sampleSizes <- unlist(lapply(dataList, function(x) unique(x$sampleSize)))
+    names(dataList) <- sampleSizes
+    return(dataList)
 }

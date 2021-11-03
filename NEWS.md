@@ -7,6 +7,7 @@
 
 Bug fixes:
 
+- Major bug introduced on commit 3ba7a3e where the data list being generated to iterate over subsets of the data was selecting far too few rows. This is fixed.
 - When using `simulateChoices()` with a provided utility model, the function was incorrectly categorizing categorical variables with only 2 levels as being numeric. This is now fixed.
 - After updates were made in logitr v0.0.4, the returnData argument actually returned all the data, so extra repeated columns were being returned after predicting choices. This is now fixed.
 
