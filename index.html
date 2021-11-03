@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="index.html">conjointTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.7.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8.9000</span>
       </span>
     </div>
 
@@ -84,7 +84,7 @@
 <span class="fu">remotes</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op">(</span><span class="st">"jhelvy/conjointTools"</span><span class="op">)</span></code></pre></div>
 <p>Load the library with:</p>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jhelvy/conjointTools">conjointTools</a></span><span class="op">)</span></code></pre></div>
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="st"><a href="https://github.com/jhelvy/conjointTools">"conjointTools"</a></span><span class="op">)</span></code></pre></div>
 </div>
 <div id="make-experiment-designs" class="section level2">
 <h2 class="hasAnchor">
@@ -99,9 +99,7 @@
 <span class="op">)</span></code></pre></div>
 <p>With these levels defined, making the design of experiment is straightforward using the <code><a href="reference/makeDoe.html">makeDoe()</a></code> function:</p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Make a full-factorial design of experiment</span>
-<span class="va">doe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/makeDoe.html">makeDoe</a></span><span class="op">(</span><span class="va">levels</span><span class="op">)</span>
-
+<code class="sourceCode R"><span class="va">doe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/makeDoe.html">makeDoe</a></span><span class="op">(</span><span class="va">levels</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">doe</span><span class="op">)</span>
 <span class="co">#&gt;   price type freshness</span>
 <span class="co">#&gt; 1     1    1         1</span>
@@ -110,29 +108,63 @@
 <span class="co">#&gt; 4     4    1         1</span>
 <span class="co">#&gt; 5     5    1         1</span>
 <span class="co">#&gt; 6     6    1         1</span></code></pre></div>
-<p>You can also make an “optimized” fractional-factorial design based on different criteria. For example, to make a “D-optimal” design, add the <code>type = "D"</code> argument and specify the number of trials you want to use from the full factorial design:</p>
+<p>You can also make a fractional-factorial design based on different criteria. For example, to make a “D-optimal” design, add the <code>type = "D"</code> argument and specify the number of trials you want to use from the full factorial design (you can also use <code>"A"</code> and <code>"I"</code> to optimize for different efficiency measures):</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Make a full-factorial design of experiment</span>
-<span class="va">doe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/makeDoe.html">makeDoe</a></span><span class="op">(</span><span class="va">levels</span>, type <span class="op">=</span> <span class="st">"D"</span>, nTrials <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></code></pre></div>
-<p>Once you’ve made your design, you can easily re-code it using the actual labels in your <code>levels</code> object using <code><a href="reference/recodeDesign.html">recodeDesign()</a></code>:</p>
+<code class="sourceCode R"><span class="va">doe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/makeDoe.html">makeDoe</a></span><span class="op">(</span><span class="va">levels</span>, type <span class="op">=</span> <span class="st">"D"</span>, nTrials <span class="op">=</span> <span class="fl">50</span><span class="op">)</span>
+<span class="co">#&gt;   nTrials     d balanced</span>
+<span class="co">#&gt; 1      50 0.893    FALSE</span></code></pre></div>
+<p>If you’re unsure of how many trials to use, you can set <code>search = TRUE</code> to search across all feasible designs up to <code>nTrials</code> (with an optional <code>minTrials</code> argument as a starting number of trials in the search):</p>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="co"># Re-code levels</span>
-<span class="va">doe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/recodeDesign.html">recodeDesign</a></span><span class="op">(</span><span class="va">doe</span>, <span class="va">levels</span><span class="op">)</span>
-
+<code class="sourceCode R"><span class="va">doe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/makeDoe.html">makeDoe</a></span><span class="op">(</span><span class="va">levels</span>, type <span class="op">=</span> <span class="st">"D"</span>, nTrials <span class="op">=</span> <span class="fl">50</span>, minTrials <span class="op">=</span> <span class="fl">30</span>, search <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span>
+<span class="co">#&gt;    nTrials     d balanced</span>
+<span class="co">#&gt; 16      45 0.916    FALSE</span>
+<span class="co">#&gt; 13      42 0.901    FALSE</span>
+<span class="co">#&gt; 14      43 0.896    FALSE</span>
+<span class="co">#&gt; 17      46 0.894    FALSE</span>
+<span class="co">#&gt; 21      50 0.893    FALSE</span>
+<span class="co">#&gt; 6       35 0.891    FALSE</span>
+<span class="co">#&gt; 7       36 0.884    FALSE</span>
+<span class="co">#&gt; 15      44 0.878    FALSE</span>
+<span class="co">#&gt; 18      47 0.878    FALSE</span>
+<span class="co">#&gt; 20      49 0.876    FALSE</span>
+<span class="co">#&gt; 19      48 0.859    FALSE</span>
+<span class="co">#&gt; 8       37 0.857    FALSE</span>
+<span class="co">#&gt; 9       38 0.853    FALSE</span>
+<span class="co">#&gt; 10      39 0.835    FALSE</span>
+<span class="co">#&gt; 11      40 0.815    FALSE</span>
+<span class="co">#&gt; 12      41 0.798    FALSE</span>
+<span class="co">#&gt; 1       30 0.733    FALSE</span>
+<span class="co">#&gt; 2       31 0.729    FALSE</span>
+<span class="co">#&gt; 3       32 0.711    FALSE</span>
+<span class="co">#&gt; 4       33 0.693    FALSE</span>
+<span class="co">#&gt; 5       34 0.675    FALSE</span></code></pre></div>
+<p>If using <code>search = TRUE</code>, a summary of all designs will be printed to the console, and the design with the highest D-efficiency is returned.</p>
+<p>You can also check the D-efficiency of any design using the <code><a href="reference/evaluateDoe.html">evaluateDoe()</a></code> function:</p>
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu"><a href="reference/evaluateDoe.html">evaluateDoe</a></span><span class="op">(</span><span class="va">doe</span><span class="op">)</span>
+<span class="co">#&gt; $d_eff</span>
+<span class="co">#&gt; [1] 0.916</span>
+<span class="co">#&gt; </span>
+<span class="co">#&gt; $balanced</span>
+<span class="co">#&gt; [1] FALSE</span></code></pre></div>
+<p>Once you’ve made your design, you can easily re-code it using the actual labels in your <code>levels</code> object using <code><a href="reference/recodeDoe.html">recodeDoe()</a></code>:</p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">doe</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/recodeDoe.html">recodeDoe</a></span><span class="op">(</span><span class="va">doe</span>, <span class="va">levels</span><span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">doe</span><span class="op">)</span>
 <span class="co">#&gt;   price type freshness</span>
-<span class="co">#&gt; 1   1.0 Fuji Excellent</span>
+<span class="co">#&gt; 1   2.0 Fuji Excellent</span>
 <span class="co">#&gt; 2   2.5 Fuji Excellent</span>
-<span class="co">#&gt; 3   4.0 Fuji Excellent</span>
-<span class="co">#&gt; 4   1.5 Gala Excellent</span>
-<span class="co">#&gt; 5   2.0 Gala Excellent</span>
-<span class="co">#&gt; 6   3.0 Gala Excellent</span></code></pre></div>
+<span class="co">#&gt; 3   3.5 Fuji Excellent</span>
+<span class="co">#&gt; 4   3.0 Gala Excellent</span>
+<span class="co">#&gt; 5   3.5 Gala Excellent</span>
+<span class="co">#&gt; 6   4.0 Gala Excellent</span></code></pre></div>
+<p>You should re-code your design prior to making a survey if you want to show the actual label values in the survey rather than just the attribute level numbers (e.g., 1, 2, 3, etc.).</p>
 </div>
 <div id="make-conjoint-surveys" class="section level2">
 <h2 class="hasAnchor">
 <a href="#make-conjoint-surveys" class="anchor"></a>Make conjoint surveys</h2>
 <p>A survey can be generated by randomly sampling from the design of experiment. The <code><a href="reference/makeSurvey.html">makeSurvey()</a></code> function also eliminates the possibility of duplicate alternatives appearing in the same choice question:</p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">survey</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/makeSurvey.html">makeSurvey</a></span><span class="op">(</span>
     doe       <span class="op">=</span> <span class="va">doe</span>,  <span class="co"># Design of experiment</span>
     nResp     <span class="op">=</span> <span class="fl">2000</span>, <span class="co"># Total number of respondents (upper bound)</span>
@@ -143,13 +175,13 @@
 <span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">survey</span><span class="op">)</span>
 <span class="co">#&gt; [1] 36000     7</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">survey</span><span class="op">)</span>
-<span class="co">#&gt;   respID qID altID obsID price       type freshness</span>
-<span class="co">#&gt; 1      1   1     1     1   2.0       Fuji   Average</span>
-<span class="co">#&gt; 2      1   1     2     1   1.5       Gala Excellent</span>
-<span class="co">#&gt; 3      1   1     3     1   3.0  Pink Lady Excellent</span>
-<span class="co">#&gt; 4      1   2     1     2   1.5       Fuji   Average</span>
-<span class="co">#&gt; 5      1   2     2     2   2.0 Honeycrisp      Poor</span>
-<span class="co">#&gt; 6      1   2     3     2   1.0 Honeycrisp      Poor</span></code></pre></div>
+<span class="co">#&gt;   respID qID altID obsID price          type freshness</span>
+<span class="co">#&gt; 1      1   1     1     1   3.0          Gala   Average</span>
+<span class="co">#&gt; 2      1   1     2     1   2.0    Honeycrisp      Poor</span>
+<span class="co">#&gt; 3      1   1     3     1   3.5 Red Delicious   Average</span>
+<span class="co">#&gt; 4      1   2     1     2   1.5          Fuji      Poor</span>
+<span class="co">#&gt; 5      1   2     2     2   2.5 Red Delicious Excellent</span>
+<span class="co">#&gt; 6      1   2     3     2   4.0    Honeycrisp   Average</span></code></pre></div>
 <p>The resulting data frame includes the following additional columns:</p>
 <ul>
 <li>
@@ -161,24 +193,79 @@
 <li>
 <code>obsID</code>: Identifies each unique choice observation across all respondents.</li>
 </ul>
+<p>You can also make a “labeled” survey where the levels of one of the attributes is used as a label by setting the <code>group</code> argument to that attribute. This by definition sets the number of alternatives in each question to the number of levels in the chosen attribute. Here is an example labeled survey using the “freshness” attribute as the label:</p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">survey_labeled</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/makeSurvey.html">makeSurvey</a></span><span class="op">(</span>
+    doe       <span class="op">=</span> <span class="va">doe</span>,
+    nResp     <span class="op">=</span> <span class="fl">2000</span>,
+    nAltsPerQ <span class="op">=</span> <span class="fl">3</span>,
+    nQPerResp <span class="op">=</span> <span class="fl">6</span>,
+    group     <span class="op">=</span> <span class="st">"freshness"</span>
+<span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">survey_labeled</span><span class="op">)</span>
+<span class="co">#&gt; [1] 36000     7</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">survey_labeled</span><span class="op">)</span>
+<span class="co">#&gt;   respID qID altID obsID price          type freshness</span>
+<span class="co">#&gt; 1      1   1     1     1   2.5     Pink Lady   Average</span>
+<span class="co">#&gt; 2      1   1     2     1   4.0          Gala Excellent</span>
+<span class="co">#&gt; 3      1   1     3     1   1.5 Red Delicious      Poor</span>
+<span class="co">#&gt; 4      1   2     1     2   4.0          Fuji   Average</span>
+<span class="co">#&gt; 5      1   2     2     2   2.5          Fuji Excellent</span>
+<span class="co">#&gt; 6      1   2     3     2   3.0          Fuji      Poor</span></code></pre></div>
+<p>In the above example, you can see in the first six rows of the survey that the <code>freshness</code> attribute is always fixed to be the same order, ensuring that each level in the <code>freshness</code> attribute will always be shown in each choice question.</p>
+<p>Finally, you can also include an “Outside Good” (e.g., a “none” option) in your survey by setting <code>outsideGood = TRUE</code>. If included, all categorical attributes are dummy-coded to appropriately dummy-code the outside good alternative.</p>
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">survey_og</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/makeSurvey.html">makeSurvey</a></span><span class="op">(</span>
+    doe       <span class="op">=</span> <span class="va">doe</span>,
+    nResp     <span class="op">=</span> <span class="fl">2000</span>,
+    nAltsPerQ <span class="op">=</span> <span class="fl">3</span>,
+    nQPerResp <span class="op">=</span> <span class="fl">6</span>,
+    outsideGood <span class="op">=</span> <span class="cn">TRUE</span>
+<span class="op">)</span>
+
+<span class="fu"><a href="https://rdrr.io/r/base/dim.html">dim</a></span><span class="op">(</span><span class="va">survey_og</span><span class="op">)</span>
+<span class="co">#&gt; [1] 48000    14</span>
+<span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">survey_og</span><span class="op">)</span>
+<span class="co">#&gt;        respID qID altID obsID price type_Fuji type_Gala type_Honeycrisp</span>
+<span class="co">#&gt; 1           1   1     1     1   2.5         0         0               0</span>
+<span class="co">#&gt; 2           1   1     2     1   3.0         0         1               0</span>
+<span class="co">#&gt; 3           1   1     3     1   3.0         0         1               0</span>
+<span class="co">#&gt; 110000      1   1     4     1   0.0         0         0               0</span>
+<span class="co">#&gt; 4           1   2     1     2   1.0         0         1               0</span>
+<span class="co">#&gt; 5           1   2     2     2   2.5         0         0               0</span>
+<span class="co">#&gt;        type_Pink Lady type_Red Delicious freshness_Average freshness_Excellent</span>
+<span class="co">#&gt; 1                   0                  1                 1                   0</span>
+<span class="co">#&gt; 2                   0                  0                 0                   1</span>
+<span class="co">#&gt; 3                   0                  0                 1                   0</span>
+<span class="co">#&gt; 110000              0                  0                 0                   0</span>
+<span class="co">#&gt; 4                   0                  0                 0                   0</span>
+<span class="co">#&gt; 5                   1                  0                 1                   0</span>
+<span class="co">#&gt;        freshness_Poor outsideGood</span>
+<span class="co">#&gt; 1                   0           0</span>
+<span class="co">#&gt; 2                   0           0</span>
+<span class="co">#&gt; 3                   0           0</span>
+<span class="co">#&gt; 110000              0           1</span>
+<span class="co">#&gt; 4                   1           0</span>
+<span class="co">#&gt; 5                   0           0</span></code></pre></div>
 </div>
 <div id="simulate-choices" class="section level2">
 <h2 class="hasAnchor">
 <a href="#simulate-choices" class="anchor"></a>Simulate choices</h2>
 <p>You can simulate choices for a given <code>survey</code> using the <code><a href="reference/simulateChoices.html">simulateChoices()</a></code> function. By default, random choices are simulated:</p>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/simulateChoices.html">simulateChoices</a></span><span class="op">(</span>
     survey <span class="op">=</span> <span class="va">survey</span>,
     obsID  <span class="op">=</span> <span class="st">"obsID"</span>
 <span class="op">)</span>
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">data</span><span class="op">)</span>
-<span class="co">#&gt;   respID qID altID obsID price       type freshness choice</span>
-<span class="co">#&gt; 1      1   1     1     1   2.0       Fuji   Average      0</span>
-<span class="co">#&gt; 2      1   1     2     1   1.5       Gala Excellent      1</span>
-<span class="co">#&gt; 3      1   1     3     1   3.0  Pink Lady Excellent      0</span>
-<span class="co">#&gt; 4      1   2     1     2   1.5       Fuji   Average      1</span>
-<span class="co">#&gt; 5      1   2     2     2   2.0 Honeycrisp      Poor      0</span>
-<span class="co">#&gt; 6      1   2     3     2   1.0 Honeycrisp      Poor      0</span></code></pre></div>
+<span class="co">#&gt;   respID qID altID obsID price          type freshness choice</span>
+<span class="co">#&gt; 1      1   1     1     1   3.0          Gala   Average      1</span>
+<span class="co">#&gt; 2      1   1     2     1   2.0    Honeycrisp      Poor      0</span>
+<span class="co">#&gt; 3      1   1     3     1   3.5 Red Delicious   Average      0</span>
+<span class="co">#&gt; 4      1   2     1     2   1.5          Fuji      Poor      0</span>
+<span class="co">#&gt; 5      1   2     2     2   2.5 Red Delicious Excellent      1</span>
+<span class="co">#&gt; 6      1   2     3     2   4.0    Honeycrisp   Average      0</span></code></pre></div>
 <p>You can also pass a list of parameters to define a utility model that will be used to simulate choices. In the example below, the choices are simulated using a utility model with the following parameters:</p>
 <ul>
 <li>1 continuous <code>price</code> parameter</li>
@@ -187,7 +274,7 @@
 <li>2 discrete parameters for <code>freshness</code>
 </li>
 </ul>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/simulateChoices.html">simulateChoices</a></span><span class="op">(</span>
     survey <span class="op">=</span> <span class="va">survey</span>,
     obsID  <span class="op">=</span> <span class="st">"obsID"</span>,
@@ -204,7 +291,7 @@
 <li>2 interaction parameters between “price” and “freshness”</li>
 </ul>
 <p>The <code><a href="reference/randN.html">randN()</a></code> function is use to make the 2 <code>freshness</code> parameters follow a normal distribution with a specified mean (<code>mu</code>) and standard deviation (<code>sigma</code>).</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">data</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/simulateChoices.html">simulateChoices</a></span><span class="op">(</span>
     survey <span class="op">=</span> <span class="va">survey</span>,
     obsID  <span class="op">=</span> <span class="st">"obsID"</span>,
@@ -219,7 +306,7 @@
 <h2 class="hasAnchor">
 <a href="#conduct-a-power-analysis" class="anchor"></a>Conduct a power analysis</h2>
 <p>The simulated choice data can be used to conduct a power analysis by estimating multiple models with different sample sizes. The <code><a href="reference/estimateModels.html">estimateModels()</a></code> function achieves this by partitioning the simulated choice data into multiple sizes (defined by the <code>nbreaks</code> argument) and then estimating a user-defined choice model on each data subset. In the example below, 10 different sample sizes are used to estimate 10 models.</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">models</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/estimateModels.html">estimateModels</a></span><span class="op">(</span>
     nbreaks <span class="op">=</span> <span class="fl">10</span>,
     data    <span class="op">=</span> <span class="va">data</span>,
@@ -229,27 +316,27 @@
 <span class="op">)</span></code></pre></div>
 <p>The resulting <code>models</code> object is a list of estimated models, each estimated using the <a href="https://jhelvy.github.io/logitr">{logitr}</a> package.</p>
 <p>While the <code>models</code> object is a rather complex object in that it contains multiple models, helper functions can be used to extract information of interest. For example, the estimated coefficients and standard errors from each model can be extracted using the <code><a href="reference/getModelResults.html">getModelResults()</a></code> function:</p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="va">results</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/getModelResults.html">getModelResults</a></span><span class="op">(</span><span class="va">models</span><span class="op">)</span>
 
 <span class="fu"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op">(</span><span class="va">results</span><span class="op">)</span>
-<span class="co">#&gt;   sampleSize               coef         est        se</span>
-<span class="co">#&gt; 1        200              price -0.07093766 0.0616323</span>
-<span class="co">#&gt; 2        200           typeGala  0.01852680 0.1909831</span>
-<span class="co">#&gt; 3        200     typeHoneycrisp -0.18315704 0.2019748</span>
-<span class="co">#&gt; 4        200      typePink Lady  0.03520526 0.1888064</span>
-<span class="co">#&gt; 5        200  typeRed Delicious -0.09550322 0.2008047</span>
-<span class="co">#&gt; 6        200 freshnessExcellent  0.01345243 0.1576876</span></code></pre></div>
+<span class="co">#&gt;   sampleSize               coef         est         se</span>
+<span class="co">#&gt; 1        200              price  0.07186463 0.06270189</span>
+<span class="co">#&gt; 2        200           typeGala  0.02257590 0.19794632</span>
+<span class="co">#&gt; 3        200     typeHoneycrisp  0.01799576 0.19880331</span>
+<span class="co">#&gt; 4        200      typePink Lady  0.17532205 0.19317624</span>
+<span class="co">#&gt; 5        200  typeRed Delicious  0.02069389 0.19972046</span>
+<span class="co">#&gt; 6        200 freshnessExcellent -0.05825836 0.14620813</span></code></pre></div>
 <p>Here is a summary of the standard errors for each sample size:</p>
-<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va">ggplot2</span><span class="op">)</span>
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org">ggplot2</a></span><span class="op">)</span>
 
 <span class="fu">ggplot</span><span class="op">(</span><span class="va">results</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">geom_hline</span><span class="op">(</span>yintercept <span class="op">=</span> <span class="fl">0.05</span>, color <span class="op">=</span> <span class="st">"red"</span>, linetype <span class="op">=</span> <span class="fl">2</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">geom_point</span><span class="op">(</span><span class="fu">aes</span><span class="op">(</span>x <span class="op">=</span> <span class="va">sampleSize</span>, y <span class="op">=</span> <span class="va">se</span>, color <span class="op">=</span> <span class="va">coef</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">expand_limits</span><span class="op">(</span>y <span class="op">=</span> <span class="fl">0</span><span class="op">)</span> <span class="op">+</span>
   <span class="fu">theme_bw</span><span class="op">(</span><span class="op">)</span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-14-1.png" width="672"></p>
+<p><img src="reference/figures/README-unnamed-chunk-18-1.png" width="672"></p>
 </div>
 <div id="author-version-and-license-information" class="section level2">
 <h2 class="hasAnchor">
@@ -266,8 +353,8 @@
 <div id="citation-information" class="section level2">
 <h2 class="hasAnchor">
 <a href="#citation-information" class="anchor"></a>Citation Information</h2>
-<p>If you use this package for in a publication, I would greatly appreciate it if you cited it - you can get the citation by typing <code><a href="https://rdrr.io/r/utils/citation.html">citation("conjointTools")</a></code> into R:</p>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
+<p>If you use this package for in a publication, I would greatly appreciate it if you cited it - you can get the citation by typing <code>citation("conjointTools")</code> into R:</p>
+<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span class="fu"><a href="https://rdrr.io/r/utils/citation.html">citation</a></span><span class="op">(</span><span class="st">"conjointTools"</span><span class="op">)</span>
 <span class="co">#&gt; </span>
 <span class="co">#&gt; To cite conjointTools in publications use:</span>
@@ -281,7 +368,7 @@
 <span class="co">#&gt;     title = {conjointTools: Tools For Designing Conjoint Survey Experiments},</span>
 <span class="co">#&gt;     author = {John Paul Helveston},</span>
 <span class="co">#&gt;     year = {2021},</span>
-<span class="co">#&gt;     note = {R package version 0.0.7},</span>
+<span class="co">#&gt;     note = {R package version 0.0.8},</span>
 <span class="co">#&gt;     url = {https://jhelvy.github.io/conjointTools/},</span>
 <span class="co">#&gt;   }</span></code></pre></div>
 </div>

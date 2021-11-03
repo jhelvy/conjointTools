@@ -7,6 +7,9 @@
     <loc>https://jhelvy.github.io/conjointTools//reference/estimateModels.html</loc>
   </url>
   <url>
+    <loc>https://jhelvy.github.io/conjointTools//reference/evaluateDoe.html</loc>
+  </url>
+  <url>
     <loc>https://jhelvy.github.io/conjointTools//reference/getModelResults.html</loc>
   </url>
   <url>
@@ -16,7 +19,7 @@
     <loc>https://jhelvy.github.io/conjointTools//reference/makeSurvey.html</loc>
   </url>
   <url>
-    <loc>https://jhelvy.github.io/conjointTools//reference/miscmethods.cjtools.html</loc>
+    <loc>https://jhelvy.github.io/conjointTools//reference/miscmethods.cjmodels.html</loc>
   </url>
   <url>
     <loc>https://jhelvy.github.io/conjointTools//reference/randLN.html</loc>
@@ -25,7 +28,7 @@
     <loc>https://jhelvy.github.io/conjointTools//reference/randN.html</loc>
   </url>
   <url>
-    <loc>https://jhelvy.github.io/conjointTools//reference/recodeDesign.html</loc>
+    <loc>https://jhelvy.github.io/conjointTools//reference/recodeDoe.html</loc>
   </url>
   <url>
     <loc>https://jhelvy.github.io/conjointTools//reference/simulateChoices.html</loc>

@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">conjointTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.7.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8.9000</span>
       </span>
     </div>
 
@@ -114,13 +114,23 @@
       <small>Source: <a href='https://github.com/jhelvy/conjointTools/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="conjointtools-008" class="section level1">
+<h1 class="page-header" data-toc-text="0.0.8">
+<a href="#conjointtools-008" class="anchor"></a>conjointTools 0.0.8</h1>
+<ul>
+<li>Several updates to the <code><a href="../reference/makeDoe.html">makeDoe()</a></code> function, including an improved print out of the summary of the design (D-efficiency &amp; balanced or not), as well as optional arguments to conduct a search of designs.</li>
+<li>Added a new <code><a href="../reference/evaluateDoe.html">evaluateDoe()</a></code> function which returns a list of information about a given design, including the D-efficiency and whether or not the design is balanced.</li>
+<li>Changed the name of <code>recodeDesign()</code> to <code><a href="../reference/recodeDoe.html">recodeDoe()</a></code> and made it more robust to different data types in <code>levels</code>.</li>
+<li>Replaced the use of <code>parallel::mcapply()</code> in <code><a href="../reference/estimateModels.html">estimateModels()</a></code> that was introduced in 0.0.7 with just <code><a href="https://rdrr.io/r/base/lapply.html">lapply()</a></code> as the <code>parallel</code> approach is not supported in Windows. Will add more robust parallel implementation in next package update.</li>
+</ul>
+</div>
     <div id="conjointtools-007" class="section level1">
 <h1 class="page-header" data-toc-text="0.0.7">
 <a href="#conjointtools-007" class="anchor"></a>conjointTools 0.0.7</h1>
 <ul>
 <li>Updated functions to use new <code>predict.logitr()</code> method introduced in {logitr} v0.4.0.</li>
 <li>Removed dependency on {data.table} and added use of {parallel} to increase speed of the <code><a href="../reference/estimateModels.html">estimateModels()</a></code> function.</li>
-<li>Added a <code><a href="../reference/miscmethods.cjtools.html">print.cjtools()</a></code> method for a prettier printing of the models object that is returned from the <code><a href="../reference/estimateModels.html">estimateModels()</a></code> function.</li>
+<li>Added a <code>print.cjtools()</code> method for a prettier printing of the models object that is returned from the <code><a href="../reference/estimateModels.html">estimateModels()</a></code> function.</li>
 </ul>
 </div>
     <div id="conjointtools-006" class="section level1">
@@ -148,7 +158,7 @@
 <ul>
 <li>Major breaking changes made to the user interface.</li>
 <li>Overhaul of the <code><a href="../reference/makeDoe.html">makeDoe()</a></code> and <code><a href="../reference/makeSurvey.html">makeSurvey()</a></code> functions to enable grouped designs.</li>
-<li>Added the <code><a href="../reference/recodeDesign.html">recodeDesign()</a></code> function.</li>
+<li>Added the <code>recodeDesign()</code> function.</li>
 <li>Added preliminary functions for simulating choices.</li>
 </ul>
 </div>
