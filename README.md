@@ -339,13 +339,13 @@ from each model can be extracted using the `getModelResults()` function:
 results <- getModelResults(models)
 
 head(results)
-#>   sampleSize               coef         est         se
-#> 1        200              price  0.07186463 0.06270189
-#> 2        200           typeGala  0.02257590 0.19794632
-#> 3        200     typeHoneycrisp  0.01799576 0.19880331
-#> 4        200      typePink Lady  0.17532205 0.19317624
-#> 5        200  typeRed Delicious  0.02069389 0.19972046
-#> 6        200 freshnessExcellent -0.05825836 0.14620813
+#>   sampleSize               coef        est         se
+#> 1        200              price 0.06053738 0.03665858
+#> 2        200           typeGala 0.04767441 0.11372197
+#> 3        200     typeHoneycrisp 0.05519936 0.11017844
+#> 4        200      typePink Lady 0.15511684 0.11024854
+#> 5        200  typeRed Delicious 0.02942539 0.11257031
+#> 6        200 freshnessExcellent 0.03273217 0.08519040
 ```
 
 Here is a summary of the standard errors for each sample size:
