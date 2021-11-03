@@ -123,6 +123,10 @@
 <li>Changed the name of <code>recodeDesign()</code> to <code><a href="../reference/recodeDoe.html">recodeDoe()</a></code> and made it more robust to different data types in <code>levels</code>.</li>
 <li>Replaced the use of <code>parallel::mcapply()</code> in <code><a href="../reference/estimateModels.html">estimateModels()</a></code> that was introduced in 0.0.7 with just <code><a href="https://rdrr.io/r/base/lapply.html">lapply()</a></code> as the <code>parallel</code> approach is not supported in Windows. Will add more robust parallel implementation in next package update.</li>
 </ul>
+<p>Bug fixes:</p>
+<ul>
+<li>When using <code><a href="../reference/simulateChoices.html">simulateChoices()</a></code> with a provided utility model, the function was incorrectly categorizing categorical variables with only 2 levels as being numeric. This is now fixed.</li>
+</ul>
 </div>
     <div id="conjointtools-007" class="section level1">
 <h1 class="page-header" data-toc-text="0.0.7">
