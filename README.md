@@ -170,6 +170,78 @@ The resulting data frame includes the following additional columns:
 -   `obsID`: Identifies each unique choice observation across all
     respondents.
 
+You can also make a “labeled” survey where the levels of one of the
+attributes is used as a label by setting the `group` argument to that
+attribute. This by definition sets the number of alternatives in each
+question to the number of levels in the chosen attribute. Here is an
+example labeled survey using the “freshness” attribute as the label:
+
+``` r
+survey_labeled <- makeSurvey(
+    doe       = doe,
+    nResp     = 2000,
+    nAltsPerQ = 3,
+    nQPerResp = 6,
+    group     = "freshness"
+)
+
+dim(survey_labeled)
+#> [1] 36000     7
+head(survey_labeled)
+#>   respID qID altID obsID price          type freshness
+#> 1      1   1     1     1   2.5     Pink Lady   Average
+#> 2      1   1     2     1   4.0          Gala Excellent
+#> 3      1   1     3     1   1.5 Red Delicious      Poor
+#> 4      1   2     1     2   4.0          Fuji   Average
+#> 5      1   2     2     2   2.5          Fuji Excellent
+#> 6      1   2     3     2   3.0          Fuji      Poor
+```
+
+In the above example, you can see in the first six rows of the survey
+that the `freshness` attribute is always fixed to be the same order,
+ensuring that each level in the `freshness` attribute will always be
+shown in each choice question.
+
+Finally, you can also include an “Outside Good” (e.g., a “none” option)
+in your survey by setting `outsideGood = TRUE`. If included, all
+categorical attributes are dummy-coded to appropriately dummy-code the
+outside good alternative.
+
+``` r
+survey_og <- makeSurvey(
+    doe       = doe,
+    nResp     = 2000,
+    nAltsPerQ = 3,
+    nQPerResp = 6,
+    outsideGood = TRUE
+)
+
+dim(survey_og)
+#> [1] 48000    14
+head(survey_og)
+#>        respID qID altID obsID price type_Fuji type_Gala type_Honeycrisp
+#> 1           1   1     1     1   2.5         0         0               0
+#> 2           1   1     2     1   3.0         0         1               0
+#> 3           1   1     3     1   3.0         0         1               0
+#> 110000      1   1     4     1   0.0         0         0               0
+#> 4           1   2     1     2   1.0         0         1               0
+#> 5           1   2     2     2   2.5         0         0               0
+#>        type_Pink Lady type_Red Delicious freshness_Average freshness_Excellent
+#> 1                   0                  1                 1                   0
+#> 2                   0                  0                 0                   1
+#> 3                   0                  0                 1                   0
+#> 110000              0                  0                 0                   0
+#> 4                   0                  0                 0                   0
+#> 5                   1                  0                 1                   0
+#>        freshness_Poor outsideGood
+#> 1                   0           0
+#> 2                   0           0
+#> 3                   0           0
+#> 110000              0           1
+#> 4                   1           0
+#> 5                   0           0
+```
+
 ## Simulate choices
 
 You can simulate choices for a given `survey` using the
@@ -182,12 +254,12 @@ data <- simulateChoices(
 )
 head(data)
 #>   respID qID altID obsID price          type freshness choice
-#> 1      1   1     1     1   3.0          Gala   Average      0
-#> 2      1   1     2     1   2.0    Honeycrisp      Poor      1
+#> 1      1   1     1     1   3.0          Gala   Average      1
+#> 2      1   1     2     1   2.0    Honeycrisp      Poor      0
 #> 3      1   1     3     1   3.5 Red Delicious   Average      0
 #> 4      1   2     1     2   1.5          Fuji      Poor      0
-#> 5      1   2     2     2   2.5 Red Delicious Excellent      0
-#> 6      1   2     3     2   4.0    Honeycrisp   Average      1
+#> 5      1   2     2     2   2.5 Red Delicious Excellent      1
+#> 6      1   2     3     2   4.0    Honeycrisp   Average      0
 ```
 
 You can also pass a list of parameters to define a utility model that
@@ -267,13 +339,13 @@ from each model can be extracted using the `getModelResults()` function:
 results <- getModelResults(models)
 
 head(results)
-#>   sampleSize               coef          est         se
-#> 1        200              price  0.004714889 0.06315016
-#> 2        200           typeGala  0.257165792 0.19652339
-#> 3        200     typeHoneycrisp  0.236155900 0.19676697
-#> 4        200      typePink Lady -0.044868360 0.19862169
-#> 5        200  typeRed Delicious -0.015676909 0.20314139
-#> 6        200 freshnessExcellent  0.280169823 0.14830753
+#>   sampleSize               coef         est         se
+#> 1        200              price  0.07186463 0.06270189
+#> 2        200           typeGala  0.02257590 0.19794632
+#> 3        200     typeHoneycrisp  0.01799576 0.19880331
+#> 4        200      typePink Lady  0.17532205 0.19317624
+#> 5        200  typeRed Delicious  0.02069389 0.19972046
+#> 6        200 freshnessExcellent -0.05825836 0.14620813
 ```
 
 Here is a summary of the standard errors for each sample size:
@@ -288,7 +360,7 @@ ggplot(results) +
   theme_bw()
 ```
 
-<img src="man/figures/README-unnamed-chunk-16-1.png" width="672" />
+<img src="man/figures/README-unnamed-chunk-18-1.png" width="672" />
 
 ## Author, Version, and License Information
 

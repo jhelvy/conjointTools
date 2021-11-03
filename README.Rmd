@@ -111,6 +111,38 @@ The resulting data frame includes the following additional columns:
 - `altID`:Identifies the alternative in any one choice observation.
 - `obsID`: Identifies each unique choice observation across all respondents.
 
+You can also make a "labeled" survey where the levels of one of the attributes is used as a label by setting the `group` argument to that attribute. This by definition sets the number of alternatives in each question to the number of levels in the chosen attribute. Here is an example labeled survey using the "freshness" attribute as the label:
+
+```{r}
+survey_labeled <- makeSurvey(
+    doe       = doe,
+    nResp     = 2000,
+    nAltsPerQ = 3,
+    nQPerResp = 6,
+    group     = "freshness"
+)
+
+dim(survey_labeled)
+head(survey_labeled)
+```
+
+In the above example, you can see in the first six rows of the survey that the `freshness` attribute is always fixed to be the same order, ensuring that each level in the `freshness` attribute will always be shown in each choice question.
+
+Finally, you can also include an "Outside Good" (e.g., a "none" option) in your survey by setting `outsideGood = TRUE`. If included, all categorical attributes are dummy-coded to appropriately dummy-code the outside good alternative.
+
+```{r}
+survey_og <- makeSurvey(
+    doe       = doe,
+    nResp     = 2000,
+    nAltsPerQ = 3,
+    nQPerResp = 6,
+    outsideGood = TRUE
+)
+
+dim(survey_og)
+head(survey_og)
+```
+
 ## Simulate choices
 
 You can simulate choices for a given `survey` using the `simulateChoices()` function. By default, random choices are simulated:
