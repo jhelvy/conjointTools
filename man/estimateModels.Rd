@@ -6,6 +6,7 @@
 \usage{
 estimateModels(
   nbreaks = 10,
+  nQPerResp = 1,
   data,
   outcome,
   obsID,
@@ -33,6 +34,9 @@ estimateModels(
 }
 \arguments{
 \item{nbreaks}{The number of different sample size groups.}
+
+\item{nQPerResp}{Number of questions per respondent. Defaults to \code{1} if not
+specified.}
 
 \item{data}{The data, formatted as a \code{data.frame} object.}
 

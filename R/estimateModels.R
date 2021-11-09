@@ -7,6 +7,8 @@
 #' @keywords logitr, mnl, mxl, logit, sample size, power
 #'
 #' @param nbreaks The number of different sample size groups.
+#' @param nQPerResp Number of questions per respondent. Defaults to `1` if not
+#' specified.
 #' @param data The data, formatted as a `data.frame` object.
 #' @param outcome The name of the column that identifies the outcome variable,
 #' which should be coded with a `1` for `TRUE` and `0` for `FALSE`.
@@ -108,6 +110,7 @@
 #' )
 estimateModels <- function(
   nbreaks = 10,
+  nQPerResp = 1,
   data,
   outcome,
   obsID,
@@ -139,7 +142,7 @@ estimateModels <- function(
     algorithm   = "NLOPT_LD_LBFGS"
   )
 ) {
-    dataList <- makeDataList(data, obsID, nbreaks)
+    dataList <- makeDataList(data, obsID, nbreaks, nQPerResp)
     suppressMessages(
       result <- structure(lapply(
           dataList,
@@ -171,13 +174,13 @@ estimateModels <- function(
     return(result)
 }
 
-makeDataList <- function(data, obsID, nbreaks) {
+makeDataList <- function(data, obsID, nbreaks, nQPerResp) {
     maxObs <- max(data[obsID])
     nObs <- ceiling(seq(ceiling(maxObs/nbreaks), maxObs, length.out = nbreaks))
     dataList <- list()
     for (i in 1:nbreaks) {
-      temp <- data[which(data$obsID %in% seq(nObs[i])),]
-      temp$sampleSize <- round(nObs[i] / max(temp$qID))
+      temp <- data[which(data[,obsID] %in% seq(nObs[i])),]
+      temp$sampleSize <- round(nObs[i] / nQPerResp)
       dataList[[i]] <- temp
     }
     sampleSizes <- unlist(lapply(dataList, function(x) unique(x$sampleSize)))
