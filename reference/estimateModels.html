@@ -75,7 +75,7 @@ sample sizes. All models are estimated models using the logitr package." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">conjointTools</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8.9000</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8.9001</span>
       </span>
     </div>
 
@@ -128,6 +128,7 @@ sample sizes. All models are estimated models using the logitr package.</p>
 
     <pre class="usage"><span class='fu'>estimateModels</span><span class='op'>(</span>
   nbreaks <span class='op'>=</span> <span class='fl'>10</span>,
+  nQPerResp <span class='op'>=</span> <span class='fl'>1</span>,
   <span class='va'>data</span>,
   <span class='va'>outcome</span>,
   <span class='va'>obsID</span>,
@@ -159,6 +160,11 @@ sample sizes. All models are estimated models using the logitr package.</p>
     <tr>
       <th>nbreaks</th>
       <td><p>The number of different sample size groups.</p></td>
+    </tr>
+    <tr>
+      <th>nQPerResp</th>
+      <td><p>Number of questions per respondent. Defaults to <code>1</code> if not
+specified.</p></td>
     </tr>
     <tr>
       <th>data</th>
